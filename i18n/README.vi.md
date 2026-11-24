@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Logo Lap" width="120" style="border-radius: 20px">
-  <h1>Lap - Trình quản lý ảnh cục bộ riêng tư</h1>
+  <img src="../docs/public/icon.png" alt="Logo bigfotolab" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - Trình quản lý ảnh cục bộ riêng tư</h1>
   <h3>Trình quản lý ảnh để bàn mã nguồn mở cho macOS, Windows và Linux.</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="Bản phát hành GitHub"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="Tổng lượt tải xuống trên GitHub"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="Số sao GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="Bản phát hành GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="Tổng lượt tải xuống trên GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="Số sao GitHub"></a>
   </p>
 </div>
 
 [English](../README.md) | [Česky](README.cs.md) | [Deutsch](README.de.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | Tiếng Việt | [中文简体](README.zh-CN.md) | [中文繁體](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-Lap là trình quản lý ảnh miễn phí, mã nguồn mở, ưu tiên xử lý cục bộ cho macOS, Windows và Linux. Sắp xếp thư mục hiện có, tìm kiếm bằng AI trên thiết bị và quản lý thư viện lớn mà không cần tài khoản đám mây hay thuê bao.
+bigfotolab là trình quản lý ảnh miễn phí, mã nguồn mở, ưu tiên xử lý cục bộ cho macOS, Windows và Linux. Sắp xếp thư mục hiện có, tìm kiếm bằng AI trên thiết bị và quản lý thư viện lớn mà không cần tài khoản đám mây hay thuê bao.
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">TRANG WEB CHÍNH THỨC</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">DEMO</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">TRANG WEB CHÍNH THỨC</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">DEMO</a></strong></p>
 </div>
 
-## Tải Lap
+## Tải bigfotolab
 
-Mở [trang phát hành mới nhất](https://github.com/julyx10/lap/releases/latest), sau đó tải tệp phù hợp với hệ thống của bạn:
+Mở [trang phát hành mới nhất](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest), sau đó tải tệp phù hợp với hệ thống của bạn:
 
 | Nền tảng | Gói | Ghi chú |
 | :-- | :-- | :-- |
@@ -37,21 +37,21 @@ Mở [trang phát hành mới nhất](https://github.com/julyx10/lap/releases/la
 brew install --cask lap
 ```
 
-Đã cài qua tap `julyx10/lap`? Xem [hướng dẫn chuyển đổi](https://github.com/julyx10/lap/discussions/567).
+Đã cài qua tap `julyx10/lap`? Xem [hướng dẫn chuyển đổi](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567).
 
 ## Ảnh chụp màn hình
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Trình quản lý thư viện ảnh cục bộ Lap" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Chế độ xem bản đồ Lap" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Xem trước ảnh trong Lap" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="Trình quản lý thư viện ảnh cục bộ bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="Chế độ xem bản đồ bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="Xem trước ảnh trong bigfotolab" width="900">
 </p>
 
-## Vì sao chọn Lap
+## Vì sao chọn bigfotolab
 
 - **AI riêng tư trên thiết bị.** Mô tả ảnh, tìm ảnh tương tự hoặc duyệt theo khuôn mặt. Mọi xử lý diễn ra trên thiết bị.
-- **Thư mục của bạn, do bạn kiểm soát.** Mở thư mục hiện có trực tiếp trong Lap. Tệp giữ nguyên vị trí và định dạng.
-- **Siêu dữ liệu dùng giữa các ứng dụng.** Lap đọc EXIF, IPTC và XMP nhúng cùng các tệp phụ (xếp hạng, thẻ, mục yêu thích, trạng thái chọn lọc, GPS và ngày chụp). Có thể lưu siêu dữ liệu đã sửa vào tệp phụ XMP mà không thay đổi tệp gốc.
+- **Thư mục của bạn, do bạn kiểm soát.** Mở thư mục hiện có trực tiếp trong bigfotolab. Tệp giữ nguyên vị trí và định dạng.
+- **Siêu dữ liệu dùng giữa các ứng dụng.** bigfotolab đọc EXIF, IPTC và XMP nhúng cùng các tệp phụ (xếp hạng, thẻ, mục yêu thích, trạng thái chọn lọc, GPS và ngày chụp). Có thể lưu siêu dữ liệu đã sửa vào tệp phụ XMP mà không thay đổi tệp gốc.
 - **Chọn lọc ảnh.** Xem nhanh bằng phím cách, tự chuyển sau khi xếp hạng, hiển thị vùng lấy nét, so sánh bốn khung và quy tắc giữ bản trùng.
 - **Cho thư viện hơn 100.000 ảnh và video.** Lõi Rust gốc xử lý việc duyệt, tìm kiếm và quét.
 - **Miễn phí và mã nguồn mở.** Không cần đăng ký trả phí hay tài khoản, có 17 ngôn ngữ trên macOS, Windows và Linux.
@@ -61,7 +61,7 @@ brew install --cask lap
 - **Duyệt thư viện linh hoạt** theo ngày, thư mục, vị trí, máy ảnh, ống kính, thẻ, xếp hạng và khuôn mặt, kèm sắp xếp và tìm kiếm.
 - **Quy trình ưu tiên thư mục.** Nhiều thư viện, nhập và xuất qua kéo thả hoặc bảng nhớ tạm, đổi tên hàng loạt và đồng bộ, di chuyển, sao chép và xóa an toàn.
 - **Tìm kiếm AI cục bộ** theo câu lệnh văn bản, độ tương đồng hình ảnh, chủ thể, phân nhóm khuôn mặt và tìm kiếm đa ngôn ngữ tùy chọn trong hơn 50 ngôn ngữ.
-- **Nhập siêu dữ liệu và ghi vào XMP** · Lap đọc EXIF, IPTC và XMP nhúng cùng các tệp phụ (xếp hạng, thẻ, mục yêu thích, trạng thái chọn lọc, GPS và ngày chụp). Có thể sửa các trường văn bản và lưu dữ liệu tổ chức vào XMP.
+- **Nhập siêu dữ liệu và ghi vào XMP** · bigfotolab đọc EXIF, IPTC và XMP nhúng cùng các tệp phụ (xếp hạng, thẻ, mục yêu thích, trạng thái chọn lọc, GPS và ngày chụp). Có thể sửa các trường văn bản và lưu dữ liệu tổ chức vào XMP.
 - **Album thông minh.** Nhóm và sắp xếp tùy chỉnh, lọc theo tên thư mục và bộ chọn có tìm kiếm.
 - **Nhập ảnh theo ngày** với bố cục theo ngày, tháng, năm hoặc một thư mục, giữ nguyên tên tệp gốc và bỏ qua tệp trùng.
 - **Bộ sưu tập và thẻ phân cấp** để sắp xếp hàng loạt tệp đã chọn mà không di chuyển hay nhân bản bản gốc. Cây thẻ kéo để sắp xếp lại với số lượng theo nhánh.
@@ -81,26 +81,26 @@ brew install --cask lap
 
 ## Siêu dữ liệu và quyền kiểm soát dữ liệu
 
-Lap làm việc trực tiếp với các thư mục và đọc phần lớn thông tin hiển thị từ tệp. Bạn có thể lưu dữ liệu tổ chức vào tệp phụ XMP chuẩn để các ứng dụng ảnh khác đọc được.
+bigfotolab làm việc trực tiếp với các thư mục và đọc phần lớn thông tin hiển thị từ tệp. Bạn có thể lưu dữ liệu tổ chức vào tệp phụ XMP chuẩn để các ứng dụng ảnh khác đọc được.
 
-Lap đọc siêu dữ liệu tương thích từ Lightroom, digiKam, darktable và ACDSee. Các trường được hỗ trợ tùy theo ứng dụng.
+bigfotolab đọc siêu dữ liệu tương thích từ Lightroom, digiKam, darktable và ACDSee. Các trường được hỗ trợ tùy theo ứng dụng.
 
 ### Đọc siêu dữ liệu hiện có
 
 - Ảnh và video gốc của bạn luôn là tệp thông thường trong các thư mục hiện có.
-- Khi lập chỉ mục, Lap đọc EXIF, IPTC và XMP nhúng, gồm ngày chụp, máy ảnh, ống kính, GPS, hướng, xếp hạng, mục yêu thích, từ khóa, trạng thái chọn lọc, mô tả, tiêu đề, tiêu đề ngắn, tác giả và bản quyền. Bật **Cài đặt → Siêu dữ liệu → Nhập siêu dữ liệu** để nhập dữ liệu tổ chức vào cơ sở dữ liệu cục bộ. Các chỉnh sửa cục bộ được giữ lại.
+- Khi lập chỉ mục, bigfotolab đọc EXIF, IPTC và XMP nhúng, gồm ngày chụp, máy ảnh, ống kính, GPS, hướng, xếp hạng, mục yêu thích, từ khóa, trạng thái chọn lọc, mô tả, tiêu đề, tiêu đề ngắn, tác giả và bản quyền. Bật **Cài đặt → Siêu dữ liệu → Nhập siêu dữ liệu** để nhập dữ liệu tổ chức vào cơ sở dữ liệu cục bộ. Các chỉnh sửa cục bộ được giữ lại.
 - Các giá trị được hỗ trợ trong tệp phụ XMP được ưu tiên hơn giá trị nhúng, bao gồm GPS và ngày chụp.
 
 ### Lưu chỉnh sửa được hỗ trợ vào XMP
 
 - Có thể sửa tiêu đề, tiêu đề ngắn, mô tả, tác giả và bản quyền. Thay đổi được lưu trong cơ sở dữ liệu cục bộ.
 - Lưu vào XMP ghi các trường này cùng thẻ (bao gồm từ khóa phân cấp), xếp hạng, mục yêu thích và trạng thái chọn lọc vào tệp phụ, đồng thời giữ nguyên các thuộc tính XMP khác và tệp gốc.
-- Khi bạn đổi tên, di chuyển, sao chép, xóa hoặc nhập tệp **trong Lap**, Lap cập nhật danh mục cục bộ cùng lúc. Lap cũng giữ các thành phần được hỗ trợ đi cùng nhau, chẳng hạn như các thành phần Apple Live Photo, tệp phụ XMP và AAE và cặp RAW + JPEG/HEIC đã bật. Có thể xóa một hoặc cả hai tệp trong cặp RAW. Nếu giữ một tệp, tệp phụ XMP dùng chung cũng được giữ lại.
+- Khi bạn đổi tên, di chuyển, sao chép, xóa hoặc nhập tệp **trong bigfotolab**, bigfotolab cập nhật danh mục cục bộ cùng lúc. bigfotolab cũng giữ các thành phần được hỗ trợ đi cùng nhau, chẳng hạn như các thành phần Apple Live Photo, tệp phụ XMP và AAE và cặp RAW + JPEG/HEIC đã bật. Có thể xóa một hoặc cả hai tệp trong cặp RAW. Nếu giữ một tệp, tệp phụ XMP dùng chung cũng được giữ lại.
 - Lưu chỉnh sửa ảnh tích hợp sẽ ghi ảnh kết quả vào đích đã chọn.
 
-### Dữ liệu còn lại trong cơ sở dữ liệu Lap
+### Dữ liệu còn lại trong cơ sở dữ liệu bigfotolab
 
-Lap lưu các dữ liệu thư viện này trong cơ sở dữ liệu cục bộ hoặc cấu hình thư viện.
+bigfotolab lưu các dữ liệu thư viện này trong cơ sở dữ liệu cục bộ hoặc cấu hình thư viện.
 
 - Bộ sưu tập, album thông minh cùng quy tắc, nhóm, sắp xếp và thứ tự của chúng
 - Dữ liệu tìm kiếm AI, dữ liệu khuôn mặt, ảnh thu nhỏ và dữ liệu chỉ mục/bộ nhớ đệm khác
@@ -108,48 +108,48 @@ Lap lưu các dữ liệu thư viện này trong cơ sở dữ liệu cục bộ
 
 Chỉnh sửa nằm trong cơ sở dữ liệu cho đến khi bạn chủ động lưu các trường được hỗ trợ vào XMP. Bộ sưu tập, album thông minh, dữ liệu AI và khuôn mặt không nằm trong XMP. Hãy sao lưu cơ sở dữ liệu; chỉ sao chép tệp gốc không giữ được cách tổ chức này.
 
-### Làm việc với tệp ngoài Lap
+### Làm việc với tệp ngoài bigfotolab
 
-Lap có thể quét lại thư mục và phát hiện nhiều thay đổi hệ thống tệp. Tuy nhiên, các thay đổi thực hiện ngoài Lap—như đổi tên, di chuyển, thay thế hoặc sao chép tệp—có thể làm gián đoạn tổ chức chỉ được lưu trong Lap.
+bigfotolab có thể quét lại thư mục và phát hiện nhiều thay đổi hệ thống tệp. Tuy nhiên, các thay đổi thực hiện ngoài bigfotolab—như đổi tên, di chuyển, thay thế hoặc sao chép tệp—có thể làm gián đoạn tổ chức chỉ được lưu trong bigfotolab.
 
-Khi bật nhập siêu dữ liệu, Lap cũng kiểm tra thay đổi trong các tệp phụ XMP. Đổi tên và di chuyển tệp trong Lap để giữ nguyên bộ sưu tập. Dùng tính năng lưu siêu dữ liệu vào XMP và giữ tệp phụ cạnh tệp. Nếu bạn cũng quản lý tệp ngoài Lap, hãy sao lưu cơ sở dữ liệu và cấu hình của Lap cùng với ảnh. Bạn có thể quản lý vị trí cơ sở dữ liệu và tạo bản sao lưu trong **Cài đặt → Lưu trữ**.
+Khi bật nhập siêu dữ liệu, bigfotolab cũng kiểm tra thay đổi trong các tệp phụ XMP. Đổi tên và di chuyển tệp trong bigfotolab để giữ nguyên bộ sưu tập. Dùng tính năng lưu siêu dữ liệu vào XMP và giữ tệp phụ cạnh tệp. Nếu bạn cũng quản lý tệp ngoài bigfotolab, hãy sao lưu cơ sở dữ liệu và cấu hình của bigfotolab cùng với ảnh. Bạn có thể quản lý vị trí cơ sở dữ liệu và tạo bản sao lưu trong **Cài đặt → Lưu trữ**.
 
-Xóa cơ sở dữ liệu hoặc cấu hình của Lap sẽ xóa dữ liệu tổ chức và chỉ mục cục bộ này, nhưng không xóa tệp phương tiện gốc.
+Xóa cơ sở dữ liệu hoặc cấu hình của bigfotolab sẽ xóa dữ liệu tổ chức và chỉ mục cục bộ này, nhưng không xóa tệp phương tiện gốc.
 
-## Gỡ cài đặt Lap
+## Gỡ cài đặt bigfotolab
 
-Lap làm việc trực tiếp với các thư mục ảnh hiện có. Gỡ cài đặt Lap hoặc xóa cơ sở dữ liệu và tệp bộ nhớ đệm **không** xóa ảnh gốc.
+bigfotolab làm việc trực tiếp với các thư mục ảnh hiện có. Gỡ cài đặt bigfotolab hoặc xóa cơ sở dữ liệu và tệp bộ nhớ đệm **không** xóa ảnh gốc.
 
-Các bước gỡ cài đặt tiêu chuẩn chỉ xóa ứng dụng. Để xóa hoàn toàn Lap, hãy thoát Lap trước, gỡ cài đặt ứng dụng, sau đó xóa cơ sở dữ liệu, bộ nhớ đệm ảnh thu nhỏ và tệp cấu hình cục bộ bằng lệnh dọn dẹp cho nền tảng của bạn.
+Các bước gỡ cài đặt tiêu chuẩn chỉ xóa ứng dụng. Để xóa hoàn toàn bigfotolab, hãy thoát bigfotolab trước, gỡ cài đặt ứng dụng, sau đó xóa cơ sở dữ liệu, bộ nhớ đệm ảnh thu nhỏ và tệp cấu hình cục bộ bằng lệnh dọn dẹp cho nền tảng của bạn.
 
 ### macOS
 
-Nếu bạn cài Lap bằng Homebrew:
+Nếu bạn cài bigfotolab bằng Homebrew:
 
 ```bash
 brew uninstall --cask lap
 ```
 
-Đối với cài đặt thủ công, hãy thoát Lap và chuyển `Lap.app` từ thư mục `Applications` vào Thùng rác.
+Đối với cài đặt thủ công, hãy thoát bigfotolab và chuyển `bigfotolab.app` từ thư mục `Applications` vào Thùng rác.
 
-Để xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của Lap:
+Để xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của bigfotolab:
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-Mở **Cài đặt > Ứng dụng > Ứng dụng đã cài đặt**, tìm **Lap** và chọn **Gỡ cài đặt**.
+Mở **Cài đặt > Ứng dụng > Ứng dụng đã cài đặt**, tìm **bigfotolab** và chọn **Gỡ cài đặt**.
 
-Sau đó mở PowerShell và xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của Lap:
+Sau đó mở PowerShell và xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của bigfotolab:
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,22 +157,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 Đối với cài đặt DEB, gỡ gói:
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-Để gỡ gói Arch cài cục bộ, dùng `sudo pacman -R lap`.
+Để gỡ gói Arch cài cục bộ, dùng `sudo pacman -R bigfotolab`.
 
-Đối với cài đặt AppImage, thoát Lap và xóa tệp `.AppImage` đã tải xuống.
+Đối với cài đặt AppImage, thoát bigfotolab và xóa tệp `.AppImage` đã tải xuống.
 
-Sau đó xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của Lap:
+Sau đó xóa tất cả cơ sở dữ liệu, bộ nhớ đệm và tệp cấu hình của bigfotolab:
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-Nếu bạn đã chọn thư mục lưu cơ sở dữ liệu tùy chỉnh trong cài đặt Lap, hãy xóa thư mục đó riêng sau khi xác nhận rằng nó chỉ chứa tệp cơ sở dữ liệu Lap.
+Nếu bạn đã chọn thư mục lưu cơ sở dữ liệu tùy chỉnh trong cài đặt bigfotolab, hãy xóa thư mục đó riêng sau khi xác nhận rằng nó chỉ chứa tệp cơ sở dữ liệu bigfotolab.
 
 ## Biên dịch từ mã nguồn
 
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # Sao chép và biên dịch
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked
@@ -214,7 +214,7 @@ Công thức cố định commit nguồn thượng nguồn và xác minh tổng 
 
 ## Định dạng hỗ trợ
 
-Lap hỗ trợ hơn 60 định dạng ảnh, RAW và video.
+bigfotolab hỗ trợ hơn 60 định dạng ảnh, RAW và video.
 
 | Loại | Định dạng |
 | :--- | :--- |

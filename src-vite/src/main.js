@@ -124,7 +124,7 @@ app.use(i18n)
 const originalMediaAvailable = await originalMediaReady
 app.mount('#app')
 if (!originalMediaAvailable && isMainWindow) {
-  void message(i18n.global.t('image_viewer.media_server_unavailable'), { title: 'Lap', kind: 'error' }).catch(console.error)
+  void message(i18n.global.t('image_viewer.media_server_unavailable'), { title: 'bigfotolab', kind: 'error' }).catch(console.error)
 }
 performance.mark('startup-app-mounted')
 if (isMainWindow) void invoke('record_startup_stage', { stage: 'app-mounted' }).catch(console.error)

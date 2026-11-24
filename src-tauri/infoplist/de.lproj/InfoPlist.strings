@@ -1,2 +1,2 @@
-CFBundleDisplayName = "Lap";
+CFBundleDisplayName = "bigfotolab";
 NSAppleEventsUsageDescription = "Finder verschiebt Dateien in den Papierkorb, damit du sie an ihren ursprünglichen Ort zurücklegen kannst.";

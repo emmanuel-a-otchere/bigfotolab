@@ -9,7 +9,7 @@ const assert = require('node:assert/strict');
     const errors = [];
     page.on('pageerror', error => { errors.push(error.message); console.error('PAGE ERROR', error.message); });
     page.on('console', message => { if (message.type() === 'error') console.error(message.text()); });
-    await page.goto(process.env.LAP_DEMO_URL || 'http://127.0.0.1:4179/demos/lap/index.html');
+    await page.goto(process.env.BIGFOTOLAB_DEMO_URL || 'http://127.0.0.1:4179/demos/bigfotolab/index.html');
     const panel = page.locator('[data-album-drop-zone]').first();
     await panel.waitFor();
     await panel.getByText('Sample-Wikimedia', { exact: true }).click();

@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Lap Logo" width="120" style="border-radius: 20px">
-  <h1>Lap - 本地私有照片管理器</h1>
+  <img src="../docs/public/icon.png" alt="bigfotolab Logo" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - 本地私有照片管理器</h1>
   <h3>适用于 macOS、Windows 和 Linux 的开源桌面照片管理工具。</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="GitHub release"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="GitHub all releases"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="GitHub stars"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="GitHub release"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="GitHub all releases"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="GitHub stars"></a>
   </p>
 </div>
 
 [English](../README.md) | [Česky](README.cs.md) | [Deutsch](README.de.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Tiếng Việt](README.vi.md) | 中文简体 | [中文繁體](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-Lap 是一款免费、开源、本地优先的照片管理工具，支持 macOS、Windows 和 Linux。直接浏览和整理现有照片文件夹，使用本地 AI 搜索，无需云端账号或订阅即可管理大型媒体库。
+bigfotolab 是一款免费、开源、本地优先的照片管理工具，支持 macOS、Windows 和 Linux。直接浏览和整理现有照片文件夹，使用本地 AI 搜索，无需云端账号或订阅即可管理大型媒体库。
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">官方网站</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">演示</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">官方网站</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">演示</a></strong></p>
 </div>
 
-## 下载 Lap
+## 下载 bigfotolab
 
-打开 [最新版本发布页面](https://github.com/julyx10/lap/releases/latest)，下载匹配你系统的文件：
+打开 [最新版本发布页面](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest)，下载匹配你系统的文件：
 
 | 平台 | 安装包 | 备注 |
 | :-- | :-- | :-- |
@@ -37,17 +37,17 @@ Lap 是一款免费、开源、本地优先的照片管理工具，支持 macOS�
 brew install --cask lap
 ```
 
-此前通过 `julyx10/lap` tap 安装？请参阅[迁移说明](https://github.com/julyx10/lap/discussions/567)。
+此前通过 `julyx10/lap` tap 安装？请参阅[迁移说明](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567)。
 
 ## 屏幕截图
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Lap 本地照片资料库" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Lap 地图视图" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Lap 照片预览" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="bigfotolab 本地照片资料库" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="bigfotolab 地图视图" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="bigfotolab 照片预览" width="900">
 </p>
 
-## 为什么选择 Lap
+## 为什么选择 bigfotolab
 
 - **私密的本地 AI。** 按描述搜索、查找相似照片或按人脸浏览，处理均在本机进行。
 - **你的文件夹，由你掌控。** 直接打开现有文件夹，原始文件保留在原处，无需上传或导入媒体库。
@@ -85,83 +85,83 @@ brew install --cask lap
 
 1. 在[天地图官网](https://www.tianditu.gov.cn/)注册并登录账号，按页面提示完成账号认证。
 2. 打开[天地图控制台](https://console.tianditu.gov.cn/api/key)，进入应用管理，选择创建新应用。
-3. 填写应用名称（例如 `Lap`）等信息，应用类型选择 **浏览器端**，提交后复制生成的 **Key**。
-4. 在 Lap 的 **设置 → 高级 → 地图** 中，将地图服务提供者设为 **中国（天地图）**，把 Key 粘贴到 **天地图 API Token**，按 Enter 或点击输入框外保存。
+3. 填写应用名称（例如 `bigfotolab`）等信息，应用类型选择 **浏览器端**，提交后复制生成的 **Key**。
+4. 在 bigfotolab 的 **设置 → 高级 → 地图** 中，将地图服务提供者设为 **中国（天地图）**，把 Key 粘贴到 **天地图 API Token**，按 Enter 或点击输入框外保存。
 5. 返回地图视图，即可加载天地图底图。地图底图需要联网获取。
 
 申请类型可参考 [QGIS 天地图插件的说明](https://github.com/liuxspro/qgis-plugin-tianditu#使用说明)；控制台页面和认证要求以天地图官方为准。
 
 ## 元数据与数据自主权
 
-Lap 直接使用现有文件夹，显示的大多数信息都从文件中读取。你可以将整理信息写入标准 XMP 附属文件，供其他照片应用读取。
+bigfotolab 直接使用现有文件夹，显示的大多数信息都从文件中读取。你可以将整理信息写入标准 XMP 附属文件，供其他照片应用读取。
 
-Lap 支持导入 Lightroom、digiKam、darktable 和 ACDSee 的兼容元数据。支持的字段因应用而异。
+bigfotolab 支持导入 Lightroom、digiKam、darktable 和 ACDSee 的兼容元数据。支持的字段因应用而异。
 
 ### 读取现有元数据
 
 - 你的原始照片和视频始终是现有文件夹中的普通文件。
-- 建立索引时，Lap 读取内嵌的 EXIF、IPTC 和 XMP，包括拍摄日期、相机、镜头、GPS、方向、评分、收藏、关键词、选片标记、描述、标题、短标题、创作者和版权。在 **设置 → 元数据 → 导入元数据** 中开启导入后，整理信息会进入本地数据库，已有的本地编辑会保留。
+- 建立索引时，bigfotolab 读取内嵌的 EXIF、IPTC 和 XMP，包括拍摄日期、相机、镜头、GPS、方向、评分、收藏、关键词、选片标记、描述、标题、短标题、创作者和版权。在 **设置 → 元数据 → 导入元数据** 中开启导入后，整理信息会进入本地数据库，已有的本地编辑会保留。
 - 导入 XMP 附属文件时，受支持的字段优先使用附属文件中的值，包括 GPS 和拍摄日期。
 
 ### 将支持的修改保存到 XMP
 
 - 标题、短标题、描述、创作者和版权可编辑，修改保存在本地数据库。
 - 执行「保存元数据到 XMP」可将这些字段以及标签（包括层级关键词）、评分、收藏和选片状态写入 XMP 附属文件。其他 XMP 属性和原始文件会保留。
-- 当你**在 Lap 中**重命名、移动、复制、删除或导入文件时，Lap 会同步更新本地资料库记录，并将 Apple 实况照片组件、XMP 和 AAE 附属文件和已启用的 RAW + JPEG/HEIC 配对等关联资源一并处理。删除 RAW 配对时可选择删除其中一个文件或同时删除两者。保留一个文件时，共用的 XMP 附属文件也会保留。
+- 当你**在 bigfotolab 中**重命名、移动、复制、删除或导入文件时，bigfotolab 会同步更新本地资料库记录，并将 Apple 实况照片组件、XMP 和 AAE 附属文件和已启用的 RAW + JPEG/HEIC 配对等关联资源一并处理。删除 RAW 配对时可选择删除其中一个文件或同时删除两者。保留一个文件时，共用的 XMP 附属文件也会保留。
 - 保存内置图片编辑时，生成的图片会写入所选目标位置。
 
-### 保留在 Lap 数据库中的信息
+### 保留在 bigfotolab 数据库中的信息
 
-以下资料库数据保存在 Lap 的本地数据库或资料库配置中。
+以下资料库数据保存在 bigfotolab 的本地数据库或资料库配置中。
 
 - 合集、智能相册及其规则和视图设置保存在本地数据库或配置中。
 - AI 搜索数据、人脸数据、缩略图以及其他索引或缓存数据
 - 标签、评分、收藏、选片状态和可编辑文本字段保存在本地数据库，可按上述方式写入 XMP。
 
-在你选择将支持的字段保存到 XMP 之前，修改保留在 Lap 数据库中。合集、智能相册、AI 搜索数据和人脸数据仅保存在 Lap 中，不包含在 XMP 附属文件中。请备份数据库以保留这些整理成果；仅复制原始文件无法保留它们。
+在你选择将支持的字段保存到 XMP 之前，修改保留在 bigfotolab 数据库中。合集、智能相册、AI 搜索数据和人脸数据仅保存在 bigfotolab 中，不包含在 XMP 附属文件中。请备份数据库以保留这些整理成果；仅复制原始文件无法保留它们。
 
-### 在 Lap 外管理文件
+### 在 bigfotolab 外管理文件
 
-Lap 可以重新扫描文件夹并发现许多文件系统变化。但在 Lap 外重命名、移动、替换或复制文件，可能影响仅保存在 Lap 中的整理信息。
+bigfotolab 可以重新扫描文件夹并发现许多文件系统变化。但在 bigfotolab 外重命名、移动、替换或复制文件，可能影响仅保存在 bigfotolab 中的整理信息。
 
-启用元数据导入后，Lap 也会检查 XMP 附属文件是否有变更。在 Lap 内移动或重命名文件可保留合集归属。如需与其他应用共享支持的元数据，请使用「保存元数据到 XMP」并将附属文件与文件保存在一起。如果也在 Lap 外管理文件，请将 Lap 的数据库和配置与照片一同备份。你可以在 **设置 → 存储** 中管理数据库位置并创建备份。
+启用元数据导入后，bigfotolab 也会检查 XMP 附属文件是否有变更。在 bigfotolab 内移动或重命名文件可保留合集归属。如需与其他应用共享支持的元数据，请使用「保存元数据到 XMP」并将附属文件与文件保存在一起。如果也在 bigfotolab 外管理文件，请将 bigfotolab 的数据库和配置与照片一同备份。你可以在 **设置 → 存储** 中管理数据库位置并创建备份。
 
-删除 Lap 的数据库或配置会移除这些本地整理和索引数据，但不会删除你的原始媒体文件。
+删除 bigfotolab 的数据库或配置会移除这些本地整理和索引数据，但不会删除你的原始媒体文件。
 
-## 卸载 Lap
+## 卸载 bigfotolab
 
-Lap 直接使用你现有的照片文件夹。卸载 Lap 或删除其数据库和缓存文件，**不会**删除你的原始照片。
+bigfotolab 直接使用你现有的照片文件夹。卸载 bigfotolab 或删除其数据库和缓存文件，**不会**删除你的原始照片。
 
-常规卸载只会移除应用程序。如需彻底删除 Lap，请先退出 Lap，卸载应用程序，然后按照对应平台的命令删除本地数据库、缩略图缓存和配置文件。
+常规卸载只会移除应用程序。如需彻底删除 bigfotolab，请先退出 bigfotolab，卸载应用程序，然后按照对应平台的命令删除本地数据库、缩略图缓存和配置文件。
 
 ### macOS
 
-如果你通过 Homebrew 安装了 Lap：
+如果你通过 Homebrew 安装了 bigfotolab：
 
 ```bash
 brew uninstall --cask lap
 ```
 
-如果你手动安装了 Lap，请退出 Lap，并将 `Applications` 文件夹中的 `Lap.app` 移到废纸篓。
+如果你手动安装了 bigfotolab，请退出 bigfotolab，并将 `Applications` 文件夹中的 `bigfotolab.app` 移到废纸篓。
 
-删除所有 Lap 数据库、缓存和配置文件：
+删除所有 bigfotolab 数据库、缓存和配置文件：
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-打开 **设置 > 应用 > 已安装的应用**，找到 **Lap** 并选择 **卸载**。
+打开 **设置 > 应用 > 已安装的应用**，找到 **bigfotolab** 并选择 **卸载**。
 
-然后打开 PowerShell，删除所有 Lap 数据库、缓存和配置文件：
+然后打开 PowerShell，删除所有 bigfotolab 数据库、缓存和配置文件：
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -169,22 +169,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 使用 DEB 安装的用户，请卸载软件包：
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-卸载本地安装的 Arch 软件包请使用 `sudo pacman -R lap`。
+卸载本地安装的 Arch 软件包请使用 `sudo pacman -R bigfotolab`。
 
-使用 AppImage 的用户，请退出 Lap 并删除下载的 `.AppImage` 文件。
+使用 AppImage 的用户，请退出 bigfotolab 并删除下载的 `.AppImage` 文件。
 
-然后删除所有 Lap 数据库、缓存和配置文件：
+然后删除所有 bigfotolab 数据库、缓存和配置文件：
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-如果你在 Lap 设置中选择了自定义数据库存储目录，请在确认其中仅包含 Lap 数据库文件后，单独删除该目录。
+如果你在 bigfotolab 设置中选择了自定义数据库存储目录，请在确认其中仅包含 bigfotolab 数据库文件后，单独删除该目录。
 
 ## 从源码构建
 
@@ -200,7 +200,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # 克隆并编译
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked
@@ -226,7 +226,7 @@ sudo pacman -U lap-<version>-x86_64.pkg.tar.zst
 
 ## 支持格式
 
-Lap 支持 60+ 种图像、RAW 和视频格式。
+bigfotolab 支持 60+ 种图像、RAW 和视频格式。
 
 | 类型 | 格式清单 |
 | :--- | :--- |

@@ -22,9 +22,9 @@ const { default: tailwind } = await load("@tailwindcss/vite");
 const { default: svg } = await load("vite-svg-loader");
 const root = fileURLToPath(new URL("../demo-native/", import.meta.url));
 const app = fileURLToPath(new URL("../../src-vite/src/", import.meta.url));
-const out = fileURLToPath(new URL("../public/demos/lap/", import.meta.url));
+const out = fileURLToPath(new URL("../public/demos/bigfotolab/", import.meta.url));
 const seed = addDuplicateFixtures(createState());
-seed.photos[0].comment = "A sample memory from the Lap demo library.";
+seed.photos[0].comment = "A sample memory from the bigfotolab demo library.";
 seed.photos.forEach(
   (p) => (p.base64 = readFileSync(`${out}/${p.image}`).toString("base64")),
 );

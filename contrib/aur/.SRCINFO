@@ -1,8 +1,8 @@
-pkgbase = lap
+pkgbase = bigfotolab
 	pkgdesc = Offline-first photo manager for large local libraries
 	pkgver = 0.3.2
 	pkgrel = 2
-	url = https://julyx10.github.io/lap
+	url = https://emmanuel-a-otchere.github.io/bigfotolab
 	arch = x86_64
 	license = GPL-3.0-or-later
 	makedepends = cargo-tauri
@@ -35,7 +35,7 @@ pkgbase = lap
 	noextract = ffmpeg-x86_64-unknown-linux-gnu
 	noextract = ffprobe-x86_64-unknown-linux-gnu
 	options = !lto
-	source = lap-25f41f357e05df5c8123f78b4f5b111803c50dc7.tar.gz::https://github.com/julyx10/lap/archive/25f41f357e05df5c8123f78b4f5b111803c50dc7.tar.gz
+	source = bigfotolab-25f41f357e05df5c8123f78b4f5b111803c50dc7.tar.gz::https://github.com/emmanuel-a-otchere/bigfotolab/archive/25f41f357e05df5c8123f78b4f5b111803c50dc7.tar.gz
 	source = LibRaw-b860248a89d9082b8e0a1e202e516f46af9adb29.tar.gz::https://github.com/LibRaw/LibRaw/archive/b860248a89d9082b8e0a1e202e516f46af9adb29.tar.gz
 	source = libde265-3cd9fbf15ae30edafa22a29fdd8a89355ad52ad0.tar.gz::https://github.com/strukturag/libde265/archive/3cd9fbf15ae30edafa22a29fdd8a89355ad52ad0.tar.gz
 	source = libheif-62f1b8c76ed4d8305071fdacbe74ef9717bacac5.tar.gz::https://github.com/strukturag/libheif/archive/62f1b8c76ed4d8305071fdacbe74ef9717bacac5.tar.gz
@@ -47,7 +47,7 @@ pkgbase = lap
 	source = w600k_mbf.onnx::https://huggingface.co/deepghs/insightface/resolve/4e1f33d3fe0e50a0945f3a53ab94ae8977ae7ddb/buffalo_s/w600k_mbf.onnx?download=true
 	source = ffmpeg-x86_64-unknown-linux-gnu::https://api.github.com/repos/julyx10/lap-binaries/releases/assets/405019648
 	source = ffprobe-x86_64-unknown-linux-gnu::https://api.github.com/repos/julyx10/lap-binaries/releases/assets/405019643
-	source = lap.desktop
+	source = bigfotolab.desktop
 	source = package-source-license
 	source = disable-updater.patch
 	source = fix-optional-aptabase-exit.patch
@@ -68,4 +68,4 @@ pkgbase = lap
 	sha256sums = 7c71953cb8dfb831b80bc7c6df75be08ae0350fa9dbb837fb7b777aa7834abd6
 	sha256sums = 19b6db7533b869395b3d2d7ab19346effaf7ad8da19c8fc0d038e32a2e48c95c
 
-pkgname = lap
+pkgname = bigfotolab

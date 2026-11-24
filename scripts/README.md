@@ -1,6 +1,6 @@
 # Scripts
 
-Utility scripts for the Lap project.
+Utility scripts for the bigfotolab project.
 
 ## 1. download_models
 

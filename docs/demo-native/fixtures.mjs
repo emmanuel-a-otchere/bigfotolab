@@ -1,4 +1,4 @@
-// Browser-only fixtures. No native Lap commands or user files are accessed.
+// Browser-only fixtures. No native bigfotolab commands or user files are accessed.
 export const STORAGE_KEY = 'lap-web-demo-v1';
 export const names = ['Winter visitors', 'Portrait in light', 'Sunday drive', 'Under the stars', 'Hilltop village', 'City after dark', 'Yellow scooter', 'Golden fields', 'Melk Abbey', 'Garden visitor', 'Alpine flight', 'Quiet morning', 'Golden hour', 'Winter lake', 'Flamingo', 'Bee eater', 'Mountain blue', 'Harbour lights', 'At the water', 'City garden'];
 export function createState() {

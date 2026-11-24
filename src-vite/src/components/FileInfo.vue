@@ -489,7 +489,7 @@
             </template>
             <template v-if="fieldVisible('location.map') && hasCoordinates">
               <div class="col-span-2 h-75 rounded-box overflow-hidden relative z-0 border border-base-content/5">
-                <MapView :lat="Number(fileInfo.gps_latitude)" :lon="Number(fileInfo.gps_longitude)" :label="fileInfo.geo_name || fileInfo.name || 'Lap'" />
+                <MapView :lat="Number(fileInfo.gps_latitude)" :lon="Number(fileInfo.gps_longitude)" :label="fileInfo.geo_name || fileInfo.name || 'bigfotolab'" />
               </div>
             </template>
             <template v-else-if="displayField('location.map', '')">

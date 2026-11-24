@@ -943,7 +943,7 @@ mod utf16_xmp_tests {
             packet.extend(unit.to_le_bytes());
         }
         let jpeg = tests::jpeg_with_xmp_packet(&packet);
-        // Unknown XMP fields need not be exposed by the backend; Lap resolves
+        // Unknown XMP fields need not be exposed by the backend; bigfotolab resolves
         // their namespace URIs from the original packet.
         assert_eq!(
             from_bytes(&jpeg, Path::new("utf16.jpg"))

@@ -380,7 +380,7 @@ pub(super) const DETAIL_FIELDS: &[DetailField] = &[
 ];
 
 // Canonical XMP Namespace URIs
-/// Lap-owned schema. URI identity is stable and need not resolve to a web page.
+/// bigfotolab-owned schema. URI identity is stable and need not resolve to a web page.
 pub const NS_LAP: &str = "https://github.com/julyx10/lap/ns/1.0/";
 pub const NS_XMP: &str = "http://ns.adobe.com/xap/1.0/";
 pub const NS_XMP_DM: &str = "http://ns.adobe.com/xmp/1.0/DynamicMedia/";

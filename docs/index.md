@@ -2,22 +2,22 @@
 layout: home
 
 hero:
-  name: "Lap"
+  name: "bigfotolab"
   text: "Local-first, AI-powered Photo manager."
   tagline: "Built for family albums, photographers, and large local libraries."
   image:
     src: /screenshots/lap_library.png
-    alt: Lap local photo library manager screenshot
+    alt: bigfotolab local photo library manager screenshot
   actions:
     - theme: brand
       text: Download
-      link: https://github.com/julyx10/lap/releases/latest
+      link: https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest
     - theme: alt
       text: What's New in v0.4.1
       link: /guide/release-notes/v0.4.1
     - theme: alt
       text: View on GitHub
-      link: https://github.com/julyx10/lap
+      link: https://github.com/emmanuel-a-otchere/bigfotolab
 
 ---
 

@@ -1,1 +1,1 @@
-"""Lap build-resource scripts and their regression tests."""
+"""bigfotolab build-resource scripts and their regression tests."""

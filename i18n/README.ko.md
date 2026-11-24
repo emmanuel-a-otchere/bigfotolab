@@ -1,14 +1,14 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Lap Logo" width="120" style="border-radius: 20px">
-  <h1>Lap - 프라이빗 로컬 사진 관리자</h1>
+  <img src="../docs/public/icon.png" alt="bigfotolab Logo" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - 프라이빗 로컬 사진 관리자</h1>
   <h3>macOS, Windows, Linux를 위한 오픈 소스 데스크톱 사진 관리 도구.</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="GitHub release"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="GitHub all releases"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="GitHub stars"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="GitHub release"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="GitHub all releases"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="GitHub stars"></a>
   </p>
 </div>
 
@@ -17,12 +17,12 @@
 Lap은 macOS, Windows, Linux용 무료 오픈 소스 로컬 우선 사진 관리 앱입니다. 기존 폴더를 정리하고 기기 내 AI로 검색하며 클라우드 계정이나 구독 없이 대규모 라이브러리를 관리하세요.
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">공식 웹사이트</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">데모</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">공식 웹사이트</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">데모</a></strong></p>
 </div>
 
-## Lap 다운로드
+## bigfotolab 다운로드
 
-[최신 릴리스 페이지](https://github.com/julyx10/lap/releases/latest)를 열고, 시스템에 맞는 파일을 다운로드하세요.
+[최신 릴리스 페이지](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest)를 열고, 시스템에 맞는 파일을 다운로드하세요.
 
 | 플랫폼 | 패키지 | 비고 |
 | :-- | :-- | :-- |
@@ -37,14 +37,14 @@ Lap은 macOS, Windows, Linux용 무료 오픈 소스 로컬 우선 사진 관리
 brew install --cask lap
 ```
 
-이전에 `julyx10/lap` tap으로 설치했다면 [이전 안내](https://github.com/julyx10/lap/discussions/567)를 참고하세요.
+이전에 `julyx10/lap` tap으로 설치했다면 [이전 안내](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567)를 참고하세요.
 
 ## 스크린샷
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Lap 로컬 사진 라이브러리 관리" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Lap 지도 보기" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Lap 사진 미리보기" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="bigfotolab 로컬 사진 라이브러리 관리" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="bigfotolab 지도 보기" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="bigfotolab 사진 미리보기" width="900">
 </p>
 
 ## 왜 Lap인가요?
@@ -98,7 +98,7 @@ Lap은 Lightroom, digiKam, darktable, ACDSee의 호환 메타데이터를 읽습
 - 파일을 **Lap에서** 이름 변경, 이동, 복사, 삭제 또는 가져오기하면 Lap은 동시에 로컬 카탈로그를 업데이트합니다. Apple Live Photo 구성 요소, XMP 및 AAE 사이드카 파일 및 활성화한 RAW + JPEG/HEIC 쌍처럼 지원되는 연결 자산도 함께 처리합니다. RAW 쌍에서 한 파일 또는 두 파일을 모두 삭제할 수 있습니다. 한 파일을 남기면 공유 XMP 사이드카도 유지됩니다.
 - 내장 이미지 편집을 저장하면 결과 이미지가 선택한 대상 위치에 기록됩니다.
 
-### Lap 데이터베이스에 남는 정보
+### bigfotolab 데이터베이스에 남는 정보
 
 이 라이브러리 데이터는 로컬 데이터베이스 또는 라이브러리 구성에 저장됩니다.
 
@@ -108,15 +108,15 @@ Lap은 Lightroom, digiKam, darktable, ACDSee의 호환 메타데이터를 읽습
 
 편집은 지원되는 필드를 명시적으로 XMP에 저장하기 전까지 데이터베이스에 남습니다. 컬렉션, 스마트 앨범, AI 검색 및 얼굴 데이터는 XMP에 포함되지 않습니다. 원본 파일 복사만으로는 보존되지 않으므로 데이터베이스를 백업하세요.
 
-### Lap 외부에서 파일 작업하기
+### bigfotolab 외부에서 파일 작업하기
 
-Lap은 폴더를 다시 스캔하고 많은 파일 시스템 변경 사항을 감지할 수 있습니다. 하지만 파일을 Lap 외부에서 이름 변경, 이동, 교체 또는 복사하면 Lap에만 저장된 정리 정보에 영향을 줄 수 있습니다.
+Lap은 폴더를 다시 스캔하고 많은 파일 시스템 변경 사항을 감지할 수 있습니다. 하지만 파일을 bigfotolab 외부에서 이름 변경, 이동, 교체 또는 복사하면 Lap에만 저장된 정리 정보에 영향을 줄 수 있습니다.
 
-메타데이터 가져오기를 켜면 XMP 사이드카의 변경도 확인합니다. 컬렉션을 유지하려면 Lap에서 파일 이름을 바꾸거나 이동하세요. XMP 사이드카는 원본과 함께 보관하세요. Lap 외부에서도 파일을 관리한다면 사진과 함께 Lap의 데이터베이스와 구성도 백업하세요. 데이터베이스 위치 관리와 백업 생성은 **설정 → 저장소**에서 할 수 있습니다.
+메타데이터 가져오기를 켜면 XMP 사이드카의 변경도 확인합니다. 컬렉션을 유지하려면 Lap에서 파일 이름을 바꾸거나 이동하세요. XMP 사이드카는 원본과 함께 보관하세요. bigfotolab 외부에서도 파일을 관리한다면 사진과 함께 Lap의 데이터베이스와 구성도 백업하세요. 데이터베이스 위치 관리와 백업 생성은 **설정 → 저장소**에서 할 수 있습니다.
 
 Lap의 데이터베이스 또는 구성을 삭제하면 이 로컬 정리 정보와 인덱스 데이터는 제거되지만 원본 미디어 파일은 삭제되지 않습니다.
 
-## Lap 제거
+## bigfotolab 제거
 
 Lap은 기존 사진 폴더를 직접 사용합니다. Lap을 제거하거나 데이터베이스 및 캐시 파일을 삭제해도 원본 사진은 삭제되지 않습니다.
 
@@ -130,26 +130,26 @@ Homebrew로 Lap을 설치한 경우:
 brew uninstall --cask lap
 ```
 
-수동으로 설치한 경우 Lap을 종료하고 `Applications` 폴더의 `Lap.app`을 휴지통으로 이동하세요.
+수동으로 설치한 경우 Lap을 종료하고 `Applications` 폴더의 `bigfotolab.app`을 휴지통으로 이동하세요.
 
-Lap 데이터베이스, 캐시 및 설정 파일을 모두 삭제하려면:
+bigfotolab 데이터베이스, 캐시 및 설정 파일을 모두 삭제하려면:
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-**설정 > 앱 > 설치된 앱**을 열고 **Lap**을 찾아 **제거**를 선택하세요.
+**설정 > 앱 > 설치된 앱**을 열고 **bigfotolab**을 찾아 **제거**를 선택하세요.
 
-그런 다음 PowerShell을 열고 Lap 데이터베이스, 캐시 및 설정 파일을 모두 삭제하세요:
+그런 다음 PowerShell을 열고 bigfotolab 데이터베이스, 캐시 및 설정 파일을 모두 삭제하세요:
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,22 +157,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 DEB로 설치한 경우 패키지를 제거합니다:
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-로컬에 설치한 Arch 패키지는 `sudo pacman -R lap`을 사용하세요.
+로컬에 설치한 Arch 패키지는 `sudo pacman -R bigfotolab`을 사용하세요.
 
 AppImage로 설치한 경우 Lap을 종료하고 다운로드한 `.AppImage` 파일을 삭제합니다.
 
-그런 다음 Lap 데이터베이스, 캐시 및 설정 파일을 모두 삭제하세요:
+그런 다음 bigfotolab 데이터베이스, 캐시 및 설정 파일을 모두 삭제하세요:
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-Lap 설정에서 사용자 지정 데이터베이스 저장 폴더를 선택했다면, 해당 폴더에 Lap 데이터베이스 파일만 포함되어 있는지 확인한 후 별도로 삭제하세요.
+bigfotolab 설정에서 사용자 지정 데이터베이스 저장 폴더를 선택했다면, 해당 폴더에 bigfotolab 데이터베이스 파일만 포함되어 있는지 확인한 후 별도로 삭제하세요.
 
 ## 소스에서 빌드하기
 
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # 복제 및 빌드
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked

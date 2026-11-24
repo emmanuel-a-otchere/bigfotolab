@@ -1,6 +1,6 @@
 /**
  * SQLite database operations.
- * project: Lap
+ * project: bigfotolab
  * author:  julyx10
  * date:    2024-08-08
  */
@@ -601,7 +601,7 @@ impl Album {
     pub fn auto_set_cover(id: i64) -> Result<(), String> {
         let conn = open_conn()?;
 
-        // A cover ID can remain after its file is removed outside Lap. It is
+        // A cover ID can remain after its file is removed outside bigfotolab. It is
         // valid only when the file still belongs to this album and has a
         // thumbnail that can be displayed in the album list.
         let cover_file_id: Option<i64> = conn
@@ -2913,7 +2913,7 @@ impl AFile {
         Ok((file.e_date_time, file.taken_date))
     }
 
-    /// Read the capture timestamp used by Lap before a file is imported.
+    /// Read the capture timestamp used by bigfotolab before a file is imported.
     /// This keeps date-organized imports consistent with the timestamp shown
     /// after the same file has been indexed.
     pub fn capture_timestamp_with_raw_info(file_path: &str, file_type: i64, raw_info: Option<&t_libraw::RawInfo>) -> Result<i64, String> {
@@ -8478,7 +8478,7 @@ impl AThumb {
         match (self.thumb_mtime, current_mtime) {
             (Some(cached_mtime), Some(source_mtime)) => cached_mtime != source_mtime,
             (None, Some(_)) => true,
-            // The album root may have been temporarily renamed outside Lap.
+            // The album root may have been temporarily renamed outside bigfotolab.
             // Keep existing thumbnails so they work again when the path returns.
             (_, None) => false,
         }

@@ -6,9 +6,9 @@
 //!
 //! ## Field Mappings
 //!
-//! | Lap Field | Canonical Namespace URI | XMP Property / Element | Mapping Rules |
+//! | bigfotolab Field | Canonical Namespace URI | XMP Property / Element | Mapping Rules |
 //! | :--- | :--- | :--- | :--- |
-//! | `afiles.is_favorite` | `https://github.com/julyx10/lap/ns/1.0/` | `lap:Favorite` | Boolean; missing remains `None`; independent of rating, picks and labels. Lap-specific interoperability. |
+//! | `afiles.is_favorite` | `https://github.com/julyx10/lap/ns/1.0/` | `lap:Favorite` | Boolean; missing remains `None`; independent of rating, picks and labels. bigfotolab-specific interoperability. |
 //! | `afiles.rating` | `http://ns.adobe.com/xap/1.0/` | `xmp:Rating` (`xap:Rating`) | `0..=5` → `Some(0..=5)`; `""` → `Some(0)`; `-1` → `Some(0)` (and sets reject flag if unflagged); missing → `None` |
 //! | `afiles.culling_flag` | `http://ns.adobe.com/xmp/1.0/DynamicMedia/`<br>`http://darktable.sf.net/`<br>`http://ns.adobe.com/xap/1.0/` | `xmpDM:pick` / `xmpDM:good`<br>`darktable:rejected`<br>`xmp:Rating="-1"` / `xmp:Label` | `xmpDM:pick="1"` or `xmp:Label="Pick"\|"Select"` → `Some(1)` (Pick)<br>`xmpDM:pick="-1"` or `darktable:rejected="1"` or `xmp:Rating="-1"` or `xmp:Label="Reject"\|"Rejected"` → `Some(2)` (Reject)<br>`xmpDM:pick="0"` or `darktable:rejected="0"` → `Some(0)` (Unflagged)<br>missing → `None` |
 //! | `atags` / `afile_tags` | See `schema` | Registered keyword formats | Shared import, path normalization and explicit write capabilities |
@@ -18,7 +18,7 @@
 //! digiKam PickLabel: 0/2 -> Unflagged, 1 -> Reject, 3 -> Pick. Explicit
 //! xmpDM/darktable flags take precedence; text labels/negative ratings are fallback.
 //! Existing PickLabel fields follow manual culling export; pending (2) is retained
-//! while Lap remains unflagged. No digiKam field is created when it was absent.
+//! while bigfotolab remains unflagged. No digiKam field is created when it was absent.
 
 use super::schema::{self, CatalogField};
 use super::merge::apply_with_state;
@@ -396,7 +396,7 @@ fn metadata_from_properties(properties: &[&XmlNode]) -> XmpMetadata {
     let label = value(schema::LABEL.uri, schema::LABEL.name);
     // Explicit app flags outrank text labels and legacy negative ratings.
     let digikam_flag = digikam_pick.as_deref().and_then(|v| match v.trim() {
-        "0" | "2" => Some(0), // Pending validation has no equivalent in Lap.
+        "0" | "2" => Some(0), // Pending validation has no equivalent in bigfotolab.
         "1" => Some(2),
         "3" => Some(1),
         _ => None,
@@ -1146,7 +1146,7 @@ fn merge_with_paths(
 ) -> Result<String,String> {
     parse_xmp_str(xml)?; // reuse bounded, DTD-free validation
     // Rating and culling are one export unit: normalize legacy Rating=-1
-    // while preserving the independent Lap star rating and current flag.
+    // while preserving the independent bigfotolab star rating and current flag.
     let mask = if mask & 3 != 0 { mask | 3 } else { mask };
     let mut reader = NsReader::from_str(xml);
     let mut nodes: Vec<Node> = Vec::new();
@@ -2118,9 +2118,9 @@ mod import_tests {
         assert_eq!(flag, 1);
         assert_eq!(comments.as_deref(), Some("Initial XMP caption"));
 
-        // 2. User edits metadata locally in Lap (changes rating to 5, flag to Reject (2), comment to "Local Lap edit", and adds "Favorite" tag)
+        // 2. User edits metadata locally in bigfotolab (changes rating to 5, flag to Reject (2), comment to "Local bigfotolab edit", and adds "Favorite" tag)
         conn.execute(
-            "UPDATE afiles SET rating = 5, culling_flag = 2, comments = 'Local Lap edit' WHERE id = 1",
+            "UPDATE afiles SET rating = 5, culling_flag = 2, comments = 'Local bigfotolab edit' WHERE id = 1",
             [],
         )
         .unwrap();
@@ -2147,7 +2147,7 @@ mod import_tests {
         apply_xmp_metadata_to_db(1, &rescan_xmp, &conn, XmpImportMode::RescanNonDestructive)
             .unwrap();
 
-        // Verify local edits in Lap were NOT overwritten by the rescan
+        // Verify local edits in bigfotolab were NOT overwritten by the rescan
         let (rating_after, flag_after, comments_after): (i32, i32, Option<String>) = conn
             .query_row(
                 "SELECT rating, culling_flag, comments FROM afiles WHERE id = 1",
@@ -2157,7 +2157,7 @@ mod import_tests {
             .unwrap();
         assert_eq!(rating_after, 5);
         assert_eq!(flag_after, 2);
-        assert_eq!(comments_after.as_deref(), Some("Local Lap edit"));
+        assert_eq!(comments_after.as_deref(), Some("Local bigfotolab edit"));
 
         // Local edits to the tag set prevent automatic additions, including restoring deleted tags.
         let mut stmt = conn
@@ -2186,7 +2186,7 @@ mod import_tests {
             .unwrap();
         assert_eq!(manual_rating, 2);
         assert_eq!(manual_flag, 1);
-        assert_eq!(manual_comments.as_deref(), Some("Local Lap edit"));
+        assert_eq!(manual_comments.as_deref(), Some("Local bigfotolab edit"));
     }
     fn xml(body: &str) -> String {
         format!(

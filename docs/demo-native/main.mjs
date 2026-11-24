@@ -38,7 +38,7 @@ const app = createApp({
     return () =>
       h("div", { class: "demo-root" }, [
         h("header", { class: "demo-notice" }, [
-          h("strong", "Lap · Interactive demo"),
+          h("strong", "bigfotolab · Interactive demo"),
           h(
             "span",
             "20 sample photos · Changes stay in this browser · File / AI operations are simulated",

@@ -14,7 +14,7 @@ function Query-Row([string]$Sql) {
 
 # Verify the fragment survives linking into the MSI, rather than just compiling.
 $Condition = Query-Row 'SELECT `Condition`, `Description` FROM `LaunchCondition` WHERE `Condition` = ''REMOVE~="ALL" OR LAP_VC_RUNTIME_AVAILABLE'''
-if (-not $Condition -or $Condition.StringData(2) -notlike 'Lap requires Microsoft Visual C++ Runtime*') {
+if (-not $Condition -or $Condition.StringData(2) -notlike 'bigfotolab requires Microsoft Visual C++ Runtime*') {
     throw 'MSI is missing the VC++ runtime launch condition.'
 }
 $Search = Query-Row 'SELECT `Signature_` FROM `AppSearch` WHERE `Property` = ''LAP_VC_RUNTIME_AVAILABLE'''

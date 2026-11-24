@@ -1,4 +1,4 @@
-// Deterministic browser adapter for the unmodified Lap frontend components.
+// Deterministic browser adapter for the unmodified bigfotolab frontend components.
 // No native IPC, filesystem access, upload, model execution or system launch.
 import { ref } from "vue";
 import fixtures from "./fixtures.generated.json";
@@ -30,7 +30,7 @@ if (!db.tagNames.includes("Outdoors") && !db.tagNames.includes(null)) {
 let libraryState = db.libraryState || null,
   dedupScanned = false,
   similarScanned = false;
-let thumbnailCacheLocation = { path: "/Browser/Lap Demo/Cache", custom: false };
+let thumbnailCacheLocation = { path: "/Browser/bigfotolab Demo/Cache", custom: false };
 const thumbnailCacheMigrations = new Map();
 const keeps = new Map(),
   listeners = new Map();
@@ -106,7 +106,7 @@ function nativeFile(p) {
     e_focal_length: "45.58",
     e_iso_speed: "200",
     e_orientation: 1,
-    e_software: "Lap browser sample",
+    e_software: "bigfotolab browser sample",
     e_artist: "Sample photographer",
     e_description: "Demo metadata",
     e_copyright: "Sample",
@@ -542,7 +542,7 @@ export class PhysicalPosition extends LogicalPosition {}
 export class Channel {
   onmessage = () => {};
 }
-export const getName = async () => "Lap";
+export const getName = async () => "bigfotolab";
 export const getVersion = async () => "0.3.3";
 export const locale = async () => "en-US";
 export const platform = () => "macos";
@@ -630,7 +630,7 @@ export async function invoke(command, args = {}) {
           id: 1,
           name: "Default Library",
           is_hidden: false,
-          path: "/Pictures/Lap Demo",
+          path: "/Pictures/bigfotolab Demo",
         },
       ],
     };
@@ -902,7 +902,7 @@ export async function invoke(command, args = {}) {
     if (args.section === "capture")
       return { whiteBalance: { values: ["Auto"], source: "EXIF" } };
     if (args.section === "source")
-      return { credit: { values: ["Lap demo library"], source: "IPTC" } };
+      return { credit: { values: ["bigfotolab demo library"], source: "IPTC" } };
     return {};
   }
   if (command === "rename_file") {
@@ -1358,7 +1358,7 @@ export async function invoke(command, args = {}) {
       }
       args.onProgress?.onmessage({ phase: "finishing", completed: 20, total: 20 });
       thumbnailCacheLocation = args.newDir == null
-        ? { path: "/Browser/Lap Demo/Cache", custom: false }
+        ? { path: "/Browser/bigfotolab Demo/Cache", custom: false }
         : { path: `${args.newDir}/lap-thumbnail-cache`, custom: true };
       inform("Cache migration is simulated. No real files are moved.");
       return { ...thumbnailCacheLocation, cleanupWarnings: [] };
@@ -1366,15 +1366,15 @@ export async function invoke(command, args = {}) {
       thumbnailCacheMigrations.delete(args.operationId);
     }
   }
-  if (command === "get_db_storage_dir") return "/Browser/Lap Demo";
+  if (command === "get_db_storage_dir") return "/Browser/bigfotolab Demo";
   if (command === "get_package_info")
     return {
-      name: "Lap",
+      name: "bigfotolab",
       version: "0.3.3",
-      authors: ["Lap"],
+      authors: ["bigfotolab"],
       license: "GPL-3.0-or-later",
-      repository: "https://github.com/julyx10/lap",
-      homepage: "https://julyx10.github.io/lap/",
+      repository: "https://github.com/emmanuel-a-otchere/bigfotolab",
+      homepage: "https://emmanuel-a-otchere.github.io/bigfotolab/",
       description: "Browser sample library",
     };
   if (command === "get_build_time") return 1792195200;
@@ -1391,7 +1391,7 @@ export async function invoke(command, args = {}) {
       file_name: "sample.db",
       file_size: 100000,
       size: 100000,
-      path: "/Browser/Lap Demo/sample.db",
+      path: "/Browser/bigfotolab Demo/sample.db",
     };
   if (command === "get_supported_format_extensions")
     return {

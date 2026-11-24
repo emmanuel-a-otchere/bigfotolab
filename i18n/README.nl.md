@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Lap Logo" width="120" style="border-radius: 20px">
-  <h1>Lap - Privé lokale fotobeheerder</h1>
+  <img src="../docs/public/icon.png" alt="bigfotolab Logo" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - Privé lokale fotobeheerder</h1>
   <h3>Open-source fotobeheerder voor desktop op macOS, Windows en Linux.</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="GitHub release"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="GitHub all releases"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="GitHub stars"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="GitHub release"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="GitHub all releases"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="GitHub stars"></a>
   </p>
 </div>
 
 [English](../README.md) | [Česky](README.cs.md) | [Deutsch](README.de.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | Nederlands | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Tiếng Việt](README.vi.md) | [中文简体](README.zh-CN.md) | [中文繁體](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-Lap is een gratis, opensource fotobeheerder voor macOS, Windows en Linux die lokaal werkt. Orden bestaande mappen, zoek met lokale AI en beheer grote bibliotheken zonder cloudaccount of abonnement.
+bigfotolab is een gratis, opensource fotobeheerder voor macOS, Windows en Linux die lokaal werkt. Orden bestaande mappen, zoek met lokale AI en beheer grote bibliotheken zonder cloudaccount of abonnement.
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">OFFICIËLE WEBSITE</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">DEMO</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">OFFICIËLE WEBSITE</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">DEMO</a></strong></p>
 </div>
 
-## Lap downloaden
+## bigfotolab downloaden
 
-Open de [pagina met de nieuwste release](https://github.com/julyx10/lap/releases/latest) en download het bestand dat bij je systeem past:
+Open de [pagina met de nieuwste release](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest) en download het bestand dat bij je systeem past:
 
 | Platform | Pakket | Opmerking |
 | :-- | :-- | :-- |
@@ -37,21 +37,21 @@ Open de [pagina met de nieuwste release](https://github.com/julyx10/lap/releases
 brew install --cask lap
 ```
 
-Geïnstalleerd via de tap `julyx10/lap`? Bekijk de [migratie-instructies](https://github.com/julyx10/lap/discussions/567).
+Geïnstalleerd via de tap `julyx10/lap`? Bekijk de [migratie-instructies](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567).
 
 ## Schermafbeeldingen
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Lap, lokale beheerder voor fotobibliotheken" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Kaartweergave in Lap" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Fotovoorbeeld in Lap" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="bigfotolab, lokale beheerder voor fotobibliotheken" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="Kaartweergave in bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="Fotovoorbeeld in bigfotolab" width="900">
 </p>
 
-## Waarom Lap
+## Waarom bigfotolab
 
 - **Privé-AI op je apparaat.** Beschrijf een foto, vind vergelijkbare beelden of blader op gezicht. Alles wordt lokaal verwerkt.
-- **Jouw mappen, onder jouw controle.** Open bestaande mappen rechtstreeks in Lap. Bestanden behouden hun locatie en formaat.
-- **Metadata die werkt tussen apps.** Lap leest ingebedde EXIF-, IPTC- en XMP-gegevens en bestaande XMP-sidecars (beoordelingen, tags, favorieten, selectiestatus, GPS en datums). Er is ondersteuning voor het opslaan van gewijzigde metagegevens in XMP-sidecars, waarbij de originele bestanden onaangetast blijven.
+- **Jouw mappen, onder jouw controle.** Open bestaande mappen rechtstreeks in bigfotolab. Bestanden behouden hun locatie en formaat.
+- **Metadata die werkt tussen apps.** bigfotolab leest ingebedde EXIF-, IPTC- en XMP-gegevens en bestaande XMP-sidecars (beoordelingen, tags, favorieten, selectiestatus, GPS en datums). Er is ondersteuning voor het opslaan van gewijzigde metagegevens in XMP-sidecars, waarbij de originele bestanden onaangetast blijven.
 - **Schiften.** Voorvertoning met de spatiebalk, automatisch doorgaan na beoordeling, AF-gebieden, vergelijking in vier panelen en bewaarregels voor duplicaten.
 - **Voor bibliotheken met meer dan 100.000 foto's en video's.** Een native Rust-kern verzorgt bladeren, zoeken en scannen.
 - **Gratis en opensource.** Zonder abonnement of account, in 17 talen voor macOS, Windows en Linux.
@@ -61,7 +61,7 @@ Geïnstalleerd via de tap `julyx10/lap`? Bekijk de [migratie-instructies](https:
 - **Flexibel bladeren door je bibliotheek** op datum, map, locatie, camera, objectief, tags, beoordelingen en gezichten, met sortering en zoeken.
 - **Werken vanuit mappen.** Meerdere bibliotheken, import en export via slepen of klembord, batchgewijs hernoemen en synchronisatie, veilig verplaatsen, kopiëren en verwijderen.
 - **Lokaal zoeken met AI** op tekst, visuele overeenkomst, onderwerpen, gezichtsgroepering en optioneel meertalig zoeken in meer dan 50 talen.
-- **Metadata importeren en naar XMP schrijven.** Lap leest ingebedde EXIF-, IPTC- en XMP-gegevens en bestaande XMP-sidecars (beoordelingen, tags, favorieten, selectiestatus, GPS en datums). Je kunt tekstvelden bewerken en je organisatiegegevens expliciet naar XMP-sidecars schrijven, waarbij de originele bestanden onaangetast blijven.
+- **Metadata importeren en naar XMP schrijven.** bigfotolab leest ingebedde EXIF-, IPTC- en XMP-gegevens en bestaande XMP-sidecars (beoordelingen, tags, favorieten, selectiestatus, GPS en datums). Je kunt tekstvelden bewerken en je organisatiegegevens expliciet naar XMP-sidecars schrijven, waarbij de originele bestanden onaangetast blijven.
 - **Slimme albums.** Aangepaste groepering en sortering, filters op mapnaam en doorzoekbare keuzelijsten.
 - **Importeren op datum** met een indeling per dag, maand, jaar of in één map, met behoud van originele bestandsnamen en het overslaan van duplicaten.
 - **Collecties en tags** om geselecteerde bestanden in bulk te ordenen zonder de originelen te verplaatsen of te dupliceren. Tagboom met slepen en aantallen per tak.
@@ -81,26 +81,26 @@ Geïnstalleerd via de tap `julyx10/lap`? Bekijk de [migratie-instructies](https:
 
 ## Metadata en zeggenschap over gegevens
 
-Lap werkt rechtstreeks met je mappen en leest de meeste getoonde informatie uit de bestanden. Je kunt je organisatiegegevens bewaren in standaard XMP-sidecars, zodat ze met de bestanden meereizen en door andere foto-apps leesbaar blijven.
+bigfotolab werkt rechtstreeks met je mappen en leest de meeste getoonde informatie uit de bestanden. Je kunt je organisatiegegevens bewaren in standaard XMP-sidecars, zodat ze met de bestanden meereizen en door andere foto-apps leesbaar blijven.
 
-Lap leest compatibele metadata van Lightroom, digiKam, darktable en ACDSee. Welke velden worden ondersteund, verschilt per app.
+bigfotolab leest compatibele metadata van Lightroom, digiKam, darktable en ACDSee. Welke velden worden ondersteund, verschilt per app.
 
 ### Bestaande metadata lezen
 
 - Je originele foto's en video's blijven altijd gewone bestanden in hun bestaande mappen.
-- Bij het indexeren leest Lap ingebedde EXIF-, IPTC- en XMP-gegevens: opnamedatum, camera, objectief, GPS, oriëntatie, beoordelingen, favorieten, trefwoorden, selectiestatus, beschrijvingen, titel, kopregel, maker en copyright. Schakel **Instellingen → Metadata → Metadata importeren** in om de organisatievelden in de lokale database op te nemen. Lokale bewerkingen blijven behouden.
+- Bij het indexeren leest bigfotolab ingebedde EXIF-, IPTC- en XMP-gegevens: opnamedatum, camera, objectief, GPS, oriëntatie, beoordelingen, favorieten, trefwoorden, selectiestatus, beschrijvingen, titel, kopregel, maker en copyright. Schakel **Instellingen → Metadata → Metadata importeren** in om de organisatievelden in de lokale database op te nemen. Lokale bewerkingen blijven behouden.
 - Ondersteunde waarden uit XMP-sidecars gaan vóór ingebedde waarden, ook voor GPS en opnamedatum.
 
 ### Ondersteunde wijzigingen opslaan in XMP
 
 - Titel, kopregel, beschrijving, maker en copyright zijn bewerkbaar en worden lokaal in de database opgeslagen.
 - **Metagegevens opslaan in XMP** schrijft titel, kopregel, beschrijving, maker en copyright, plus tags (inclusief hiërarchische trefwoorden), beoordelingen, favorieten en selectiestatussen naar de XMP-sidecars. Andere XMP-eigenschappen blijven behouden en de originele bestanden blijven onaangetast.
-- Als je bestanden **in Lap** hernoemt, verplaatst, kopieert, verwijdert of importeert, werkt Lap tegelijk zijn lokale database bij. Ook ondersteunde gegroepeerde bestanden blijven bij elkaar, zoals de onderdelen van een Apple Live Photo, XMP- en AAE-sidecars en ingeschakelde RAW + JPEG/HEIC-paren. Bij een RAW-paar kunt u één bestand of beide verwijderen. Als één bestand blijft, blijft ook de gedeelde XMP-sidecar bij het resterende bestand.
+- Als je bestanden **in bigfotolab** hernoemt, verplaatst, kopieert, verwijdert of importeert, werkt bigfotolab tegelijk zijn lokale database bij. Ook ondersteunde gegroepeerde bestanden blijven bij elkaar, zoals de onderdelen van een Apple Live Photo, XMP- en AAE-sidecars en ingeschakelde RAW + JPEG/HEIC-paren. Bij een RAW-paar kunt u één bestand of beide verwijderen. Als één bestand blijft, blijft ook de gedeelde XMP-sidecar bij het resterende bestand.
 - Als je een bewerking in de ingebouwde editor opslaat, wordt de bewerkte afbeelding naar de gekozen bestemming geschreven.
 
-### Wat in de Lap-database blijft
+### Wat in de bigfotolab-database blijft
 
-Lap bewaart deze bibliotheekgegevens in de lokale database of bibliotheekconfiguratie.
+bigfotolab bewaart deze bibliotheekgegevens in de lokale database of bibliotheekconfiguratie.
 
 - Collecties, slimme albums en hun regels, groepering, sortering en volgorde
 - AI-zoekgegevens, gezichtsgegevens, miniaturen en andere index- en cachegegevens
@@ -108,48 +108,48 @@ Lap bewaart deze bibliotheekgegevens in de lokale database of bibliotheekconfigu
 
 Wijzigingen blijven in de database totdat je ondersteunde velden expliciet opslaat in XMP. Collecties, slimme albums, AI-zoekgegevens en gezichtsgegevens worden niet in XMP opgenomen. Maak een databaseback-up; alleen de originelen kopiëren bewaart deze organisatie niet.
 
-### Werken met bestanden buiten Lap
+### Werken met bestanden buiten bigfotolab
 
-Lap kan mappen opnieuw scannen en veel wijzigingen in het bestandssysteem herkennen. Maar wijzigingen buiten Lap — zoals bestanden hernoemen, verplaatsen, vervangen of kopiëren — kunnen de ordening verstoren die alleen in Lap is opgeslagen.
+bigfotolab kan mappen opnieuw scannen en veel wijzigingen in het bestandssysteem herkennen. Maar wijzigingen buiten bigfotolab — zoals bestanden hernoemen, verplaatsen, vervangen of kopiëren — kunnen de ordening verstoren die alleen in bigfotolab is opgeslagen.
 
-Als metadata-import is ingeschakeld, controleert Lap ook op wijzigingen in XMP-sidecars. Hernoem en verplaats bestanden in Lap om collecties te behouden. Houd de XMP-sidecar bij het bestand. Beheer je bestanden ook buiten Lap, maak dan samen met je foto's een back-up van de database en configuratie van Lap. De databaselocatie beheren en een back-up maken doe je via **Instellingen → Opslag**.
+Als metadata-import is ingeschakeld, controleert bigfotolab ook op wijzigingen in XMP-sidecars. Hernoem en verplaats bestanden in bigfotolab om collecties te behouden. Houd de XMP-sidecar bij het bestand. Beheer je bestanden ook buiten bigfotolab, maak dan samen met je foto's een back-up van de database en configuratie van bigfotolab. De databaselocatie beheren en een back-up maken doe je via **Instellingen → Opslag**.
 
-Als je de database of configuratie van Lap verwijdert, verdwijnen deze lokale ordening en indexgegevens, maar je originele mediabestanden worden niet verwijderd.
+Als je de database of configuratie van bigfotolab verwijdert, verdwijnen deze lokale ordening en indexgegevens, maar je originele mediabestanden worden niet verwijderd.
 
-## Lap verwijderen
+## bigfotolab verwijderen
 
-Lap werkt rechtstreeks met je bestaande fotomappen. Als je Lap verwijdert, of de database- en cachebestanden ervan wist, worden je originele foto's **niet** verwijderd.
+bigfotolab werkt rechtstreeks met je bestaande fotomappen. Als je bigfotolab verwijdert, of de database- en cachebestanden ervan wist, worden je originele foto's **niet** verwijderd.
 
-Met de standaardstappen verwijder je alleen het programma. Om Lap volledig te verwijderen sluit je Lap eerst af, verwijder je het programma en wis je daarna de lokale database, miniaturencache en configuratiebestanden met de opschoonopdracht voor jouw platform.
+Met de standaardstappen verwijder je alleen het programma. Om bigfotolab volledig te verwijderen sluit je bigfotolab eerst af, verwijder je het programma en wis je daarna de lokale database, miniaturencache en configuratiebestanden met de opschoonopdracht voor jouw platform.
 
 ### macOS
 
-Als je Lap met Homebrew hebt geïnstalleerd:
+Als je bigfotolab met Homebrew hebt geïnstalleerd:
 
 ```bash
 brew uninstall --cask lap
 ```
 
-Bij een handmatige installatie sluit je Lap af en sleep je `Lap.app` uit de map `Applications` naar de prullenmand.
+Bij een handmatige installatie sluit je bigfotolab af en sleep je `bigfotolab.app` uit de map `Applications` naar de prullenmand.
 
-Om alle database-, cache- en configuratiebestanden van Lap te verwijderen:
+Om alle database-, cache- en configuratiebestanden van bigfotolab te verwijderen:
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-Open **Instellingen > Apps > Geïnstalleerde apps**, zoek **Lap** en kies **Verwijderen**.
+Open **Instellingen > Apps > Geïnstalleerde apps**, zoek **bigfotolab** en kies **Verwijderen**.
 
-Open daarna PowerShell en verwijder alle database-, cache- en configuratiebestanden van Lap:
+Open daarna PowerShell en verwijder alle database-, cache- en configuratiebestanden van bigfotolab:
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,22 +157,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 Bij een DEB-installatie verwijder je het pakket:
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-Verwijder een lokaal Arch-pakket met `sudo pacman -R lap`.
+Verwijder een lokaal Arch-pakket met `sudo pacman -R bigfotolab`.
 
-Bij een AppImage-installatie sluit je Lap af en verwijder je het gedownloade `.AppImage`-bestand.
+Bij een AppImage-installatie sluit je bigfotolab af en verwijder je het gedownloade `.AppImage`-bestand.
 
-Verwijder daarna alle database-, cache- en configuratiebestanden van Lap:
+Verwijder daarna alle database-, cache- en configuratiebestanden van bigfotolab:
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-Heb je in de instellingen van Lap een eigen opslagmap voor de database gekozen, verwijder die map dan apart, nadat je hebt gecontroleerd dat er alleen databasebestanden van Lap in staan.
+Heb je in de instellingen van bigfotolab een eigen opslagmap voor de database gekozen, verwijder die map dan apart, nadat je hebt gecontroleerd dat er alleen databasebestanden van bigfotolab in staan.
 
 ## Zelf bouwen vanuit de broncode
 
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # Klonen en bouwen
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked
@@ -214,7 +214,7 @@ Het recept legt een upstream-sourcecommit vast en controleert de meegeleverde AI
 
 ## Ondersteunde formaten
 
-Lap ondersteunt meer dan 60 afbeeldings-, RAW- en videoformaten.
+bigfotolab ondersteunt meer dan 60 afbeeldings-, RAW- en videoformaten.
 
 | Type | Formaten |
 | :--- | :--- |

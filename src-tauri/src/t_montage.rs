@@ -24,7 +24,7 @@ pub struct MontageItem {
     file_id: i64,
     path: String,
     orientation: i32, // exif orientation value
-    rotate: i32,      // file rotation stored by Lap (0, 90, 180, 270)
+    rotate: i32,      // file rotation stored by bigfotolab (0, 90, 180, 270)
     // frame (border included), relative to the page: 0..1
     x: f32,
     y: f32,

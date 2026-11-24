@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Logo Lap" width="120" style="border-radius: 20px">
-  <h1>Lap – soukromý lokální správce fotografií</h1>
+  <img src="../docs/public/icon.png" alt="Logo bigfotolab" width="120" style="border-radius: 20px">
+  <h1>bigfotolab – soukromý lokální správce fotografií</h1>
   <h3>Open-source desktopový správce fotografií pro macOS, Windows a Linux.</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="Vydání na GitHubu"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="Celkový počet stažení všech vydání na GitHubu"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="Hvězdičky na GitHubu"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="Vydání na GitHubu"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="Celkový počet stažení všech vydání na GitHubu"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="Hvězdičky na GitHubu"></a>
   </p>
 </div>
 
 [English](../README.md) | Česky | [Deutsch](README.de.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Tiếng Việt](README.vi.md) | [中文简体](README.zh-CN.md) | [中文繁體](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-Lap je bezplatný správce fotografií s otevřeným zdrojovým kódem pro macOS, Windows a Linux, který pracuje lokálně. Organizujte existující složky, vyhledávejte místní AI a spravujte velké knihovny bez cloudového účtu či předplatného.
+bigfotolab je bezplatný správce fotografií s otevřeným zdrojovým kódem pro macOS, Windows a Linux, který pracuje lokálně. Organizujte existující složky, vyhledávejte místní AI a spravujte velké knihovny bez cloudového účtu či předplatného.
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">OFICIÁLNÍ WEB</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">DEMO</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">OFICIÁLNÍ WEB</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">DEMO</a></strong></p>
 </div>
 
-## Stažení Lap
+## Stažení bigfotolab
 
-Otevřete [stránku nejnovějšího vydání](https://github.com/julyx10/lap/releases/latest) a stáhněte soubor určený pro váš operační systém:
+Otevřete [stránku nejnovějšího vydání](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest) a stáhněte soubor určený pro váš operační systém:
 
 | Platforma | Balíček | Poznámka |
 | :-- | :-- | :-- |
@@ -37,21 +37,21 @@ Otevřete [stránku nejnovějšího vydání](https://github.com/julyx10/lap/rel
 brew install --cask lap
 ```
 
-Instalovali jste přes tap `julyx10/lap`? Viz [pokyny k migraci](https://github.com/julyx10/lap/discussions/567).
+Instalovali jste přes tap `julyx10/lap`? Viz [pokyny k migraci](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567).
 
 ## Snímky obrazovek
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Správce místní knihovny fotografií Lap" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Zobrazení mapy v Lap" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Náhled fotografie v Lap" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="Správce místní knihovny fotografií bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="Zobrazení mapy v bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="Náhled fotografie v bigfotolab" width="900">
 </p>
 
-## Proč Lap
+## Proč bigfotolab
 
 - **Soukromá AI na vašem zařízení.** Popište fotografii, vyhledejte podobné snímky nebo procházejte podle tváří. Vše se zpracovává místně.
-- **Vaše složky pod vaší kontrolou.** Otevřete stávající složky přímo v Lap. Soubory si zachovají umístění i formát.
-- **Metadata pro různé aplikace.** Lap čte vložené EXIF, IPTC a XMP i doprovodné soubory (hodnocení, štítky, oblíbené položky, stav výběru, GPS a data). Upravená metadata lze ukládat do doprovodných souborů XMP, přičemž původní soubory zůstávají beze změn.
+- **Vaše složky pod vaší kontrolou.** Otevřete stávající složky přímo v bigfotolab. Soubory si zachovají umístění i formát.
+- **Metadata pro různé aplikace.** bigfotolab čte vložené EXIF, IPTC a XMP i doprovodné soubory (hodnocení, štítky, oblíbené položky, stav výběru, GPS a data). Upravená metadata lze ukládat do doprovodných souborů XMP, přičemž původní soubory zůstávají beze změn.
 - **Výběr fotografií.** Náhled mezerníkem, posun po ohodnocení, zobrazení oblastí AF, porovnání ve čtyřech panelech a pravidla pro ponechání duplikátů.
 - **Pro knihovny s více než 100 000 fotografiemi a videi.** Nativní jádro v Rustu zajišťuje procházení, vyhledávání i skenování.
 - **Zdarma a s otevřeným kódem.** Bez předplatného a účtu, v 17 jazycích pro macOS, Windows a Linux.
@@ -61,7 +61,7 @@ Instalovali jste přes tap `julyx10/lap`? Viz [pokyny k migraci](https://github.
 - **Flexibilní procházení knihovny** podle data, složky, místa, fotoaparátu, objektivu, štítků, hodnocení a tváří, včetně řazení a vyhledávání.
 - **Pracovní postup založený na složkách.** Více knihoven, import a export přetažením či přes schránku, dávkové přejmenování a synchronizace, bezpečné přesouvání, kopírování a mazání.
 - **Lokální vyhledávání pomocí AI** podle textových zadání, vizuální podobnosti, objektů, seskupování tváří a volitelné vícejazyčné vyhledávání ve více než 50 jazycích.
-- **Import metadat a zápis do XMP** · Lap čte vložené EXIF, IPTC a XMP i doprovodné soubory (hodnocení, štítky, oblíbené položky, stav výběru, GPS a data). Textová pole lze upravovat a organizační údaje uložit do XMP.
+- **Import metadat a zápis do XMP** · bigfotolab čte vložené EXIF, IPTC a XMP i doprovodné soubory (hodnocení, štítky, oblíbené položky, stav výběru, GPS a data). Textová pole lze upravovat a organizační údaje uložit do XMP.
 - **Chytrá alba.** Vlastní seskupování a řazení, filtry podle názvu složky a prohledávatelný výběr hodnot.
 - **Import s uspořádáním podle data** do složek podle dne, měsíce, roku nebo do jediné složky, se zachováním původních názvů souborů a vynecháváním duplicit.
 - **Kolekce a štítky** umožňují hromadně organizovat vybrané soubory, aniž by se originály přesouvaly nebo duplikovaly. Strom štítků s přetahováním a počty v jednotlivých větvích.
@@ -81,26 +81,26 @@ Instalovali jste přes tap `julyx10/lap`? Viz [pokyny k migraci](https://github.
 
 ## Metadata a kontrola nad daty
 
-Lap pracuje přímo se složkami. Většinu zobrazených údajů čte ze souborů. Organizační údaje lze zapsat do standardních doprovodných souborů XMP a používat je v jiných aplikacích.
+bigfotolab pracuje přímo se složkami. Většinu zobrazených údajů čte ze souborů. Organizační údaje lze zapsat do standardních doprovodných souborů XMP a používat je v jiných aplikacích.
 
-Lap čte kompatibilní metadata z Lightroomu, digiKamu, darktable a ACDSee. Rozsah podporovaných polí závisí na aplikaci.
+bigfotolab čte kompatibilní metadata z Lightroomu, digiKamu, darktable a ACDSee. Rozsah podporovaných polí závisí na aplikaci.
 
 ### Čtení existujících metadat
 
 - Vaše původní fotografie a videa zůstávají vždy běžnými soubory ve svých stávajících složkách.
-- Při indexování Lap čte vložené EXIF, IPTC a XMP, včetně údajů o snímku a organizačních polí. Organizační údaje importujete do místní databáze přes **Nastavení → Metadata → Import metadat**. Místní úpravy zůstanou zachovány.
+- Při indexování bigfotolab čte vložené EXIF, IPTC a XMP, včetně údajů o snímku a organizačních polí. Organizační údaje importujete do místní databáze přes **Nastavení → Metadata → Import metadat**. Místní úpravy zůstanou zachovány.
 - Platné hodnoty z doprovodného souboru XMP mají přednost před vloženými hodnotami, včetně GPS a data pořízení.
 
 ### Uložení podporovaných změn do XMP
 
 - Název, titulek, popis, autora a autorská práva lze upravit a uložit do místní databáze.
 - Uložení do XMP zapíše tato pole, štítky (včetně hierarchických klíčových slov), hodnocení, oblíbené položky a stav výběru do doprovodných souborů. Ostatní vlastnosti XMP a originály zůstanou zachovány.
-- Když v Lap přejmenujete, přesunete, zkopírujete, odstraníte nebo importujete soubory, Lap současně aktualizuje svůj místní katalog. Zároveň zachovává pohromadě podporované skupiny souborů, například součásti Apple Live Photo, doprovodné soubory XMP a AAE a zapnuté dvojice RAW + JPEG/HEIC. Z dvojice RAW lze odstranit jeden nebo oba soubory. Pokud jeden zachováte, zachová se i sdílený soubor XMP.
+- Když v bigfotolab přejmenujete, přesunete, zkopírujete, odstraníte nebo importujete soubory, bigfotolab současně aktualizuje svůj místní katalog. Zároveň zachovává pohromadě podporované skupiny souborů, například součásti Apple Live Photo, doprovodné soubory XMP a AAE a zapnuté dvojice RAW + JPEG/HEIC. Z dvojice RAW lze odstranit jeden nebo oba soubory. Pokud jeden zachováte, zachová se i sdílený soubor XMP.
 - Uložení úprav obrázku pomocí vestavěných nástrojů zapíše výsledný obrázek do vybraného umístění.
 
-### Co zůstává v databázi Lap
+### Co zůstává v databázi bigfotolab
 
-Tyto údaje Lap ukládá do místní databáze nebo konfigurace knihovny.
+Tyto údaje bigfotolab ukládá do místní databáze nebo konfigurace knihovny.
 
 - **Kolekce, chytrá alba, jejich pravidla, seskupování, řazení a pořadí**
 - Data vyhledávání AI, data o tvářích, miniatury a další data indexu a mezipaměti
@@ -108,48 +108,48 @@ Tyto údaje Lap ukládá do místní databáze nebo konfigurace knihovny.
 
 Úpravy zůstávají v databázi, dokud podporovaná pole výslovně neuložíte do XMP. Kolekce, chytrá alba, data AI a tváří nejsou součástí XMP. Zálohujte databázi; kopírování samotných originálů toto uspořádání nezachová.
 
-### Práce se soubory mimo Lap
+### Práce se soubory mimo bigfotolab
 
-Lap může znovu prohledat složky a zjistit mnoho změn v souborovém systému. Při povoleném importu metadat Lap kontroluje také změny v doprovodných souborech XMP. Změny provedené mimo Lap – například přejmenování, přesun, nahrazení nebo kopírování souborů – však mohou narušit organizaci, která je uložena pouze v Lap.
+bigfotolab může znovu prohledat složky a zjistit mnoho změn v souborovém systému. Při povoleném importu metadat bigfotolab kontroluje také změny v doprovodných souborech XMP. Změny provedené mimo bigfotolab – například přejmenování, přesun, nahrazení nebo kopírování souborů – však mohou narušit organizaci, která je uložena pouze v bigfotolab.
 
-Soubory přejmenovávejte a přesouvejte v Lap, aby zůstaly v kolekcích. Doprovodné soubory XMP ponechte u originálů. Pokud soubory spravujete také mimo Lap, zálohujte databázi a konfiguraci Lap společně s fotografiemi. Umístění databáze můžete spravovat a zálohu vytvořit v **Nastavení → Úložiště**.
+Soubory přejmenovávejte a přesouvejte v bigfotolab, aby zůstaly v kolekcích. Doprovodné soubory XMP ponechte u originálů. Pokud soubory spravujete také mimo bigfotolab, zálohujte databázi a konfiguraci bigfotolab společně s fotografiemi. Umístění databáze můžete spravovat a zálohu vytvořit v **Nastavení → Úložiště**.
 
-Odstranění databáze nebo konfigurace Lap smaže tato místní organizační a indexová data, nikoli však původní mediální soubory.
+Odstranění databáze nebo konfigurace bigfotolab smaže tato místní organizační a indexová data, nikoli však původní mediální soubory.
 
-## Odinstalování Lap
+## Odinstalování bigfotolab
 
-Lap pracuje přímo s vašimi stávajícími složkami s fotografiemi. Odinstalování Lap ani odstranění jeho databázových a mezipaměťových souborů **nesmaže vaše původní fotografie**.
+bigfotolab pracuje přímo s vašimi stávajícími složkami s fotografiemi. Odinstalování bigfotolab ani odstranění jeho databázových a mezipaměťových souborů **nesmaže vaše původní fotografie**.
 
-Standardní postup odinstalování odstraní aplikaci. Chcete-li Lap odstranit úplně, nejprve jej ukončete, odinstalujte aplikaci a poté pomocí příkazu pro příslušnou platformu odstraňte místní databázi, mezipaměť miniatur a konfigurační soubory.
+Standardní postup odinstalování odstraní aplikaci. Chcete-li bigfotolab odstranit úplně, nejprve jej ukončete, odinstalujte aplikaci a poté pomocí příkazu pro příslušnou platformu odstraňte místní databázi, mezipaměť miniatur a konfigurační soubory.
 
 ### macOS
 
-Pokud jste Lap nainstalovali pomocí Homebrew:
+Pokud jste bigfotolab nainstalovali pomocí Homebrew:
 
 ```bash
 brew uninstall --cask lap
 ```
 
-Při ruční odinstalaci ukončete Lap a přesuňte `Lap.app` ze složky `Applications` do Koše.
+Při ruční odinstalaci ukončete bigfotolab a přesuňte `bigfotolab.app` ze složky `Applications` do Koše.
 
-Chcete-li odstranit veškerou databázi Lap, mezipaměť a konfigurační soubory:
+Chcete-li odstranit veškerou databázi bigfotolab, mezipaměť a konfigurační soubory:
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-Otevřete **Nastavení > Aplikace > Nainstalované aplikace**, vyhledejte **Lap** a vyberte **Odinstalovat**.
+Otevřete **Nastavení > Aplikace > Nainstalované aplikace**, vyhledejte **bigfotolab** a vyberte **Odinstalovat**.
 
-Poté otevřete PowerShell a odstraňte veškerou databázi Lap, mezipaměť a konfigurační soubory:
+Poté otevřete PowerShell a odstraňte veškerou databázi bigfotolab, mezipaměť a konfigurační soubory:
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,22 +157,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 Při odinstalaci balíčku DEB odinstalujte balíček:
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-Místní balíček Arch odinstalujete příkazem `sudo pacman -R lap`.
+Místní balíček Arch odinstalujete příkazem `sudo pacman -R bigfotolab`.
 
-Při použití AppImage ukončete Lap a odstraňte stažený soubor `.AppImage`.
+Při použití AppImage ukončete bigfotolab a odstraňte stažený soubor `.AppImage`.
 
-Poté odstraňte veškerou databázi Lap, mezipaměť a konfigurační soubory:
+Poté odstraňte veškerou databázi bigfotolab, mezipaměť a konfigurační soubory:
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-Pokud jste v nastavení Lap vybrali vlastní adresář pro ukládání databáze, odstraňte tento adresář samostatně až poté, co ověříte, že obsahuje pouze databázové soubory Lap.
+Pokud jste v nastavení bigfotolab vybrali vlastní adresář pro ukládání databáze, odstraňte tento adresář samostatně až poté, co ověříte, že obsahuje pouze databázové soubory bigfotolab.
 
 ## Sestavení ze zdrojového kódu
 
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # Klonování a sestavení
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked
@@ -214,7 +214,7 @@ Recept určuje konkrétní upstream commit zdrojového kódu a kontroluje součt
 
 ## Podporované formáty
 
-Lap podporuje více než 60 formátů obrázků, RAW a videa.
+bigfotolab podporuje více než 60 formátů obrázků, RAW a videa.
 
 | Typ | Formáty |
 | :--- | :--- |

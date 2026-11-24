@@ -590,7 +590,7 @@ function frameStyle(item: MontageItem) {
   };
 }
 
-// cover the frame with the thumbnail, applying Lap's own rotation
+// cover the frame with the thumbnail, applying bigfotolab's own rotation
 function photoStyle(item: MontageItem) {
   const rotate = Number(fileById.value.get(item.fileId)?.rotate || 0);
   const innerW = item.w * pageBox.value.width - 2 * item.border * pageBox.value.width;
