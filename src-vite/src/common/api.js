@@ -1,7 +1,7 @@
 import { setAlbumAccessibility } from '@/common/availability';
-import { invoke, Channel } from '@tauri-apps/api/core';
+import { Channel } from '@tauri-apps/api/core';
+import { invoke, listen } from '@/common/transport';
 import { locale } from '@tauri-apps/plugin-os';
-import { listen } from '@tauri-apps/api/event';
 import { config, libConfig } from '@/common/config';
 import { separator, localeComp, formatTimestamp } from '@/common/utils';
 import { getRawDisplayOptions } from './rawDisplay';

@@ -81,7 +81,7 @@ fn image_response(data: Vec<u8>) -> http::Response<Vec<u8>> {
         .unwrap()
 }
 
-fn raw_display_options(query: Option<&str>) -> RawDisplayOptions {
+pub(crate) fn raw_display_options(query: Option<&str>) -> RawDisplayOptions {
     let mut options = RawDisplayOptions::default();
     for pair in query.unwrap_or_default().split('&') {
         match pair {

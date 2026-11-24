@@ -143,6 +143,7 @@ export const useConfigStore = defineStore('configStore', {
       language: 'en',             // default language
       languageInitialized: false, // match system language once, then preserve the saved choice
       dateTimeFormat: 0,          // date/time locale source (0: follow system region, 1: follow app language)
+      remoteServer: { enabled: false, url: '', token: '' }, // bigfotolab-server remote mode
       appearance: 1,              // appearance (0: light; 1: dark; 2: follow system)
       lightTheme: 0,              // light theme color index
       darkTheme: 0,               // dark theme color index

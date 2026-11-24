@@ -33,6 +33,23 @@ pub fn set_app_identifier(identifier: &str) {
     let _ = APP_IDENTIFIER.set(identifier.to_string());
 }
 
+static SERVER_CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
+
+/// Server mode: redirect the app-data directory to a server-specific config dir
+/// so the headless binary keeps its own app-config.json / databases.
+pub fn init_server_config_dir(dir: PathBuf) {
+    let _ = SERVER_CONFIG_DIR.set(dir);
+}
+
+/// Server mode: switch the process-wide current library for a single request.
+/// Callers must hold the server DB lock so requests stay serialized.
+pub fn set_current_library_id(id: &str) -> Result<(), String> {
+    *CURRENT_LIBRARY_ID
+        .write()
+        .map_err(|e| e.to_string())? = Some(id.to_string());
+    Ok(())
+}
+
 fn config_io_lock() -> &'static Mutex<()> {
     CONFIG_IO_LOCK.get_or_init(|| Mutex::new(()))
 }
@@ -455,6 +472,11 @@ impl Default for AppConfig {
 
 /// Get the AppData directory for app
 pub fn get_app_data_dir() -> Result<PathBuf, String> {
+    if let Some(dir) = SERVER_CONFIG_DIR.get() {
+        fs::create_dir_all(dir)
+            .map_err(|e| format!("Failed to create server config directory: {}", e))?;
+        return Ok(dir.clone());
+    }
     let app_dir_name = get_app_data_folder_name();
     dirs::data_local_dir()
         .ok_or_else(|| "Failed to get the local AppData directory".to_string())
@@ -479,6 +501,12 @@ fn get_app_data_folder_name() -> String {
 /// windows: C:\Users\<username>\AppData\Local\com.bigfotolab.app\cache
 /// linux: ~/.cache/com.bigfotolab.app
 pub fn get_app_cache_dir() -> Result<PathBuf, String> {
+    if let Some(dir) = SERVER_CONFIG_DIR.get() {
+        let cache = dir.join("cache");
+        fs::create_dir_all(&cache)
+            .map_err(|e| format!("Failed to create server cache directory: {}", e))?;
+        return Ok(cache);
+    }
     let app_dir_name = get_app_data_folder_name();
     dirs::cache_dir()
         .ok_or_else(|| "Failed to get the local cache directory".to_string())

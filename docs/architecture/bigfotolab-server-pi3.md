@@ -99,3 +99,30 @@ remains read-only; reorganization is explicit, previewed, optional.
 
 `lap:` XMP namespace (`src-tauri/src/metadata/schema.rs`), updater endpoint +
 signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
+
+## Phase 1 implementation notes (shipped in the server skeleton PR)
+
+- The crate is now lib + two binaries: `src/lib.rs` (all core modules, `pub`),
+  `src/main.rs` (thin desktop entry calling `bigfotolab::run()`), and
+  `src/bin/bigfotolab-server.rs` (headless server).
+- `src-tauri/src/t_server.rs` serves, with bearer-token auth (`server.json` in the
+  config dir, generated on first run; token accepted as `Authorization: Bearer`
+  or `?token=` for `<img>`/`<video>`/EventSource):
+  - `POST /api/v1/cmd/{name}` — read-only whitelist mirror of Tauri commands
+    (`get_app_config`, `get_library_info/state`, `get_all_albums`, `get_album`,
+    `get_folder_files`, `get_query_files`, `get_file_info`, `get_files_by_ids`,
+    `get_supported_format_extensions`, `list_collections`, `get_all_tags`,
+    `get_taken_dates`, counts…), each run under a global DB lock with
+    `library_id` set per request (`t_config::set_current_library_id`).
+  - `GET /api/v1/events` — SSE stream (heartbeat + `thumbnail_ready` etc.),
+    replaces `app.emit`/`listen` in remote mode.
+  - `GET /media/thumb/{library}/{file_id}?size=` — thumbnail pyramid tier with
+    ETag + `Cache-Control`, reusing `AThumb` cache/queue.
+  - `GET /media/original/{path}` — original bytes with Range support.
+  - `GET /*` — static SPA from `--dist` (default `../src-vite/dist`).
+- Run: `bigfotolab-server --config-dir ~/.config/bigfotolab-server --port 8080 --dist ../src-vite/dist`
+- Frontend: `src-vite/src/common/transport.js` exports `invoke`/`listen` with
+  Tauri-compatible signatures; `api.js` now imports them from there (212 call
+  sites unchanged). Remote mode is enabled via `settings.remoteServer`
+  (`{enabled, url, token}`) and switches `thumb://`/`preview://`/media URLs to
+  `{server}/media/...?token=...`.

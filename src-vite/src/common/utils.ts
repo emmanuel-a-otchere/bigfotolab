@@ -1,5 +1,6 @@
 import { open as openDialog } from '@tauri-apps/plugin-dialog';
 import { invoke } from '@tauri-apps/api/core';
+import { isRemote, getServerUrl, getServerToken } from '@/common/transport';
 import { useUIStore } from '@/stores/uiStore';
 import { config } from '@/common/config';
 import { appendRawDisplayParams, rawDisplayKey } from './rawDisplay';
@@ -607,10 +608,11 @@ export function getThumbUrl(
     const cached = getCachedThumbnailDataUrl(fileId, thumbnailSize);
     if (cached) return cached;
   }
-  const scheme = isWin ? 'http://thumb.localhost' : 'thumb://localhost';
+  const scheme = isRemote() ? `${getServerUrl()}/media/thumb` : (isWin ? 'http://thumb.localhost' : 'thumb://localhost');
   const base = `${scheme}/${_thumbLibraryId}/${fileId}`;
   const params = new URLSearchParams();
   appendRawDisplayParams(params);
+  if (isRemote()) params.set('token', getServerToken());
   if (thumbnailSize > 0) params.set('size', String(thumbnailSize));
   if (fileVersion > 0) params.set('v', String(fileVersion));
   if (bustCache) params.set('t', String(Date.now()));
@@ -626,10 +628,14 @@ export function getPreviewUrl(
   forEditing = false,
 ): string {
   if (!fileId || fileId <= 0) return '';
-  const scheme = isWin ? 'http://preview.localhost' : 'preview://localhost';
+  const scheme = isRemote() ? `${getServerUrl()}/media/thumb` : (isWin ? 'http://preview.localhost' : 'preview://localhost');
   const base = `${scheme}/${_thumbLibraryId}/${fileId}`;
 
   const params = new URLSearchParams();
+  if (isRemote()) {
+    params.set('token', getServerToken());
+    params.set('size', '2048');
+  }
   if (forEditing) {
     // Editing uses the same decoder pipeline as export, independently of browsing.
     params.set('forEditing', 'true');
@@ -796,12 +802,25 @@ export function scrollToFolder(folderId: number) {
 let originalMediaBaseUrl = '';
 
 export async function initializeOriginalMedia() {
+  if (isRemote()) {
+    originalMediaBaseUrl = `${getServerUrl()}/media/original/`;
+    return;
+  }
   originalMediaBaseUrl = await invoke<string>('original_media_base_url');
 }
 
 // get image file asset source url with version number
 export function getAssetSrc(filePath: string, fileVersion = 0): string {
-  if (!filePath || !originalMediaBaseUrl) return '';
+  if (!filePath) return '';
+  if (isRemote()) {
+    const params = new URLSearchParams();
+    if (fileVersion > 0) params.set('v', String(fileVersion));
+    const localVersion = useUIStore().getFileVersion(filePath);
+    if (localVersion > 0) params.set('u', String(localVersion));
+    params.set('token', getServerToken());
+    return `${getServerUrl()}/media/original/${encodeURIComponent(filePath)}?${params.toString()}`;
+  }
+  if (!originalMediaBaseUrl) return '';
   const uiStore = useUIStore();
   const localVersion = uiStore.getFileVersion(filePath);
   const assetUrl = `${originalMediaBaseUrl}${encodeURIComponent(filePath)}`;

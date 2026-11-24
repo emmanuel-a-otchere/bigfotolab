@@ -8,6 +8,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { message } from '@tauri-apps/plugin-dialog'
 import { initializeOriginalMedia } from '@/common/utils'
+import { configureTransport } from '@/common/transport'
 import { getSystemRegionLocale } from '@/common/api'
 import 'cally'
 import router from '@/common/router'
@@ -26,6 +27,14 @@ const pinia = createPinia()
 pinia.use(piniaPersistedState)
 app.use(pinia) // Use Pinia
 const config = useConfigStore() // Use the config store
+// Remote mode: talk to a headless bigfotolab-server over HTTP+SSE instead of Tauri IPC
+if (config.settings.remoteServer?.enabled) {
+  configureTransport({
+    mode: 'remote',
+    url: config.settings.remoteServer.url,
+    token: config.settings.remoteServer.token,
+  })
+}
 const currentWindowLabel = getCurrentWebviewWindow().label
 const isMainWindow = currentWindowLabel === 'main'
 const isSettingsWindow = currentWindowLabel === 'settings'
