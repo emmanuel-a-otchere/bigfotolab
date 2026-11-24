@@ -52,6 +52,17 @@ pub fn is_xmp_import_enabled() -> bool {
     XMP_IMPORT_ENABLED.load(Ordering::Relaxed)
 }
 
+/// True when XMP text carries a GPano equirectangular projection (360 panorama).
+pub fn xmp_text_has_gpano_equirect(text: &str) -> bool {
+    let lower = text.to_ascii_lowercase();
+    lower.contains("gpano") && lower.contains("equirectangular")
+}
+
+/// Byte-scan variant for an embedded XMP packet (e.g. JPEG APP1) in a file header.
+pub fn bytes_have_gpano_equirect(bytes: &[u8]) -> bool {
+    xmp_text_has_gpano_equirect(&String::from_utf8_lossy(bytes))
+}
+
 pub fn set_xmp_import_enabled(enabled: bool) {
     XMP_IMPORT_ENABLED.store(enabled, Ordering::Relaxed);
 }

@@ -50,6 +50,9 @@ to both project spaces consistently.
 
 ## Future feature roadmap
 
+- **#11 (in progress)** 360° panorama support — Insta360 `.insp`/`.insv` and DJI
+  GPano files indexed as `pano_360` and viewable in a spherical WebGL viewer
+  (photos and 360 videos).
 - **Automated library reorganization via strategy templates** — built-in presets
   (date Y/M/D, event, camera/lens, RAW+JPEG pairing, duplicate consolidation) plus
   user-defined templates (JSON/YAML + editor), dry-run diff preview, execution via

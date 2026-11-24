@@ -5,6 +5,7 @@
 // Image support
 pub const NORMAL_IMGS: &[&str] = &[
     "jpg", "jpeg", "jfif", "png", "gif", "bmp", "tif", "tiff", "webp", "avif", "heic", "heif", "hif", "jxl",
+    "insp", // Insta360 360 photo (equirectangular JPEG container)
 ];
 
 pub const AFFINITY_IMGS: &[&str] = &["af", "afphoto", "afdesign", "afpub"];
@@ -47,7 +48,7 @@ pub const RAW_IMGS: &[&str] = &[
 // Video support
 pub const VIDEOS: &[&str] = &[
     "mpg", "mpeg", "vob", "mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "3gp", "m4v", "hevc", "asf",
-    "mts", "m2ts", "mod", "tod", "ts",
+    "mts", "m2ts", "mod", "tod", "ts", "insv", // Insta360 360 video (spherical MP4 container)
 ];
 // pub const AUDIOS: &[&str] = &[
 //     "mp3", "wav", "flac", "aac", "m4a", "ogg", "wma", "mp2", "mp1", "ape", "alac", "wavpack",
@@ -78,6 +79,8 @@ pub(crate) fn extension_description(ext: &str) -> &'static str {
         "heic" => "High Efficiency Image Container",
         "heif" => "High Efficiency Image File",
         "hevc" => "High Efficiency Video Coding",
+        "insp" => "Insta360 360 Photo",
+        "insv" => "Insta360 360 Video",
         "hif" => "HEIF Image File",
         "j2c" => "JPEG 2000 Codestream",
         "j2k" => "JPEG 2000 Codestream",
