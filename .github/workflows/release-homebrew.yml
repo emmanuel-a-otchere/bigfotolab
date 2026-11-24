@@ -93,5 +93,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Casks/lap.rb
-          git diff --cached --quiet || git commit -m "Update Lap to v${VERSION}"
+          git diff --cached --quiet || git commit -m "Update bigfotolab to v${VERSION}"
           git push

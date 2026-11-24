@@ -280,7 +280,7 @@
   },
   "welcome": {
     "add_album_title": "Comece com um novo álbum",
-    "add_album_description": "Selecione uma pasta e deixe o Lap organizar suas fotos e vídeos.",
+    "add_album_description": "Selecione uma pasta e deixe o bigfotolab organizar suas fotos e vídeos.",
     "smart_album_title": "Organize com álbuns inteligentes",
     "smart_album_description": "Use regras para agrupar automaticamente as fotos que correspondem aos seus critérios.",
     "collection_title": "Agrupe fotos em coleções",
@@ -315,7 +315,7 @@
         "skip_once": "Pular este arquivo e continuar",
         "file_label": "Último arquivo verificado",
         "message": "A verificação anterior não foi encerrada normalmente.",
-        "message_with_file": "A varredura anterior não foi encerrada corretamente.\n\nÚltimo arquivo verificado:\n{file}\n\nSe continuar, o Lap irá pular este arquivo uma vez e retomar a varredura."
+        "message_with_file": "A varredura anterior não foi encerrada corretamente.\n\nÚltimo arquivo verificado:\n{file}\n\nSe continuar, o bigfotolab irá pular este arquivo uma vez e retomar a varredura."
       }
     }
   },
@@ -1345,7 +1345,7 @@
     "title": "Visualizador de imagens",
     "loading": "Carregando...",
     "loading_original": "Carregando foto original...",
-    "media_server_unavailable": "Não foi possível carregar as fotos e os vídeos originais. Reinicie o Lap para tentar novamente.",
+    "media_server_unavailable": "Não foi possível carregar as fotos e os vídeos originais. Reinicie o bigfotolab para tentar novamente.",
     "failed": "Falha ao carregar a foto. O arquivo está ausente ou corrompido.",
     "raw_render_unavailable": "Não é possível renderizar este RAW; pré-visualização incorporada exibida.",
     "af_unavailable": "Não há dados de AF compatíveis para esta imagem",
@@ -1379,7 +1379,7 @@
       "network": "Erro de rede",
       "decode": "Erro de decodificação",
       "format": "Formato de vídeo não suportado ou o arquivo está corrompido.",
-      "external_player_recommended": "Este vídeo precisa de transcodificação de compatibilidade antes de ser reproduzido aqui. Para vídeos longos, o Lap recomenda o uso de um player externo em vez de aguardar o processamento em segundo plano.",
+      "external_player_recommended": "Este vídeo precisa de transcodificação de compatibilidade antes de ser reproduzido aqui. Para vídeos longos, o bigfotolab recomenda o uso de um player externo em vez de aguardar o processamento em segundo plano.",
       "unsafe_webview": "Este formato de vídeo não é compatível com a reprodução.",
       "open_in_external_app": "Abrir no player externo",
       "open_in_external_app_named": "Abrir vídeo em {app}...",
@@ -1628,7 +1628,7 @@
       "multilingual_model_download_message": "O modelo de pesquisa de fotos multilíngue não está instalado. Baixe-o para habilitar a pesquisa em mais de 50 idiomas.",
       "download": "Baixar",
       "downloading_multilingual_model": "Baixando modelo multilíngue",
-      "multilingual_model_download_success": "O modelo de pesquisa multilíngue está pronto. Reinicie o Lap para usá-lo.",
+      "multilingual_model_download_success": "O modelo de pesquisa multilíngue está pronto. Reinicie o bigfotolab para usá-lo.",
       "multilingual_model_download_failed": "Falha ao baixar o modelo de pesquisa multilíngue",
       "similarity": "Similaridade de pesquisa",
       "similarity_hint": "Controla correspondências visuais em buscas por palavras-chave",

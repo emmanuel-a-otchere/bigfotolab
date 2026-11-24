@@ -1,7 +1,7 @@
 {
-    "name": "lap-website",
+    "name": "bigfotolab-website",
     "version": "1.0.0",
-    "description": "Website for Lap app",
+    "description": "Website for bigfotolab app",
     "scripts": {
         "dev": "vitepress dev",
         "build:demo": "node scripts/build-native-demo.mjs",

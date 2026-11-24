@@ -9,7 +9,7 @@ async function adapter(storage = new Map()) {
   const seed = addDuplicateFixtures(createState());
   const context = createContext({
     URL, console, queueMicrotask, setTimeout: () => 0, clearTimeout: () => {},
-    window: {}, location: { href: 'https://example.com/lap/demos/lap/index.html' },
+    window: {}, location: { href: 'https://example.com/bigfotolab/demos/bigfotolab/index.html' },
     localStorage: {
       getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value),
@@ -93,6 +93,6 @@ test('thumbnail and preview mapping share one asset, including duplicate pairs',
   const a = await adapter();
   assert.equal(a.demoMediaUrl(20), a.demoMediaUrl(8));
   assert.equal(a.demoMediaUrl(19), a.demoMediaUrl(11));
-  assert.equal(a.demoMediaUrl(1), 'https://example.com/lap/demos/lap/thumbnails/01.jpg');
+  assert.equal(a.demoMediaUrl(1), 'https://example.com/bigfotolab/demos/bigfotolab/thumbnails/01.jpg');
   assert.equal(a.demoMediaUrl(999), '');
 });

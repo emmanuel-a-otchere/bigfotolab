@@ -1,6 +1,6 @@
 //! XMP keyword interoperability. Add formats here, not in scanners or DB code.
 //! Match namespace URIs, never user-chosen prefixes. Keep read/write capabilities
-//! explicit: importing a vendor field does not imply that Lap can rewrite it.
+//! explicit: importing a vendor field does not imply that bigfotolab can rewrite it.
 use crate::metadata::xmp::{parse_xml, XmlNode, XmpMetadata, NS_RDF};
 use exiftool_rs::{Tag, Value};
 use std::collections::{BTreeMap, HashSet};
@@ -17,7 +17,7 @@ fn format(uri: &str, name: &str) -> Option<(usize, &'static Format)> {
 }
 
 fn normalize_path(value: &str, separator: char) -> String {
-    // Older Lap/digiKam TagsList files may use pipes instead of slashes.
+    // Older bigfotolab/digiKam TagsList files may use pipes instead of slashes.
     let separator = if value.contains(separator) {
         separator
     } else {

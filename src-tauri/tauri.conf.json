@@ -1,7 +1,7 @@
 {
-  "productName": "Lap",
+  "productName": "bigfotolab",
   "version": "0.4.1",
-  "identifier": "com.julyx10.lap",
+  "identifier": "com.bigfotolab.app",
   "build": {
     "beforeBuildCommand": "pnpm --dir ../src-vite build",
     "beforeDevCommand": "pnpm --dir ../src-vite dev",

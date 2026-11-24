@@ -266,7 +266,7 @@ mod tests {
 
     #[tokio::test]
     async fn streams_full_files_and_ranges_only_with_the_route_and_scope() {
-        let path = std::env::temp_dir().join(format!("Lap {} # 示例.mp4", uuid::Uuid::new_v4()));
+        let path = std::env::temp_dir().join(format!("bigfotolab {} # 示例.mp4", uuid::Uuid::new_v4()));
         std::fs::write(&path, b"0123456789").unwrap();
         let encoded = percent_encoding::utf8_percent_encode(
             path.to_str().unwrap(),

@@ -1,7 +1,7 @@
 The files in this packaging directory (PKGBUILD, .SRCINFO, lap.desktop,
 disable-updater.patch, fix-optional-aptabase-exit.patch, and this
 notice) are distributed under the GNU General Public License, version 3 or any
-later version, the same license as the Lap program they build.
+later version, the same license as the bigfotolab program they build.
 
 This notice is the recipe-source license. It does not relicense bundled model
 files, FFmpeg sidecars, or third-party native libraries. Those inputs keep

@@ -35,7 +35,7 @@ const assert = require("node:assert/strict");
     );
   try {
     await page.goto(
-      process.env.LAP_DEMO_URL || "http://127.0.0.1:4179/demos/lap/index.html",
+      process.env.BIGFOTOLAB_DEMO_URL || "http://127.0.0.1:4179/demos/bigfotolab/index.html",
     );
     await comp("FileInfo").waitFor();
     await page.waitForFunction(() =>
@@ -361,7 +361,7 @@ const assert = require("node:assert/strict");
       ), 1);
       await shot("homepage-features");
       await page.getByRole("link", { name: "Demo", exact: true }).click();
-      await page.waitForURL("**/lap/demos/lap/index.html", {
+      await page.waitForURL("**/bigfotolab/demos/bigfotolab/index.html", {
         waitUntil: "domcontentloaded",
       });
       await comp("FileInfo").waitFor();

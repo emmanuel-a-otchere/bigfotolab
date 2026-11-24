@@ -1,12 +1,12 @@
 # Maintainer: Buckley Robinson <buckleyrobinson@gmail.com>
 # Local/upstream packaging recipe. Not published to the AUR.
 
-pkgname=lap
+pkgname=bigfotolab
 pkgver=0.3.2
 pkgrel=2
 pkgdesc='Offline-first photo manager for large local libraries'
 arch=('x86_64')
-url='https://julyx10.github.io/lap'
+url='https://emmanuel-a-otchere.github.io/bigfotolab'
 license=('GPL-3.0-or-later')
 depends=(
   'glib2'
@@ -44,7 +44,7 @@ _libheif=62f1b8c76ed4d8305071fdacbe74ef9717bacac5
 _libjpegturbo=9217719d3a58633923b096af4c1d50d304768a64
 DLAGENTS=('https::/usr/bin/bash ./fetch-source.sh %u %o')
 source=(
-  "lap-${_commit}.tar.gz::https://github.com/julyx10/lap/archive/${_commit}.tar.gz"
+  "bigfotolab-${_commit}.tar.gz::https://github.com/emmanuel-a-otchere/bigfotolab/archive/${_commit}.tar.gz"
   "LibRaw-${_libraw}.tar.gz::https://github.com/LibRaw/LibRaw/archive/${_libraw}.tar.gz"
   "libde265-${_libde265}.tar.gz::https://github.com/strukturag/libde265/archive/${_libde265}.tar.gz"
   "libheif-${_libheif}.tar.gz::https://github.com/strukturag/libheif/archive/${_libheif}.tar.gz"
@@ -56,7 +56,7 @@ source=(
   "w600k_mbf.onnx::https://huggingface.co/deepghs/insightface/resolve/4e1f33d3fe0e50a0945f3a53ab94ae8977ae7ddb/buffalo_s/w600k_mbf.onnx?download=true"
   "ffmpeg-x86_64-unknown-linux-gnu::https://api.github.com/repos/julyx10/lap-binaries/releases/assets/405019648"
   "ffprobe-x86_64-unknown-linux-gnu::https://api.github.com/repos/julyx10/lap-binaries/releases/assets/405019643"
-  'lap.desktop'
+  'bigfotolab.desktop'
   'package-source-license'
   'disable-updater.patch'
   'fix-optional-aptabase-exit.patch'
@@ -90,7 +90,7 @@ noextract=(
 )
 
 prepare() {
-  local root="${srcdir}/lap-${_commit}"
+  local root="${srcdir}/bigfotolab-${_commit}"
   local third="${root}/src-tauri/third_party"
   patch -p1 -d "${root}" -i "${srcdir}/disable-updater.patch"
   patch -p1 -d "${root}" -i "${srcdir}/fix-optional-aptabase-exit.patch"
@@ -119,8 +119,8 @@ prepare() {
 }
 
 build() {
-  local root="${srcdir}/lap-${_commit}"
-  export VITE_LAP_PACKAGE_MANAGER=pacman
+  local root="${srcdir}/bigfotolab-${_commit}"
+  export VITE_BIGFOTOLAB_PACKAGE_MANAGER=pacman
   export XDG_CACHE_HOME="${srcdir}/ort-cache"
   export ORT_STRATEGY=download
   unset ORT_SKIP_DOWNLOAD ORT_LIB_LOCATION
@@ -131,7 +131,7 @@ build() {
 }
 
 package() {
-  local root="${srcdir}/lap-${_commit}"
+  local root="${srcdir}/bigfotolab-${_commit}"
   local deb
   deb="$(find "${root}/src-tauri/target/release/bundle/deb" -name '*.deb' -print -quit)"
   test -n "${deb}"
@@ -144,7 +144,5 @@ package() {
   if [[ ! -e "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE" ]]; then
     install -Dm644 "${root}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   fi
-  if [[ ! -e "${pkgdir}/usr/share/applications/lap.desktop" && ! -e "${pkgdir}/usr/share/applications/Lap.desktop" ]]; then
-    install -Dm644 "${srcdir}/lap.desktop" "${pkgdir}/usr/share/applications/lap.desktop"
-  fi
+  install -Dm644 "${srcdir}/bigfotolab.desktop" "${pkgdir}/usr/share/applications/bigfotolab.desktop"
 }

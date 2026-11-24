@@ -1,8 +1,8 @@
 # Arch packaging
 
-Source-built `lap` recipe for x86_64. `pkgver` stays `0.3.2`; `pkgrel` is `2` for the Arch updater and shutdown fixes. The recipe source commit is `25f41f357e05df5c8123f78b4f5b111803c50dc7` (`v0.3.2-25-g25f41f35`), not the `v0.3.2` tag. Four native submodules are pinned tarballs, not git checkouts. Models and the x86_64 FFmpeg sidecars are checksummed `source=` entries staged into `src-tauri/resources/` before `cargo tauri build --bundles deb`. `package()` extracts only that DEB's `data.tar.*`.
+Source-built `bigfotolab` recipe for x86_64. `pkgver` stays `0.3.2`; `pkgrel` is `2` for the Arch updater and shutdown fixes. The recipe source commit is `25f41f357e05df5c8123f78b4f5b111803c50dc7` (`v0.3.2-25-g25f41f35`), not the `v0.3.2` tag. Four native submodules are pinned tarballs, not git checkouts. Models and the x86_64 FFmpeg sidecars are checksummed `source=` entries staged into `src-tauri/resources/` before `cargo tauri build --bundles deb`. `package()` extracts only that DEB's `data.tar.*`.
 
-This is not an AUR publication. `yay -S lap` will not work until the recipe is published. Install a locally built package with `pacman -U`.
+This is not an AUR publication. `yay -S bigfotolab` will not work until the recipe is published. Install a locally built package with `pacman -U`.
 
 ## Local build
 
@@ -14,7 +14,7 @@ makepkg -s
 
 Inspect the new package before installation. A rebuild is required after changing `PKGBUILD` or `disable-updater.patch`; the older package file in this checkout does not contain the updater fix.
 
-On 2026-10-12 a local `0.3.2-2` package was built from copied prepared sources using `makepkg --noextract --nodeps`. After installing it, the tester reported that Lap opened, closed with the main window's X, and reopened successfully. This confirms that user-reported close/reopen path only. A later clean, dependency-checking build of the final recipe in a disposable Arch container produced `lap-0.3.2-2-x86_64.pkg.tar.zst` (SHA-256 `551bbccbf54e54ef8d5887470bbbfcb9424238ebcfa9ddb3d1c7b379226130d8`). All 16 recipe source checksums passed, `.SRCINFO` matched, and namcap reported no errors. The clean artifact has not been installed or exercised in the GUI; AI inference, FFmpeg-backed video, updater UI, and package removal remain unverified for that artifact. Remote CI has not run.
+On 2026-10-12 a local `0.3.2-2` package was built from copied prepared sources using `makepkg --noextract --nodeps`. After installing it, the tester reported that bigfotolab opened, closed with the main window's X, and reopened successfully. This confirms that user-reported close/reopen path only. A later clean, dependency-checking build of the final recipe in a disposable Arch container produced `bigfotolab-0.3.2-2-x86_64.pkg.tar.zst` (SHA-256 `551bbccbf54e54ef8d5887470bbbfcb9424238ebcfa9ddb3d1c7b379226130d8`). All 16 recipe source checksums passed, `.SRCINFO` matched, and namcap reported no errors. The clean artifact has not been installed or exercised in the GUI; AI inference, FFmpeg-backed video, updater UI, and package removal remain unverified for that artifact. Remote CI has not run.
 
 `libappindicator` is the Arch package name; it provides `libappindicator-gtk3`. Do not depend on `libayatana-appindicator`.
 
@@ -36,7 +36,7 @@ Runtime `depends` were refined from `ldd` and namcap, not from the initial plan 
 
 ## Package-managed updates
 
-The recipe applies `disable-updater.patch` only inside the source tree extracted by `makepkg`. Its frontend build flag hides the update button and skips automatic and manual update calls; its Tauri capability change removes the updater permission. The plugin remains compiled but the Arch frontend cannot invoke it. Upgrades must go through pacman. Other distribution builds retain their existing updater behavior. The previously built `lap-0.3.2-1-x86_64.pkg.tar.zst` predates the shutdown fix and must not be used to retest closing the main window.
+The recipe applies `disable-updater.patch` only inside the source tree extracted by `makepkg`. Its frontend build flag hides the update button and skips automatic and manual update calls; its Tauri capability change removes the updater permission. The plugin remains compiled but the Arch frontend cannot invoke it. Upgrades must go through pacman. Other distribution builds retain their existing updater behavior. The previously built `bigfotolab-0.3.2-1-x86_64.pkg.tar.zst` predates the shutdown fix and must not be used to retest closing the main window.
 
 The `fix-optional-aptabase-exit.patch` guards the exit-time event flush with the same `APTABASE_KEY` condition used to register Aptabase. Without a key, the plugin state is absent and calling its flush method panics when the app exits. This fix is also applied to the working-tree `src-tauri/src/main.rs` for upstream review; the recipe patch is needed because the pinned source archive predates that edit.
 
@@ -95,9 +95,9 @@ Both downloaded x86_64 executables report FFmpeg 8.1 with `--enable-nonfree --en
 
 ### Publication evidence still needed
 
-An AUR submission would carry the recipe and metadata, not a prebuilt Lap package or the source assets. Running that recipe downloads the pinned assets and bundles them into the user's local package. Uploading the resulting binary through CI or a GitHub release would distribute those bundled bytes directly. Review both paths against the exact asset terms before enabling distribution.
+An AUR submission would carry the recipe and metadata, not a prebuilt bigfotolab package or the source assets. Running that recipe downloads the pinned assets and bundles them into the user's local package. Uploading the resulting binary through CI or a GitHub release would distribute those bundled bytes directly. Review both paths against the exact asset terms before enabling distribution.
 
-The inspected 2026-10-07 package contains only Lap's GPL license and `package-source-license` under `/usr/share/licenses/lap`; it has no separate FFmpeg source/configuration or model terms. [FFmpeg's own legal checklist](https://ffmpeg.org/legal.html) calls for corresponding source and build details for redistributed binaries, and its LGPL example excludes both `--enable-gpl` and `--enable-nonfree`. The pinned binaries report both flags, so obtain an appropriate redistributable FFmpeg build and its matching source/build record before publishing a binary artifact. The AUR recipe's direct download of these assets also needs review.
+The inspected 2026-10-07 package contains only bigfotolab's GPL license and `package-source-license` under `/usr/share/licenses/bigfotolab`; it has no separate FFmpeg source/configuration or model terms. [FFmpeg's own legal checklist](https://ffmpeg.org/legal.html) calls for corresponding source and build details for redistributed binaries, and its LGPL example excludes both `--enable-gpl` and `--enable-nonfree`. The pinned binaries report both flags, so obtain an appropriate redistributable FFmpeg build and its matching source/build record before publishing a binary artifact. The AUR recipe's direct download of these assets also needs review.
 
 The pinned face-model files are hosted by deepghs, while [InsightFace's policy](https://github.com/deepinsight/insightface#license) limits its pretrained models to non-commercial research and points to a licensing contact for open-sourced face-recognition packs. The pinned model card labels its terms `other`; no separate authorization for these two exact ONNX files is present in the checkout. Confirm their rights and provide the applicable terms before publication. This records missing evidence and does not decide whether a particular distribution is permitted.
 

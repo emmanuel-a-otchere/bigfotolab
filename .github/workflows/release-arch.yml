@@ -60,9 +60,9 @@ jobs:
           pacman -Qip "${package[0]}" | tee package-info.txt
           pacman -Qlp "${package[0]}" | tee package-files.txt
           sha256sum "${package[0]}" | tee package-sha256.txt
-          grep -q '/usr/bin/Lap$' package-files.txt
-          grep -q '/usr/share/applications/Lap.desktop$' package-files.txt
-          grep -q '/usr/lib/Lap/' package-files.txt
+          grep -q '/usr/bin/bigfotolab$' package-files.txt
+          grep -q '/usr/share/applications/bigfotolab.desktop$' package-files.txt
+          grep -q '/usr/lib/bigfotolab/' package-files.txt
           ! grep -q ' E: ' namcap.txt
       - name: Upload validation records
         uses: actions/upload-artifact@v4

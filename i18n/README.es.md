@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Logo de Lap" width="120" style="border-radius: 20px">
-  <h1>Lap - Gestor de fotos privadas locales</h1>
+  <img src="../docs/public/icon.png" alt="Logo de bigfotolab" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - Gestor de fotos privadas locales</h1>
   <h3>Gestor de fotos de escritorio de código abierto para macOS, Windows y Linux.</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="Lanzamiento en GitHub"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="Descargas en GitHub"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="Estrellas en GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="Lanzamiento en GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="Descargas en GitHub"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="Estrellas en GitHub"></a>
   </p>
 </div>
 
 [English](../README.md) | [Česky](README.cs.md) | [Deutsch](README.de.md) | Español | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Tiếng Việt](README.vi.md) | [中文简体](README.zh-CN.md) | [中文繁體](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-Lap es un gestor de fotos gratuito, de código abierto y centrado en el almacenamiento local para macOS, Windows y Linux. Organice carpetas existentes, busque con IA local y gestione grandes bibliotecas sin cuenta en la nube ni suscripción.
+bigfotolab es un gestor de fotos gratuito, de código abierto y centrado en el almacenamiento local para macOS, Windows y Linux. Organice carpetas existentes, busque con IA local y gestione grandes bibliotecas sin cuenta en la nube ni suscripción.
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">SITIO WEB OFICIAL</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">DEMO</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">SITIO WEB OFICIAL</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">DEMO</a></strong></p>
 </div>
 
-## Descargar Lap
+## Descargar bigfotolab
 
-Abra la [página de las últimas versiones](https://github.com/julyx10/lap/releases/latest) y descargue el archivo que corresponda a su sistema:
+Abra la [página de las últimas versiones](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest) y descargue el archivo que corresponda a su sistema:
 
 | Plataforma | Paquete | Nota |
 | :-- | :-- | :-- |
@@ -37,20 +37,20 @@ Abra la [página de las últimas versiones](https://github.com/julyx10/lap/relea
 brew install --cask lap
 ```
 
-¿Lo instaló mediante el tap `julyx10/lap`? Consulte las [instrucciones de migración](https://github.com/julyx10/lap/discussions/567).
+¿Lo instaló mediante el tap `julyx10/lap`? Consulte las [instrucciones de migración](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567).
 
 ## Capturas de pantalla
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Gestor local de biblioteca de fotos Lap" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Vista de mapa de Lap" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Vista previa de una foto en Lap" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="Gestor local de biblioteca de fotos bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="Vista de mapa de bigfotolab" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="Vista previa de una foto en bigfotolab" width="900">
 </p>
 
-## Por qué elegir Lap
+## Por qué elegir bigfotolab
 
 - **IA local y privada.** Describa una foto, busque imágenes similares o explore por rostros. Todo se procesa en su equipo.
-- **Sus carpetas, bajo su control.** Abra sus carpetas directamente en Lap. Los archivos conservan su ubicación y formato.
+- **Sus carpetas, bajo su control.** Abra sus carpetas directamente en bigfotolab. Los archivos conservan su ubicación y formato.
 - **Metadatos compatibles entre aplicaciones.** Lee EXIF, IPTC y XMP integrados y archivos auxiliares (valoraciones, etiquetas, favoritos, estados de selección, GPS y fechas). Permite guardar los metadatos modificados en archivos XMP auxiliares, sin alterar los archivos originales.
 - **Selección fotográfica.** Vista previa con la barra espaciadora, avance tras puntuar, áreas de enfoque, comparación en cuatro paneles y reglas de conservación de duplicados.
 - **Para bibliotecas de más de 100.000 fotos y vídeos.** Un núcleo nativo en Rust se encarga de la navegación, la búsqueda y el escaneo.
@@ -81,26 +81,26 @@ brew install --cask lap
 
 ## Metadatos y control de sus datos
 
-Lap trabaja directamente con sus carpetas y lee de los archivos la mayoría de los datos que muestra. Puede guardar los datos de organización en archivos auxiliares XMP estándar y abrirlos en otras aplicaciones de fotografía.
+bigfotolab trabaja directamente con sus carpetas y lee de los archivos la mayoría de los datos que muestra. Puede guardar los datos de organización en archivos auxiliares XMP estándar y abrirlos en otras aplicaciones de fotografía.
 
-Lap lee metadatos compatibles de Lightroom, digiKam, darktable y ACDSee. Los campos compatibles varían según la aplicación.
+bigfotolab lee metadatos compatibles de Lightroom, digiKam, darktable y ACDSee. Los campos compatibles varían según la aplicación.
 
 ### Leer metadatos existentes
 
 - Sus fotos y vídeos originales siempre siguen siendo archivos normales en sus carpetas existentes.
-- Durante la indexación, Lap lee EXIF, IPTC y XMP integrados, con datos de captura y organización. Active **Ajustes → Metadatos → Importar metadatos** para importar los datos de organización a la base de datos local. Se conservan las ediciones locales.
+- Durante la indexación, bigfotolab lee EXIF, IPTC y XMP integrados, con datos de captura y organización. Active **Ajustes → Metadatos → Importar metadatos** para importar los datos de organización a la base de datos local. Se conservan las ediciones locales.
 - Los valores compatibles de los archivos auxiliares XMP tienen prioridad sobre los integrados, incluidos el GPS y la fecha de captura.
 
 ### Guardar los cambios compatibles en XMP
 
 - El título, titular, descripción, autor y copyright se pueden editar y se guardan en la base de datos local.
 - Guardar metadatos en XMP escribe estos campos, las etiquetas (incluidas las palabras clave jerárquicas), valoraciones, favoritos y estados de selección en archivos auxiliares, sin alterar las demás propiedades XMP ni los originales.
-- Cuando renombra, mueve, copia, elimina o importa archivos **en Lap**, Lap actualiza al mismo tiempo su catálogo local. También mantiene juntos los recursos agrupados compatibles, como los componentes de Apple Live Photo, los archivos auxiliares XMP y AAE y los pares RAW + JPEG/HEIC activados. Puede eliminar uno o ambos archivos de un par RAW. Si conserva uno, también se mantiene su archivo XMP compartido.
+- Cuando renombra, mueve, copia, elimina o importa archivos **en bigfotolab**, bigfotolab actualiza al mismo tiempo su catálogo local. También mantiene juntos los recursos agrupados compatibles, como los componentes de Apple Live Photo, los archivos auxiliares XMP y AAE y los pares RAW + JPEG/HEIC activados. Puede eliminar uno o ambos archivos de un par RAW. Si conserva uno, también se mantiene su archivo XMP compartido.
 - Al guardar una edición de imagen integrada se escribe la imagen resultante en el destino elegido.
 
-### Qué permanece en la base de datos de Lap
+### Qué permanece en la base de datos de bigfotolab
 
-Lap almacena estos datos en la base de datos local o en la configuración de la biblioteca.
+bigfotolab almacena estos datos en la base de datos local o en la configuración de la biblioteca.
 
 - Las colecciones, los álbumes inteligentes, sus reglas, la agrupación, el orden y la disposición
 - Los datos de búsqueda con IA, datos de rostros, miniaturas y otros datos de índice o caché
@@ -108,48 +108,48 @@ Lap almacena estos datos en la base de datos local o en la configuración de la 
 
 Los cambios permanecen en la base de datos hasta que guarde explícitamente los campos compatibles en XMP. Las colecciones, álbumes inteligentes y datos de IA y rostros no se incluyen en XMP. Haga una copia de seguridad de la base de datos; copiar solo los originales no conserva esta organización.
 
-### Trabajar con archivos fuera de Lap
+### Trabajar con archivos fuera de bigfotolab
 
-Lap puede volver a escanear carpetas y detectar muchos cambios del sistema de archivos. Con la importación de metadatos activada, Lap también comprueba los cambios en los archivos auxiliares XMP. Sin embargo, los cambios realizados fuera de Lap —como renombrar, mover, sustituir o copiar archivos— pueden afectar a la organización que solo se guarda en Lap.
+bigfotolab puede volver a escanear carpetas y detectar muchos cambios del sistema de archivos. Con la importación de metadatos activada, bigfotolab también comprueba los cambios en los archivos auxiliares XMP. Sin embargo, los cambios realizados fuera de bigfotolab —como renombrar, mover, sustituir o copiar archivos— pueden afectar a la organización que solo se guarda en bigfotolab.
 
-Renombre y mueva los archivos en Lap para conservar sus colecciones. Mantenga los archivos auxiliares XMP junto a los originales. Si también administra archivos fuera de Lap, haga una copia de seguridad de la base de datos y la configuración de Lap junto con sus fotos. Puede gestionar la ubicación de la base de datos y crear una copia de seguridad en **Ajustes → Almacenamiento**.
+Renombre y mueva los archivos en bigfotolab para conservar sus colecciones. Mantenga los archivos auxiliares XMP junto a los originales. Si también administra archivos fuera de bigfotolab, haga una copia de seguridad de la base de datos y la configuración de bigfotolab junto con sus fotos. Puede gestionar la ubicación de la base de datos y crear una copia de seguridad en **Ajustes → Almacenamiento**.
 
-Eliminar la base de datos o la configuración de Lap elimina esta organización local y los datos de índice, pero no elimina sus archivos multimedia originales.
+Eliminar la base de datos o la configuración de bigfotolab elimina esta organización local y los datos de índice, pero no elimina sus archivos multimedia originales.
 
-## Desinstalar Lap
+## Desinstalar bigfotolab
 
-Lap trabaja directamente con sus carpetas de fotos existentes. Desinstalar Lap o eliminar sus archivos de base de datos y caché **no** elimina sus fotos originales.
+bigfotolab trabaja directamente con sus carpetas de fotos existentes. Desinstalar bigfotolab o eliminar sus archivos de base de datos y caché **no** elimina sus fotos originales.
 
-La desinstalación estándar elimina la aplicación. Para eliminar Lap por completo, cierre Lap primero, desinstale la aplicación y después elimine la base de datos local, la caché de miniaturas y los archivos de configuración con los comandos correspondientes a su plataforma.
+La desinstalación estándar elimina la aplicación. Para eliminar bigfotolab por completo, cierre bigfotolab primero, desinstale la aplicación y después elimine la base de datos local, la caché de miniaturas y los archivos de configuración con los comandos correspondientes a su plataforma.
 
 ### macOS
 
-Si instaló Lap con Homebrew:
+Si instaló bigfotolab con Homebrew:
 
 ```bash
 brew uninstall --cask lap
 ```
 
-Para una instalación manual, cierre Lap y mueva `Lap.app` de la carpeta `Applications` a la Papelera.
+Para una instalación manual, cierre bigfotolab y mueva `bigfotolab.app` de la carpeta `Applications` a la Papelera.
 
-Para eliminar todos los archivos de base de datos, caché y configuración de Lap:
+Para eliminar todos los archivos de base de datos, caché y configuración de bigfotolab:
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-Abra **Configuración > Aplicaciones > Aplicaciones instaladas**, busque **Lap** y seleccione **Desinstalar**.
+Abra **Configuración > Aplicaciones > Aplicaciones instaladas**, busque **bigfotolab** y seleccione **Desinstalar**.
 
-Después abra PowerShell y elimine todos los archivos de base de datos, caché y configuración de Lap:
+Después abra PowerShell y elimine todos los archivos de base de datos, caché y configuración de bigfotolab:
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,22 +157,22 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 Para instalaciones DEB, desinstale el paquete:
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-Para desinstalar el paquete local de Arch, use `sudo pacman -R lap`.
+Para desinstalar el paquete local de Arch, use `sudo pacman -R bigfotolab`.
 
-Para instalaciones AppImage, cierre Lap y elimine el archivo `.AppImage` descargado.
+Para instalaciones AppImage, cierre bigfotolab y elimine el archivo `.AppImage` descargado.
 
-Después elimine todos los archivos de base de datos, caché y configuración de Lap:
+Después elimine todos los archivos de base de datos, caché y configuración de bigfotolab:
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
-Si seleccionó un directorio personalizado para la base de datos en la configuración de Lap, elimínelo por separado después de confirmar que contiene únicamente archivos de base de datos de Lap.
+Si seleccionó un directorio personalizado para la base de datos en la configuración de bigfotolab, elimínelo por separado después de confirmar que contiene únicamente archivos de base de datos de bigfotolab.
 
 ## Compilar desde el código fuente
 
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # Clonar y compilar
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked
@@ -214,7 +214,7 @@ La receta fija un commit del código fuente original y verifica mediante sumas d
 
 ## Formatos compatibles
 
-Lap admite más de 60 formatos de imágenes, RAW y vídeo.
+bigfotolab admite más de 60 formatos de imágenes, RAW y vídeo.
 
 | Tipo | Formatos |
 | :--- | :--- |

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Post-process Lap AppImages built by Tauri/linuxdeploy (issues #270 and #271).
+# Post-process bigfotolab AppImages built by Tauri/linuxdeploy (issues #270 and #271).
 # Each input AppImage is extracted, patched, and replaced with a repacked image.
 #
 # Packaging policy:

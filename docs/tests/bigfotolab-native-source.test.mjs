@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 const root = new URL("../../", import.meta.url);
 const manifest = JSON.parse(
   readFileSync(
-    new URL("docs/public/demos/lap/source-manifest.json", root),
+    new URL("docs/public/demos/bigfotolab/source-manifest.json", root),
     "utf8",
   ),
 );

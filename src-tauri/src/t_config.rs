@@ -1,7 +1,7 @@
 /**
  * App configuration management.
  * Handles app-config.json for multi-library support.
- * project: Lap
+ * project: bigfotolab
  * author:  julyx10
  * date:    2026-01-15
  */
@@ -465,7 +465,7 @@ fn get_app_data_folder_name() -> String {
     let identifier = APP_IDENTIFIER
         .get()
         .cloned()
-        .unwrap_or_else(|| "com.julyx10.lap".to_string());
+        .unwrap_or_else(|| "com.bigfotolab.app".to_string());
 
     if cfg!(debug_assertions) {
         format!("{}.debug", identifier)
@@ -475,9 +475,9 @@ fn get_app_data_folder_name() -> String {
 }
 
 /// Get the cache directory for app-managed temporary data.
-/// macos: ~/Library/Caches/com.julyx10.lap
-/// windows: C:\Users\<username>\AppData\Local\com.julyx10.lap\cache
-/// linux: ~/.cache/com.julyx10.lap
+/// macos: ~/Library/Caches/com.bigfotolab.app
+/// windows: C:\Users\<username>\AppData\Local\com.bigfotolab.app\cache
+/// linux: ~/.cache/com.bigfotolab.app
 pub fn get_app_cache_dir() -> Result<PathBuf, String> {
     let app_dir_name = get_app_data_folder_name();
     dirs::cache_dir()

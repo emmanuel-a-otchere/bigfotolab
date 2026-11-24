@@ -1,6 +1,6 @@
 /**
  * Tauri commands for frontend-backend communication.
- * project: Lap
+ * project: bigfotolab
  * author:  julyx10
  * date:    2024-08-08
  */
@@ -1349,7 +1349,7 @@ pub async fn set_desktop_wallpaper(
             .map_err(|error| format!("Failed to start GNOME wallpaper service: {error}"))?;
         if !output.status.success() {
             return Err(
-                "This Linux desktop environment does not support setting wallpapers from Lap"
+                "This Linux desktop environment does not support setting wallpapers from bigfotolab"
                     .to_string(),
             );
         }

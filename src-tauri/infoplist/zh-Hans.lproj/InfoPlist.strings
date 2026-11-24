@@ -1,2 +1,2 @@
-CFBundleDisplayName = "Lap";
+CFBundleDisplayName = "bigfotolab";
 NSAppleEventsUsageDescription = "Finder 会将文件移到废纸篓，以便你可以将其放回原位置。";

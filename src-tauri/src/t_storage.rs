@@ -1,7 +1,7 @@
 /**
  * Database storage, backup, and restore operations.
  * Handles custom DB storage directory, migration, backup/restore of library databases.
- * project: Lap
+ * project: bigfotolab
  * author:  julyx10
  * date:    2026-01-15
  */

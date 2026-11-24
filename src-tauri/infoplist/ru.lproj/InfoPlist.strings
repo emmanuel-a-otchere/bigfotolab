@@ -1,2 +1,2 @@
-CFBundleDisplayName = "Lap";
+CFBundleDisplayName = "bigfotolab";
 NSAppleEventsUsageDescription = "Finder перемещает файлы в Корзину, чтобы их можно было вернуть на исходное место.";

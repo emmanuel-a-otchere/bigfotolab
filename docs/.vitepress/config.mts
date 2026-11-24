@@ -1,10 +1,10 @@
 import { defineConfig } from 'vitepress'
 
-const base = '/lap/'
+const base = '/bigfotolab/'
 
 export default defineConfig({
     base,
-    title: "Lap",
+    title: "bigfotolab",
     description: "Local-first, AI-powered photo manager",
     head: [
         ['link', { rel: 'icon', type: 'image/png', sizes: '512x512', href: `${base}icon.png` }],
@@ -26,8 +26,8 @@ export default defineConfig({
         nav: [
             { text: 'Home', link: '/' },
             { text: 'Guide', link: '/guide/introduction' },
-            { text: 'Demo', link: '/demos/lap/index.html', target: '_self' },
-            { text: 'Download', link: 'https://github.com/julyx10/lap/releases' }
+            { text: 'Demo', link: '/demos/bigfotolab/index.html', target: '_self' },
+            { text: 'Download', link: 'https://github.com/emmanuel-a-otchere/bigfotolab/releases' }
         ],
         sidebar: [
             {
@@ -69,11 +69,11 @@ export default defineConfig({
             }
         ],
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/julyx10/lap' }
+            { icon: 'github', link: 'https://github.com/emmanuel-a-otchere/bigfotolab' }
         ],
         footer: {
             message: 'Released under the GPL-3.0 License.',
-            copyright: 'Copyright © 2026 Lap Contributors'
+            copyright: 'Copyright © 2026 bigfotolab Contributors'
         }
     }
 })

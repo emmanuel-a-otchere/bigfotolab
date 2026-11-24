@@ -1,2 +1,2 @@
-CFBundleDisplayName = "Lap";
+CFBundleDisplayName = "bigfotolab";
 NSAppleEventsUsageDescription = "Finder mueve los archivos a la papelera para que puedas devolverlos a su ubicación original.";

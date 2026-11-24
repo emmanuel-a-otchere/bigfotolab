@@ -1,28 +1,28 @@
 <div align="center">
-  <img src="../docs/public/icon.png" alt="Lap Logo" width="120" style="border-radius: 20px">
-  <h1>Lap - プライベート・ローカル写真管理ツール</h1>
+  <img src="../docs/public/icon.png" alt="bigfotolab Logo" width="120" style="border-radius: 20px">
+  <h1>bigfotolab - プライベート・ローカル写真管理ツール</h1>
   <h3>macOS、Windows、Linux向けのオープンソース・デスクトップ写真管理ツール。</h3>
   <p>
-    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="julyx10%2Flap | Trendshift" width="250" height="55"/></a>
+    <a href="https://trendshift.io/repositories/24497?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24497" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24497" alt="bigfotolab | Trendshift" width="250" height="55"/></a>
   </p>
   <p>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/v/release/julyx10/lap" alt="GitHub release"></a>
-    <a href="https://github.com/julyx10/lap/releases"><img src="https://img.shields.io/github/downloads/julyx10/lap/total" alt="GitHub all releases"></a>
-    <a href="https://github.com/julyx10/lap/stargazers"><img src="https://img.shields.io/github/stars/julyx10/lap" alt="GitHub stars"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/v/release/emmanuel-a-otchere/bigfotolab" alt="GitHub release"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/releases"><img src="https://img.shields.io/github/downloads/emmanuel-a-otchere/bigfotolab/total" alt="GitHub all releases"></a>
+    <a href="https://github.com/emmanuel-a-otchere/bigfotolab/stargazers"><img src="https://img.shields.io/github/stars/emmanuel-a-otchere/bigfotolab" alt="GitHub stars"></a>
   </p>
 </div>
 
 [English](../README.md) | [Česky](README.cs.md) | [Deutsch](README.de.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Magyar](README.hu.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Tiếng Việt](README.vi.md) | [中文简体](README.zh-CN.md) | [中文繁體](README.zh-TW.md) | 日本語 | [한국어](README.ko.md)
 
-Lap は macOS、Windows、Linux 用の無料でオープンソースのローカルファースト写真管理アプリです。既存のフォルダーを整理し、ローカル AI で検索できます。クラウドアカウントやサブスクリプションは不要です。
+bigfotolab は macOS、Windows、Linux 用の無料でオープンソースのローカルファースト写真管理アプリです。既存のフォルダーを整理し、ローカル AI で検索できます。クラウドアカウントやサブスクリプションは不要です。
 
 <div align="center">
-  <p><strong><a href="https://julyx10.github.io/lap/">公式サイト</a> | <a href="https://julyx10.github.io/lap/demos/lap/index.html">デモ</a></strong></p>
+  <p><strong><a href="https://emmanuel-a-otchere.github.io/bigfotolab/">公式サイト</a> | <a href="https://emmanuel-a-otchere.github.io/bigfotolab/demos/bigfotolab/index.html">デモ</a></strong></p>
 </div>
 
 ## Lapをダウンロード
 
-[最新のリリースページ](https://github.com/julyx10/lap/releases/latest)を開き、お使いのシステムに合ったファイルをダウンロードしてください：
+[最新のリリースページ](https://github.com/emmanuel-a-otchere/bigfotolab/releases/latest)を開き、お使いのシステムに合ったファイルをダウンロードしてください：
 
 | プラットフォーム | パッケージ | 備考 |
 | :-- | :-- | :-- |
@@ -37,20 +37,20 @@ Lap は macOS、Windows、Linux 用の無料でオープンソースのローカ
 brew install --cask lap
 ```
 
-以前 `julyx10/lap` tap からインストールした場合は[移行手順](https://github.com/julyx10/lap/discussions/567)を参照してください。
+以前 `julyx10/lap` tap からインストールした場合は[移行手順](https://github.com/emmanuel-a-otchere/bigfotolab/discussions/567)を参照してください。
 
 ## スクリーンショット
 
 <p align="center">
-  <img src="../docs/public/screenshots/lap_library.png" alt="Lap のローカルフォトライブラリ管理" width="900">
-  <img src="../docs/public/screenshots/lap_map_view.png" alt="Lap のマップビュー" width="900">
-  <img src="../docs/public/screenshots/lap_preview.png" alt="Lap の写真プレビュー" width="900">
+  <img src="../docs/public/screenshots/lap_library.png" alt="bigfotolab のローカルフォトライブラリ管理" width="900">
+  <img src="../docs/public/screenshots/lap_map_view.png" alt="bigfotolab のマップビュー" width="900">
+  <img src="../docs/public/screenshots/lap_preview.png" alt="bigfotolab の写真プレビュー" width="900">
 </p>
 
 ## Lapを選ぶ理由
 
 - **プライベートなローカル AI。** 写真を文章で探したり、類似写真や顔で絞り込んだりできます。処理はすべて端末上で行われます。
-- **自分で管理できるフォルダー。** 既存のフォルダーを Lap で直接開けます。ファイルの場所と形式はそのままです。
+- **自分で管理できるフォルダー。** 既存のフォルダーを bigfotolab で直接開けます。ファイルの場所と形式はそのままです。
 - **アプリ間で使えるメタデータ。** 埋め込み EXIF・IPTC・XMP とサイドカー（評価、タグ、お気に入り、選別状態、GPS、日付など）を読み取ります。編集したメタデータを XMP サイドカーに保存でき、元のファイルは変更されません。
 - **写真の選別。** スペースキーで即時プレビュー、評価後の自動送り、AF エリア表示、4 分割比較、重複ファイルの保持ルールに対応します。
 - **写真と動画が 10 万点以上のライブラリに対応。** Rust 製のネイティブコアが閲覧、検索、スキャンを処理します。
@@ -75,15 +75,15 @@ brew install --cask lap
 - **カスタマイズ可能なファイル情報。** 表示項目の選択、詳細の遅延読み込み、ビューアーの AF エリア表示。
 - **インタラクティブな地図表示**：現在のフィルターに沿って、位置情報付きの写真や動画をグループで探索。
 - **オフラインでのアルバム閲覧**：切断されたストレージやネットワークストレージ上のアルバムも、キャッシュ済みサムネイルで表示。
-- **クラウド上にのみ保存されたファイル。** OneDrive のオンデマンドファイルや macOS のプレースホルダーを自動ダウンロードせずにインデックス化して表示。Lap が自動的にダウンロードすることはありません。
+- **クラウド上にのみ保存されたファイル。** OneDrive のオンデマンドファイルや macOS のプレースホルダーを自動ダウンロードせずにインデックス化して表示。bigfotolab が自動的にダウンロードすることはありません。
 - **ライトテーマとダークテーマ。** システムの外観に合わせることもできます。
 - **幅広い形式に対応**：60 以上の画像・RAW・動画形式をサポート。Affinity ドキュメント（埋め込みプレビュー）。
 
 ## メタデータとデータの所有権
 
-Lap は既存のフォルダーを直接扱い、表示する情報の大半をファイルから読み取ります。整理情報は、他の写真アプリでも読み取れる標準の XMP サイドカーに保存できます。
+bigfotolab は既存のフォルダーを直接扱い、表示する情報の大半をファイルから読み取ります。整理情報は、他の写真アプリでも読み取れる標準の XMP サイドカーに保存できます。
 
-Lap は Lightroom、digiKam、darktable、ACDSee の互換メタデータを読み込みます。対応する項目はアプリによって異なります。
+bigfotolab は Lightroom、digiKam、darktable、ACDSee の互換メタデータを読み込みます。対応する項目はアプリによって異なります。
 
 ### 既存のメタデータを読み取る
 
@@ -98,7 +98,7 @@ Lap は Lightroom、digiKam、darktable、ACDSee の互換メタデータを読�
 - ファイルを**Lap内で**名前変更、移動、コピー、削除、読み込みすると、Lapは同時にローカルカタログを更新します。Apple Live Photoの構成ファイル、XMP・AAE サイドカー、有効にしたRAW + JPEG/HEICペアなど、対応する関連ファイルもまとめて扱います。 RAW ペアは片方だけでも両方でも削除できます。片方を残す場合、共有 XMP サイドカーも保持されます。
 - 内蔵の画像編集を保存すると、編集後の画像が選択した保存先に書き込まれます。
 
-### Lap のデータベースに残る情報
+### bigfotolab のデータベースに残る情報
 
 これらのライブラリ情報はローカルデータベースまたはライブラリ設定に保存されます。
 
@@ -112,7 +112,7 @@ Lap は Lightroom、digiKam、darktable、ACDSee の互換メタデータを読�
 
 Lapはフォルダーを再スキャンし、多くのファイルシステム上の変更を検出できます。ただし、Lapの外でファイルの名前変更、移動、置き換え、コピーを行うと、Lap内だけに保存されている整理情報に影響する場合があります。
 
-メタデータの読み込みが有効な場合は、XMP サイドカーの変更も確認します。コレクションへの所属を維持するには、Lap で名前変更や移動を行ってください。XMP サイドカーは元ファイルと一緒に管理してください。 Lapの外でもファイルを管理する場合は、写真とあわせてLapのデータベースと設定をバックアップしてください。データベースの場所の管理とバックアップの作成は、**設定 → ストレージ**から行えます。
+メタデータの読み込みが有効な場合は、XMP サイドカーの変更も確認します。コレクションへの所属を維持するには、bigfotolab で名前変更や移動を行ってください。XMP サイドカーは元ファイルと一緒に管理してください。 Lapの外でもファイルを管理する場合は、写真とあわせてLapのデータベースと設定をバックアップしてください。データベースの場所の管理とバックアップの作成は、**設定 → ストレージ**から行えます。
 
 Lapのデータベースまたは設定を削除すると、このローカルの整理情報とインデックスデータは削除されますが、元のメディアファイルは削除されません。
 
@@ -130,26 +130,26 @@ HomebrewでLapをインストールした場合：
 brew uninstall --cask lap
 ```
 
-手動でインストールした場合は、Lapを終了し、`Applications`フォルダーの`Lap.app`をゴミ箱に移動してください。
+手動でインストールした場合は、Lapを終了し、`Applications`フォルダーの`bigfotolab.app`をゴミ箱に移動してください。
 
 Lapのデータベース、キャッシュ、設定ファイルをすべて削除するには：
 
 ```bash
-rm -rf "$HOME/Library/Application Support/com.julyx10.lap" \
-       "$HOME/Library/Caches/com.julyx10.lap" \
-       "$HOME/Library/WebKit/com.julyx10.lap"
-rm -f "$HOME/Library/Preferences/com.julyx10.lap.plist"
+rm -rf "$HOME/Library/Application Support/com.bigfotolab.app" \
+       "$HOME/Library/Caches/com.bigfotolab.app" \
+       "$HOME/Library/WebKit/com.bigfotolab.app"
+rm -f "$HOME/Library/Preferences/com.bigfotolab.app.plist"
 ```
 
 ### Windows
 
-**設定 > アプリ > インストールされているアプリ**を開き、**Lap**を探して**アンインストール**を選択します。
+**設定 > アプリ > インストールされているアプリ**を開き、**bigfotolab**を探して**アンインストール**を選択します。
 
 次にPowerShellを開き、Lapのデータベース、キャッシュ、設定ファイルをすべて削除します：
 
 ```powershell
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.julyx10.lap"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.julyx10.lap"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:LOCALAPPDATA\com.bigfotolab.app"
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.bigfotolab.app"
 ```
 
 ### Linux
@@ -157,19 +157,19 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:APPDATA\com.july
 DEB でインストールした場合は、パッケージを削除します：
 
 ```bash
-sudo apt remove lap
+sudo apt remove bigfotolab
 ```
 
-ローカルにインストールした Arch パッケージの場合は `sudo pacman -R lap` を使用します。
+ローカルにインストールした Arch パッケージの場合は `sudo pacman -R bigfotolab` を使用します。
 
-AppImage の場合は、Lap を終了し、ダウンロードした `.AppImage` ファイルを削除します。
+AppImage の場合は、bigfotolab を終了し、ダウンロードした `.AppImage` ファイルを削除します。
 
 次に、Lapのデータベース、キャッシュ、設定ファイルをすべて削除します：
 
 ```bash
-rm -rf "$HOME/.local/share/com.julyx10.lap" \
-       "$HOME/.cache/com.julyx10.lap" \
-       "$HOME/.config/com.julyx10.lap"
+rm -rf "$HOME/.local/share/com.bigfotolab.app" \
+       "$HOME/.cache/com.bigfotolab.app" \
+       "$HOME/.config/com.bigfotolab.app"
 ```
 
 Lapの設定でカスタムデータベース保存先を選択している場合は、そのフォルダーにLapのデータベースファイルのみが含まれていることを確認してから、別途削除してください。
@@ -188,7 +188,7 @@ brew install nasm pkg-config autoconf automake libtool cmake
 #   patchelf nasm clang pkg-config autoconf automake libtool cmake
 
 # クローンとビルド
-git clone --recursive https://github.com/julyx10/lap.git
+git clone --recursive https://github.com/emmanuel-a-otchere/bigfotolab.git
 cd lap
 git submodule update --init --recursive
 cargo install tauri-cli --version "^2.0.0" --locked

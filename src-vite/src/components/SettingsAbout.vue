@@ -139,12 +139,12 @@ const displayVersion = computed(() => {
 });
 const privacyUrl = computed(() => {
   const repo = packageInfo.value.repository || '';
-  if (!repo) return 'https://github.com/julyx10/lap/blob/main/PRIVACY.md';
+  if (!repo) return 'https://github.com/emmanuel-a-otchere/bigfotolab/blob/main/PRIVACY.md';
   return repo.endsWith('/') ? `${repo}blob/main/PRIVACY.md` : `${repo}/blob/main/PRIVACY.md`;
 });
 const issuesUrl = computed(() => {
   const repo = packageInfo.value.repository || '';
-  if (!repo) return 'https://github.com/julyx10/lap/issues';
+  if (!repo) return 'https://github.com/emmanuel-a-otchere/bigfotolab/issues';
   return repo.endsWith('/') ? `${repo}issues` : `${repo}/issues`;
 });
 const { locale, messages } = useI18n();

@@ -1,6 +1,6 @@
-# Lap interactive demo — actual frontend components
+# bigfotolab interactive demo — actual frontend components
 
-This version compiles the current Lap frontend into a static browser application. It uses the actual components and app stylesheet rather than a handwritten imitation. Only the Tauri/system interfaces are replaced by a deterministic browser fixture adapter.
+This version compiles the current bigfotolab frontend into a static browser application. It uses the actual components and app stylesheet rather than a handwritten imitation. Only the Tauri/system interfaces are replaced by a deterministic browser fixture adapter.
 
 ## Requested areas
 
@@ -33,8 +33,8 @@ The **Demo** navigation opens the standalone page. To embed it elsewhere with th
 
 ```html
 <iframe
-  src="/lap/demos/lap/index.html"
-  title="Lap interactive photo manager demo"
+  src="/bigfotolab/demos/bigfotolab/index.html"
+  title="bigfotolab interactive photo manager demo"
   style="width:100%;height:790px;border:0;border-radius:16px"
   loading="lazy"
 ></iframe>
@@ -63,7 +63,7 @@ python3 -m http.server 4179 --bind 127.0.0.1 --directory docs/public
 node docs/tests/lap-demo.browser.cjs
 ```
 
-The browser suite requires Playwright and Chrome. `PLAYWRIGHT_MODULE` can point to an existing Playwright package; `LAP_DEMO_URL` overrides the URL, and `LAP_SCREENSHOT_DIR` saves screenshots. It checks all nine left panels, album/folder and smart-rule results, nine settings categories, live theme changes, filmstrip preview at all four placements, original multi-select buttons and batch mutations/dialogs, duplicate/similar groups, keep actions and simulated trash, and file-info preview tabs. `--site` additionally checks the built homepage and navigation using a server on port 4180 with the documentation output mounted at `/lap/`.
+The browser suite requires Playwright and Chrome. `PLAYWRIGHT_MODULE` can point to an existing Playwright package; `BIGFOTOLAB_DEMO_URL` overrides the URL, and `BIGFOTOLAB_SCREENSHOT_DIR` saves screenshots. It checks all nine left panels, album/folder and smart-rule results, nine settings categories, live theme changes, filmstrip preview at all four placements, original multi-select buttons and batch mutations/dialogs, duplicate/similar groups, keep actions and simulated trash, and file-info preview tabs. `--site` additionally checks the built homepage and navigation using a server on port 4180 with the documentation output mounted at `/bigfotolab/`.
 
 Folder-drop regression: `node docs/tests/lap-album-drop.browser.cjs` uses the same Playwright/server environment and checks the real AlbumList placeholder, cancellation, duplicate/overlap prevention, multi-folder registration, indexing, and source-path confirmation. It verifies fixture IPC calls, not native OS drag payload delivery; test Finder/Explorer/Linux file-manager drags in a desktop build as well.
 
