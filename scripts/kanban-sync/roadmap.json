@@ -1,0 +1,176 @@
+{
+  "repo": "emmanuel-a-otchere/bigfotolab",
+  "exported_at": "2026-11-24T15:00:08.135068+00:00",
+  "milestones": [
+    {
+      "number": 1,
+      "title": "Phase 1 - transport split + headless bigfotolab-server skeleton",
+      "state": "open",
+      "description": "",
+      "open_issues": 1
+    },
+    {
+      "number": 2,
+      "title": "Phase 2 - media pyramid, caching, instant fast-scroll (Pi 3 bandwidth budget)",
+      "state": "open",
+      "description": "",
+      "open_issues": 2
+    },
+    {
+      "number": 3,
+      "title": "Phase 3 - multi-user auth, per-user state, delta sync, offline cache",
+      "state": "open",
+      "description": "",
+      "open_issues": 1
+    },
+    {
+      "number": 4,
+      "title": "Phase 4 - PWA mobile shell, adaptive video, optional AI node",
+      "state": "open",
+      "description": "",
+      "open_issues": 1
+    }
+  ],
+  "issues": [
+    {
+      "number": 11,
+      "title": "360 panorama support: Insta360 .insp/.insv + DJI GPano files, viewable in a spherical viewer",
+      "state": "closed",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/11",
+      "body": "## Goal\nMake 360-degree panoramas first-class: Insta360 native `.insp` (equirect JPEG) / `.insv` (spherical MP4) and DJI/other GPano-tagged JPEG/MP4 exports are scanned, indexed, and **viewable in-app with a spherical (drag-to-look-around) viewer** — photos and 360 videos.\n\nPart of epic #9.\n\n## Scope / task plan\n- [ ] Accept `.insp` as image and `.insv` as video in the format lists (`t_common.rs`) so they are scanned and thumbnailed (both are standard JPEG/MP4 containers, decoded by magic bytes).\n- [ ] Detect 360 at index time: extension `insp`/`insv` or GPano `equirectangular` XMP in the file header/sidecar -> `afiles.media_subtype = 'pano_360'` (no schema change; subtype column already flows to the frontend file info).\n- [ ] CORS `*` on the loopback original-media server (`t_http.rs`) so the web viewer can upload textures in desktop mode; remote mode is same-origin.\n- [ ] New `PanoViewer.vue`: WebGL equirectangular viewer (image texture or `<video>` texture), drag = yaw/pitch, wheel = FOV zoom; wired into `MediaViewer.vue` when `media_subtype === 'pano_360'` (both photo and video panos).\n- [ ] Locale label for the `pano_360` subtype.\n- [ ] Thumbnails: `.insp` via existing JPEG pipeline; giant equirect JPEGs prefer embedded/scaled decode to stay within Pi 3 RAM (server-side concern, Phase 1/2).\n\n## Acceptance criteria\n- A library containing `.insp`/`.insv` files indexes them with correct type and `pano_360` subtype.\n- Opening a pano photo in the viewer shows the spherical viewer (drag to look around, wheel zoom).\n- Opening a pano video plays inside the spherical viewer.\n- Regular photos/videos unchanged.\n",
+      "labels": [
+        "enhancement",
+        "roadmap",
+        "ux"
+      ],
+      "milestone": null
+    },
+    {
+      "number": 9,
+      "title": "Roadmap (epic): bigfotolab-server on Pi 3 + drop-in instant browsing + reorg templates",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/9",
+      "body": "## Epic — bigfotolab enhancement roadmap\n\nCanonical plan copies live in-repo: `ROADMAP.md` and `docs/architecture/bigfotolab-server-pi3.md` (merged in #2).\n\n### Shipped\n- #1 — rename to **bigfotolab** throughout (merged).\n\n### Guiding requirements\n- Drop-in for existing libraries: no import, browsing mirrors the on-disk directory structure as-is.\n- Instant fast-scroll of thumbnails (resolution pyramid 128/256/512/1024, placeholder-first, virtualized grid).\n- Headless **bigfotolab-server co-located with storage on a Raspberry Pi 3** (≤2 GB RAM, 100–300 Mbps LAN): all scan/sidecar/thumbnail I/O server-local; thin LAN clients over HTTP+WS; no per-file network I/O from clients.\n\n### Delivery phases (milestones)\n- Milestone \"Phase 1\" → #4 transport split + headless server skeleton\n- Milestone \"Phase 2\" → #5 media pyramid/caching/pre-warm + #8 instant fast-scroll UX (drop-in folder-mirroring grid)\n- Milestone \"Phase 3\" → #6 multi-user auth, per-user state, delta sync, offline cache\n- Milestone \"Phase 4\" → #7 PWA mobile shell, adaptive video, optional off-Pi AI node\n\n### Future feature roadmap\n- #3 automated library reorganization via strategy templates (built-in + user-defined), dry-run preview, sidecar-preserving moves with undo.\n\n### Tracking & sync\n- Labels: `roadmap`, `server-backend`, `ux`. Milestones: Phase 1–4 (see [milestones](https://github.com/emmanuel-a-otchere/bigfotolab/milestones)).\n- Projects v2 boards are not creatable with the current token; when the additional project space is provided, this epic and issues #3–#8 will be synced to both project spaces consistently.\n",
+      "labels": [
+        "roadmap"
+      ],
+      "milestone": null
+    },
+    {
+      "number": 8,
+      "title": "UX: instant fast-scroll thumbnail grid mirroring on-disk folder structure (drop-in for existing libraries)",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/8",
+      "body": "## Goal\nScrolling a large library's thumbnails must feel almost instant, and the app must reflect the library's existing directory structure without changing it - bigfotolab is drop-in ready for any already-existing library (no import, no restructure).\n\n## Scope / task plan\n- [ ] Virtualized thumbnail grid keyed by the folder tree exactly as indexed from disk (read-only mapping; never rewrites paths).\n- [ ] Placeholder-first rendering: 128 px tier paints immediately, then upgrades through 256/512/1024 tiers (works in both local Tauri mode and remote server mode).\n- [ ] Lazy metadata; grid ordering/sorting driven by indexed fields, not filesystem layout.\n- [ ] Confirm zero-migration: opening an existing folder just works; no import dialog, no reorganization prompt.\n\n## Acceptance criteria\n- 100k+ item library scrolls smoothly; folder tree in-app == on-disk structure; thumbnails visible <100 ms from cache on warm scroll.\n",
+      "labels": [
+        "enhancement",
+        "roadmap",
+        "ux"
+      ],
+      "milestone": "Phase 2 - media pyramid, caching, instant fast-scroll (Pi 3 bandwidth budget)"
+    },
+    {
+      "number": 7,
+      "title": "Phase 4: mobile staging - PWA shell, adaptive video, optional off-Pi AI node",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/7",
+      "body": "## Goal\nStage mobile: any phone/tablet on the LAN gets an installable app against the Pi backend.\n\n## Scope / task plan\n- [ ] Serve the built SPA (`src-vite/dist`) at `/` with PWA manifest + service worker (offline shell + cached media); Capacitor shell later - same codebase via RemoteTransport.\n- [ ] Adaptive video: default 360p/720p H.264 proxy transcode (or HLS multi-bitrate when bandwidth allows); original via Range on demand.\n- [ ] Optional AI off the Pi: CLIP/face models run on a more powerful node; Pi queries it over the API and works fine with AI disabled.\n\n## Acceptance criteria\n- PWA installs from the Pi's URL on a phone and browses/smooth-scrolls the library; video starts fast at low bitrate.\n",
+      "labels": [
+        "roadmap",
+        "server-backend"
+      ],
+      "milestone": "Phase 4 - PWA mobile shell, adaptive video, optional AI node"
+    },
+    {
+      "number": 6,
+      "title": "Phase 3: multi-user auth, per-user state, delta sync, offline client cache",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/6",
+      "body": "## Goal\nHealthy, consistent multi-user access from any LAN node, with per-user organization state and graceful offline behavior.\n\n## Scope / task plan\n- [ ] Per-user bearer tokens issued by the server; LAN-only bind (or VPN/Tailscale); optional TLS via reverse proxy; library-level ACLs.\n- [ ] Per-user state (ratings, favorites, culling, collections, smart albums) in per-user rows; shared read-only index (files, thumbnails); SQLite WAL + single serialized writer (scanner).\n- [ ] WS delta sync: row-level changes as IDs + hashes (no full-row polling); heartbeat + reconnect with state resync.\n- [ ] Client-side cache (service worker / IndexedDB) of last-synced metadata + thumbnails - extends the existing offline-album browsing to \"offline from the server\".\n- [ ] Server-side sidecar/filesystem watcher (inotify/FSEvents/poll) so index freshness never depends on client rescans; XMP writeback stays server-side (`metadata/xmp.rs`).\n\n## Acceptance criteria\n- N users browse concurrently; ratings/favorites isolated per user; clients survive server restart and re-sync via deltas.\n",
+      "labels": [
+        "roadmap",
+        "server-backend"
+      ],
+      "milestone": "Phase 3 - multi-user auth, per-user state, delta sync, offline cache"
+    },
+    {
+      "number": 5,
+      "title": "Phase 2: media serving - thumbnail resolution pyramid, Range originals, caching, pre-warm (Pi 3 bandwidth budget)",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/5",
+      "body": "## Goal\nMake media delivery bandwidth-first so clients on a 100-300 Mbps LAN feel instant: serve a resolution pyramid, cache aggressively, and never stream originals unless asked.\n\n## Scope / task plan\n- [ ] `GET /media/thumb/{library}/{file_id}?size=128|256|512|1024` - reuse the `AThumb` cache + generation queue (`t_protocol.rs`); format negotiation (WebP/AVIF), progressive JPEG for the viewer tier.\n- [ ] `GET /media/original/{id}` - generalize `t_http.rs` loopback server to LAN with token auth; Range requests for video; `ETag`/`Last-Modified` + `Cache-Control: immutable` on content-addressed thumbs.\n- [ ] Pre-warm the pyramid on scan via the existing background thumb queue (permits=1 on Pi).\n- [ ] Brotli/gzip on API JSON; single WS for `thumbnail_ready` and progress; paginated/virtualized queries.\n- [ ] Bandwidth budget doc: bytes per scroll position per tier; video default = small proxy transcode (360p/720p H.264), original via Range on demand.\n\n## Acceptance criteria\n- Fast scroll over a 100k-item library feels instant: 128 px placeholders render <100 ms from HTTP cache, larger tiers upgrade progressively (see companion UX issue).\n- Measured wire bytes per grid page within the documented budget on a Pi 3 link.\n",
+      "labels": [
+        "roadmap",
+        "server-backend"
+      ],
+      "milestone": "Phase 2 - media pyramid, caching, instant fast-scroll (Pi 3 bandwidth budget)"
+    },
+    {
+      "number": 4,
+      "title": "Phase 1: transport split + headless bigfotolab-server skeleton (Pi 3)",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/4",
+      "body": "## Goal\nRun the bigfotolab core as a headless service co-located with the photo storage (target hardware: Raspberry Pi 3, <=2 GB RAM, 100-300 Mbps LAN), serving thin clients (browser / PWA / Tauri webview) over the LAN. No media import: the server opens library folders in place.\n\n## Scope / task plan\n- [ ] Frontend: `Transport` abstraction in `src-vite/src/common/api.js` (single choke point for all `invoke`/`listen` calls) with `TauriTransport` (current local desktop mode) and `RemoteTransport` (HTTP + one WebSocket). Mode selected at startup from config (server URL + token).\n- [ ] Backend: headless entrypoint (`src-tauri/src/bin/bigfotolab-server.rs` + new `t_server.rs`) reusing existing command modules; read-only command mirror as REST/JSON; `/events` WebSocket replacing `app.emit`/`listen` (`index_progress`, `thumbnail_ready`, ...).\n- [ ] Per-request `library_id` context instead of global `CURRENT_LIBRARY_ID` (`with_current_library`, `t_cmds.rs:58`, becomes request-scoped).\n- [ ] Server-mode config (libraries, DB dir on server-local disk via `t_storage.rs`, port, LAN-only bind, token); SQLite WAL, capped cache.\n- [ ] Cross-compile `aarch64-unknown-linux-gnu`; release profile `opt-level=\"z\"`, lto, strip, panic=abort; systemd unit on Raspberry Pi OS Lite (64-bit, read-only root + overlay).\n\n## Pi 3 constraints (design drivers)\n1 GB RAM: tokio workers=2, thumbnail decode permits=1 (existing queue in `t_protocol.rs`), SQLite cache ~8 MB, mmap off, AI indexing OFF by default (ort models don't fit), RAW thumbnails via embedded previews (libraw decode only on explicit request).\n\n## Acceptance criteria\n- Server runs as one systemd service on a Pi 3; desktop local mode unchanged.\n- A browser pointed at the server can list libraries / albums / files read-only via RemoteTransport.\n\n## Refs\n- Media loopback server to generalize: `src-tauri/src/t_http.rs`; thumbnails: `src-tauri/src/t_protocol.rs` (`thumb://`); sidecar/XMP reads stay server-side: `src-tauri/src/metadata/`.\n",
+      "labels": [
+        "roadmap",
+        "server-backend"
+      ],
+      "milestone": "Phase 1 - transport split + headless bigfotolab-server skeleton"
+    },
+    {
+      "number": 3,
+      "title": "Feature roadmap: automated library reorganization via strategy templates (built-in + user-defined)",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/issues/3",
+      "body": "## Goal (future)\nLet users re-organize an existing library automatically using organization strategy templates - built-in presets plus user-defined templates.\n\n## Scope / task plan (roadmap only - no implementation yet)\n- [ ] Built-in strategy presets: by date (Y/M/D), by event, by camera/lens, RAW+JPEG pairing, duplicate consolidation, etc.\n- [ ] User-defined templates: JSON/YAML schema + in-app template editor.\n- [ ] Dry-run preview: full diff of proposed moves/copies before applying.\n- [ ] Execution reuses existing move/copy operations so XMP sidecars and paired assets (Live Photo components, AAE, RAW+JPEG) stay together; undo support.\n- [ ] Never touches originals unless the user explicitly chooses move (copy-then-verify default).\n\n## Notes\nPairs with the folder-structure-mirroring browsing: browsing reflects disk as-is; reorganization is an explicit, previewed, optional action.\n",
+      "labels": [
+        "enhancement",
+        "roadmap"
+      ],
+      "milestone": null
+    }
+  ],
+  "pulls": [
+    {
+      "number": 13,
+      "title": "feat(server): Phase 1 - transport split + headless bigfotolab-server skeleton",
+      "state": "open",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/pull/13",
+      "merged": false,
+      "labels": [
+        "roadmap",
+        "server-backend"
+      ]
+    },
+    {
+      "number": 12,
+      "title": "feat(pano): 360 panorama support (Insta360 .insp/.insv, DJI GPano) with spherical viewer",
+      "state": "closed",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/pull/12",
+      "merged": true,
+      "labels": [
+        "enhancement",
+        "roadmap",
+        "ux"
+      ]
+    },
+    {
+      "number": 2,
+      "title": "docs: add bigfotolab roadmap and Pi 3 server architecture plan",
+      "state": "closed",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/pull/2",
+      "merged": true,
+      "labels": [
+        "roadmap"
+      ]
+    },
+    {
+      "number": 1,
+      "title": "chore: rename app from Lap to bigfotolab throughout",
+      "state": "closed",
+      "url": "https://github.com/emmanuel-a-otchere/bigfotolab/pull/1",
+      "merged": true,
+      "labels": []
+    }
+  ]
+}
