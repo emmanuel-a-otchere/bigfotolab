@@ -361,7 +361,21 @@
       </div>
 
       <div
-        v-if="file?.file_type === 1 || file?.file_type === 3"
+        v-if="isPano"
+        class="absolute inset-0 z-20"
+      >
+        <PanoViewer
+          :src="panoSrc"
+          :is-video="Number(file?.file_type) === 2"
+          @context-menu="handleContextMenu"
+          @pointerdown.capture="handleOverlayPointerDown"
+          @pointerup.capture="handleOverlayPointerUp"
+          @pointercancel.capture="resetOverlayPointer"
+        ></PanoViewer>
+      </div>
+
+      <div
+        v-else-if="file?.file_type === 1 || file?.file_type === 3"
         :class="[
           isLivePhotoLike
             ? 'absolute inset-0 z-20 transition-opacity duration-150'
@@ -416,7 +430,7 @@
       </button>
 
       <div
-        v-if="file?.file_type === 2"
+        v-else-if="file?.file_type === 2"
         class="absolute inset-0 z-20"
       >
         <Video
@@ -465,12 +479,13 @@ import { getCurrentWindow } from '@tauri-apps/api/window';
 import { runPreviewWindowOperation, recoverPreviewWindowFocus } from '@/common/previewWindow';
 import { config, libConfig } from '@/common/config';
 import { useToast } from '@/common/toast';
-import { isWin, isMac, isLinux, getSlideShowInterval } from '@/common/utils';
+import { isWin, isMac, isLinux, getSlideShowInterval, getAssetSrc } from '@/common/utils';
 import { getShortcutLabel, ShortcutActionId, ShortcutPlatform, VIEW_BACKGROUND_SHORTCUTS } from '@/common/shortcuts';
 import { isOriginalUnavailable, setFileAccessibility } from '@/common/availability';
 import { getMotionPhotoVideoPath, checkFileAccessibility } from '@/common/api';
 
 import Image from '@/components/Image.vue';
+import PanoViewer from '@/components/PanoViewer.vue';
 import { emit as tauriEmit } from '@tauri-apps/api/event';
 import TButton from '@/components/TButton.vue';
 import { 
@@ -627,6 +642,8 @@ const props = defineProps({
 
 const isLivePhotoPlaying = ref(false);
 const isLivePhoto = computed(() => props.file?.media_subtype === 'live_photo' && !!props.file?.live_photo_video_path);
+const isPano = computed(() => props.file?.media_subtype === 'pano_360');
+const panoSrc = computed(() => (props.file?.file_path ? getAssetSrc(props.file.file_path, Number(props.file.modified_at || 0)) : ''));
 const isMotionPhoto = computed(() => props.file?.media_subtype === 'motion_photo');
 // Both Apple Live Photos and Android Motion Photos play a short video layered
 // over the still image, so they share the same UI/playback path.

@@ -2511,6 +2511,22 @@ impl AFile {
             }
         }
 
+        // 360 panorama: Insta360 native containers (.insp/.insv) or GPano
+        // equirectangular XMP embedded in the file header (DJI and others).
+        if media_subtype.is_none() {
+            let ext = Path::new(file_path)
+                .extension()
+                .and_then(|ext| ext.to_str())
+                .unwrap_or("")
+                .to_ascii_lowercase();
+            let header_pano = file_header_deref
+                .map(crate::metadata::xmp::bytes_have_gpano_equirect)
+                .unwrap_or(false);
+            if matches!(ext.as_str(), "insp" | "insv") || header_pano {
+                media_subtype = Some("pano_360".to_string());
+            }
+        }
+
         match file_type {
             1 => {
                 let (w, h) = t_image::get_image_dimensions(file_path)?;

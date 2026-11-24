@@ -186,7 +186,8 @@
       },
       "media_subtypes": {
         "raw_jpeg_pair": "RAW Pair",
-        "live_motion_photos": "Live & Motion Photos"
+        "live_motion_photos": "Live & Motion Photos",
+        "pano_360": "360 Panorama"
       },
       "operators": {
         "is": "=",
