@@ -201,7 +201,7 @@ async fn reject(stream: &mut TcpStream, status: &str) -> io::Result<()> {
     write_response(stream, status, &[("Content-Length".into(), "0".into())], &[]).await
 }
 
-fn json_response<'a>(stream: &'a mut TcpStream, status: &'a str, value: &'a Value) -> impl std::future::Future<Output = io::Result<()>> + 'a {
+async fn json_response(stream: &mut TcpStream, status: &str, value: &Value) -> io::Result<()> {
     let body = serde_json::to_vec(value).unwrap_or_default();
     write_response(
         stream,
@@ -209,6 +209,7 @@ fn json_response<'a>(stream: &'a mut TcpStream, status: &'a str, value: &'a Valu
         &[("Content-Type".into(), "application/json".into()), ("Access-Control-Allow-Origin".into(), "*".into())],
         &body,
     )
+    .await
 }
 
 async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
