@@ -387,9 +387,14 @@ async fn handle_prewarm(
     args: &Value,
     library_id: Option<String>,
 ) -> io::Result<()> {
-    let album_id: Option<i64> = opt_arg(args, "albumId")?;
-    let sizes: Vec<u32> = opt_arg(args, "sizes")?
-        .unwrap_or_else(|| vec![128, 512])
+    let album_id: Option<i64> = match opt_arg(args, "albumId") {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    let sizes: Vec<u32> = match opt_arg(args, "sizes") {
+        Ok(v) => v.unwrap_or_else(|| vec![128, 512]),
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    }
         .into_iter()
         .map(|s| s.clamp(64, 2048))
         .collect();
@@ -434,7 +439,8 @@ async fn handle_prewarm(
         for size in sizes {
             let options = t_protocol::raw_display_options(None);
             for id in &ids {
-                let file = match t_sqlite::AFile::get_file_info(*id) {
+                let id = *id;
+                let file = match t_sqlite::AFile::get_file_info(id) {
                     Ok(Some(f)) => f,
                     _ => continue,
                 };
