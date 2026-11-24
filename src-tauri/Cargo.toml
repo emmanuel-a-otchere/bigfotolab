@@ -2,6 +2,8 @@
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 name = "bigfotolab"
 version = "0.4.1"
+# desktop app binary (src/main.rs); the headless server is src/bin/bigfotolab-server.rs
+default-run = "bigfotolab"
 description = "An offline-first photo manager for large local libraries."
 homepage = "https://emmanuel-a-otchere.github.io/bigfotolab"
 repository = "https://github.com/emmanuel-a-otchere/bigfotolab"

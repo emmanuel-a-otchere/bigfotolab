@@ -45,7 +45,7 @@ pub fn make_video_stream_url(file_path: &str) -> Result<String, String> {
     Ok(format!("{}{}", original_media_base_url()?, encoded))
 }
 
-fn parse_http_range(range_header: &str, file_size: u64) -> Option<(u64, u64)> {
+pub(crate) fn parse_http_range(range_header: &str, file_size: u64) -> Option<(u64, u64)> {
     if file_size == 0 {
         return None;
     }
