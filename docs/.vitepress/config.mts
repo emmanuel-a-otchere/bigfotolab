@@ -38,6 +38,12 @@ export default defineConfig({
                 ]
             },
             {
+                text: 'Architecture',
+                items: [
+                    { text: 'bigfotolab-server on Raspberry Pi 3', link: '/architecture/bigfotolab-server-pi3' }
+                ]
+            },
+            {
                 text: 'Release Notes',
                 items: [
                     { text: 'v0.4.1', link: '/guide/release-notes/v0.4.1' },
