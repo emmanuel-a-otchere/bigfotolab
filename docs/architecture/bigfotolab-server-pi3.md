@@ -126,3 +126,16 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
   sites unchanged). Remote mode is enabled via `settings.remoteServer`
   (`{enabled, url, token}`) and switches `thumb://`/`preview://`/media URLs to
   `{server}/media/...?token=...`.
+
+## Phase 2 implementation notes
+
+- `t_server.rs` now gzips API JSON and static SPA assets (flate2, `Accept-Encoding: gzip`,
+  `Vary: Accept-Encoding`) — fetch/EventSource decompress transparently.
+- New `POST /api/v1/cmd/prewarm_thumbs` `{albumId?, sizes?}` — background pyramid
+  pre-warm (default tiers 128 + 512) through the existing `AThumb` queue with
+  permits, emitting `prewarm_progress` / `prewarm_finished` over SSE.
+- Thumb pyramid tiers via `GET /media/thumb/{lib}/{id}?size=64..2048` with ETag +
+  `Cache-Control: public, max-age=3600`; originals stay `no-cache` + Range + ETag.
+- Known deferral: server-side *scanning* (`index_album`) needs the AppHandle-based
+  emitter in `t_utils::index_album_worker`; that refactor lands with Phase 3.
+  Until then, index libraries with the desktop build against the same config dir.
