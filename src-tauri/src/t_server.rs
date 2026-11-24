@@ -201,7 +201,7 @@ async fn reject(stream: &mut TcpStream, status: &str) -> io::Result<()> {
     write_response(stream, status, &[("Content-Length".into(), "0".into())], &[]).await
 }
 
-fn json_response(stream: &mut TcpStream, status: &str, value: &Value) -> impl std::future::Future<Output = io::Result<()>> + '_ {
+fn json_response<'a>(stream: &'a mut TcpStream, status: &'a str, value: &'a Value) -> impl std::future::Future<Output = io::Result<()>> + 'a {
     let body = serde_json::to_vec(value).unwrap_or_default();
     write_response(
         stream,
@@ -219,7 +219,7 @@ async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
     if let Some(name) = path.strip_prefix("/api/v1/cmd/") {
         return handle_cmd(&mut stream, &req, name).await;
     }
-    match path {
+    match path.as_str() {
         "/api/v1/ping" => {
             if !req.authorized() {
                 return reject(&mut stream, "401 Unauthorized").await;
@@ -538,7 +538,7 @@ async fn handle_original(stream: &mut TcpStream, req: &Request, rest: &str) -> i
     }
     file.seek(std::io::SeekFrom::Start(start)).await?;
     let mut limited = file.take(len);
-    tokio::io::copy(&mut limited, &mut stream).await?;
+    tokio::io::copy(&mut limited, &mut *stream).await?;
     stream.flush().await
 }
 
