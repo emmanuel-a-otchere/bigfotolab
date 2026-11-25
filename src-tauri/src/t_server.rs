@@ -6,8 +6,10 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
+use flate2::{write::GzEncoder, Compression};
 use serde::Serialize;
 use serde_json::{json, Value};
+use std::io::Write as IoWrite;
 use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::{broadcast, Mutex};
@@ -181,6 +183,22 @@ fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
     haystack.windows(needle.len()).position(|w| w == needle)
 }
 
+fn accepts_gzip(req: &Request) -> bool {
+    req.header("accept-encoding")
+        .map(|h| h.to_ascii_lowercase().contains("gzip"))
+        .unwrap_or(false)
+}
+
+fn gzip_body(data: &[u8]) -> Vec<u8> {
+    let mut enc = GzEncoder::new(Vec::new(), Compression::fast());
+    if enc.write_all(data).is_ok() {
+        if let Ok(v) = enc.finish() {
+            return v;
+        }
+    }
+    data.to_vec()
+}
+
 async fn write_response(
     stream: &mut TcpStream,
     status: &str,
@@ -201,15 +219,18 @@ async fn reject(stream: &mut TcpStream, status: &str) -> io::Result<()> {
     write_response(stream, status, &[("Content-Length".into(), "0".into())], &[]).await
 }
 
-async fn json_response(stream: &mut TcpStream, status: &str, value: &Value) -> io::Result<()> {
-    let body = serde_json::to_vec(value).unwrap_or_default();
-    write_response(
-        stream,
-        status,
-        &[("Content-Type".into(), "application/json".into()), ("Access-Control-Allow-Origin".into(), "*".into())],
-        &body,
-    )
-    .await
+async fn json_response(stream: &mut TcpStream, status: &str, value: &Value, gzip_ok: bool) -> io::Result<()> {
+    let mut body = serde_json::to_vec(value).unwrap_or_default();
+    let mut headers = vec![
+        ("Content-Type".into(), "application/json".into()),
+        ("Access-Control-Allow-Origin".into(), "*".into()),
+    ];
+    if gzip_ok && body.len() > 512 {
+        body = gzip_body(&body);
+        headers.push(("Content-Encoding".into(), "gzip".into()));
+        headers.push(("Vary".into(), "Accept-Encoding".into()));
+    }
+    write_response(stream, status, &headers, &body).await
 }
 
 async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
@@ -225,7 +246,7 @@ async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
             if !req.authorized() {
                 return reject(&mut stream, "401 Unauthorized").await;
             }
-            return json_response(&mut stream, "200 OK", &json!({ "ok": true, "app": "bigfotolab-server", "version": env!("CARGO_PKG_VERSION") })).await;
+            return json_response(&mut stream, "200 OK", &json!({ "ok": true, "app": "bigfotolab-server", "version": env!("CARGO_PKG_VERSION") }), accepts_gzip(&req)).await;
         }
         "/api/v1/events" => return handle_events(&mut stream, &req).await,
         _ => {}
@@ -307,10 +328,14 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str) -> io::Re
     }
     let body: Value = match serde_json::from_slice(&req.body) {
         Ok(v) => v,
-        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": format!("invalid JSON body: {}", e) })).await,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": format!("invalid JSON body: {}", e) }), accepts_gzip(req)).await,
     };
     let args = body.get("args").cloned().unwrap_or_else(|| json!({}));
     let library_id = body.get("library_id").and_then(|v| v.as_str()).map(|s| s.to_string());
+
+    if name == "prewarm_thumbs" {
+        return handle_prewarm(stream, req, &args, library_id).await;
+    }
 
     let result: Result<Value, String> = match name {
         "get_app_config" => with_library(library_id, || async { t_cmds::get_app_config().map(|v| serde_json::to_value(v).unwrap()) }).await,
@@ -348,9 +373,114 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str) -> io::Re
     };
 
     match result {
-        Ok(v) => json_response(stream, "200 OK", &json!({ "result": v })).await,
-        Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e })).await,
+        Ok(v) => json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await,
+        Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
     }
+}
+
+/// Background thumbnail pre-warm for a whole library (or one album), emitting
+/// prewarm_progress / prewarm_finished over SSE. Sizes default to the low and
+/// grid tiers of the pyramid (128, 512).
+async fn handle_prewarm(
+    stream: &mut TcpStream,
+    req: &Request,
+    args: &Value,
+    library_id: Option<String>,
+) -> io::Result<()> {
+    let album_id: Option<i64> = match opt_arg(args, "albumId") {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    let sizes: Vec<u32> = match opt_arg(args, "sizes") {
+        Ok(v) => v.unwrap_or_else(|| vec![128, 512]),
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    }
+        .into_iter()
+        .map(|s| s.clamp(64, 2048))
+        .collect();
+    let count: Result<i64, String> = with_library(library_id.clone(), || async move {
+        let conn = t_sqlite::open_conn()?;
+        let mut stmt = conn
+            .prepare("SELECT COUNT(*) FROM afiles WHERE file_type IN (1,2,3) AND (?1 IS NULL OR album_id = ?1)")
+            .map_err(|e| e.to_string())?;
+        let n: i64 = stmt
+            .query_row(rusqlite::params![album_id], |r| r.get(0))
+            .map_err(|e| e.to_string())?;
+        Ok(n)
+    })
+    .await;
+    let count = match count {
+        Ok(n) => n,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+
+    tokio::spawn(async move {
+        let _guard = db_lock().lock().await;
+        if let Some(id) = &library_id {
+            let _ = t_config::set_current_library_id(id);
+        }
+        let ids: Vec<i64> = match t_sqlite::open_conn().and_then(|conn| {
+            let mut stmt = conn
+                .prepare("SELECT id FROM afiles WHERE file_type IN (1,2,3) AND (?1 IS NULL OR album_id = ?1) ORDER BY id")
+                .map_err(|e| e.to_string())?;
+            let rows = stmt
+                .query_map(rusqlite::params![album_id], |r| r.get(0))
+                .map_err(|e| e.to_string())?;
+            rows.collect::<Result<Vec<i64>, _>>().map_err(|e| e.to_string())
+        }) {
+            Ok(ids) => ids,
+            Err(e) => {
+                emit_server_event("prewarm_finished", json!({ "error": e }));
+                return;
+            }
+        };
+        let total = ids.len() as u64 * sizes.len() as u64;
+        let mut done = 0u64;
+        for size in sizes {
+            let options = t_protocol::raw_display_options(None);
+            for id in &ids {
+                let id = *id;
+                let file = match t_sqlite::AFile::get_file_info(id) {
+                    Ok(Some(f)) => f,
+                    _ => continue,
+                };
+                let path = file.file_path.clone().unwrap_or_default();
+                let permit = match t_sqlite::thumb_background_generation_permits().acquire_owned().await {
+                    Ok(p) => p,
+                    Err(_) => break,
+                };
+                let _ = tokio::task::spawn_blocking(move || {
+                    let _permit = permit;
+                    t_sqlite::AThumb::get_or_create_thumb(
+                        id,
+                        &path,
+                        file.file_type.unwrap_or(0),
+                        file.e_orientation.unwrap_or(1) as i32,
+                        size,
+                        options,
+                        false,
+                        file.duration.map(|d| d as u64),
+                        None,
+                        false,
+                    )
+                })
+                .await;
+                done += 1;
+                if done % 25 == 0 || done == total {
+                    emit_server_event("prewarm_progress", json!({ "done": done, "total": total, "size": size }));
+                }
+            }
+        }
+        emit_server_event("prewarm_finished", json!({ "done": done, "total": total }));
+    });
+
+    json_response(
+        stream,
+        "200 OK",
+        &json!({ "result": { "started": true, "files": count } }),
+        accepts_gzip(req),
+    )
+    .await
 }
 
 async fn handle_events(stream: &mut TcpStream, req: &Request) -> io::Result<()> {
@@ -458,7 +588,7 @@ async fn handle_thumb(stream: &mut TcpStream, req: &Request, rest: &str) -> io::
             )
             .await
         }
-        Err(e) => json_response(stream, "404 Not Found", &json!({ "error": e })).await,
+        Err(e) => json_response(stream, "404 Not Found", &json!({ "error": e }), false).await,
     }
 }
 
@@ -556,17 +686,18 @@ async fn handle_static(stream: &mut TcpStream, req: &Request, path: &str) -> io:
     let Ok(data) = tokio::fs::read(&safe).await else {
         return reject(stream, "404 Not Found").await;
     };
-    let body: &[u8] = if req.method == "HEAD" { &[] } else { &data };
-    write_response(
-        stream,
-        "200 OK",
-        &[
-            ("Content-Type".into(), ext_mime(&safe).into()),
-            ("Cache-Control".into(), "no-cache".into()),
-        ],
-        body,
-    )
-    .await
+    let compressible = matches!(ext_mime(&safe), "text/javascript; charset=utf-8" | "text/css; charset=utf-8" | "text/html; charset=utf-8" | "application/json" | "image/svg+xml");
+    let mut headers = vec![
+        ("Content-Type".into(), ext_mime(&safe).into()),
+        ("Cache-Control".into(), "no-cache".into()),
+    ];
+    let mut body: Vec<u8> = if req.method == "HEAD" { Vec::new() } else { data };
+    if compressible && accepts_gzip(req) && body.len() > 512 {
+        body = gzip_body(&body);
+        headers.push(("Content-Encoding".into(), "gzip".into()));
+        headers.push(("Vary".into(), "Accept-Encoding".into()));
+    }
+    write_response(stream, "200 OK", &headers, &body).await
 }
 
 #[allow(dead_code)]
