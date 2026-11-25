@@ -367,6 +367,103 @@ fn opt_arg<T: serde::de::DeserializeOwned>(args: &Value, camel: &str) -> Result<
     }
 }
 
+/// Load this session's overrides for the given file ids:
+/// file_id -> (rating, is_favorite, culling_flag), NULL column = no override.
+fn session_state_map(
+    session: &str,
+    ids: &[i64],
+) -> Result<std::collections::HashMap<i64, (Option<i32>, Option<bool>, Option<i32>)>, String> {
+    let mut map = std::collections::HashMap::new();
+    if ids.is_empty() {
+        return Ok(map);
+    }
+    let conn = t_sqlite::open_conn()?;
+    for chunk in ids.chunks(500) {
+        let placeholders = std::iter::repeat_n("?", chunk.len()).collect::<Vec<_>>().join(",");
+        let sql = format!(
+            "SELECT file_id, rating, is_favorite, culling_flag FROM user_file_state WHERE session_id = ? AND file_id IN ({})",
+            placeholders
+        );
+        let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
+        let mut params: Vec<Box<dyn rusqlite::types::ToSql>> = vec![Box::new(session.to_string())];
+        params.extend(chunk.iter().map(|id| Box::new(*id) as Box<dyn rusqlite::types::ToSql>));
+        let rows = stmt
+            .query_map(rusqlite::params_from_iter(params.iter()), |r| {
+                Ok((
+                    r.get::<_, i64>(0)?,
+                    r.get::<_, Option<i64>>(1)?,
+                    r.get::<_, Option<i64>>(2)?,
+                    r.get::<_, Option<i64>>(3)?,
+                ))
+            })
+            .map_err(|e| e.to_string())?;
+        for row in rows {
+            let (fid, rating, fav, culling) = row.map_err(|e| e.to_string())?;
+            map.insert(
+                fid,
+                (
+                    rating.map(|v| v as i32),
+                    fav.map(|v| v != 0),
+                    culling.map(|v| v as i32),
+                ),
+            );
+        }
+    }
+    Ok(map)
+}
+
+/// Merge the session's overrides into file records (session wins over base afiles).
+fn apply_session_state(session: &str, files: &mut [t_sqlite::AFile]) -> Result<(), String> {
+    let ids: Vec<i64> = files.iter().filter_map(|f| f.id).collect();
+    let map = session_state_map(session, &ids)?;
+    for f in files.iter_mut() {
+        let Some(fid) = f.id else { continue };
+        if let Some((rating, fav, culling)) = map.get(&fid) {
+            if let Some(r) = rating {
+                f.rating = Some(*r);
+            }
+            if let Some(fav) = fav {
+                f.is_favorite = Some(*fav);
+            }
+            if let Some(c) = culling {
+                f.culling_flag = Some(*c);
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Write a session-scoped state override (NULL arg = keep previous value).
+fn set_session_file_state(
+    session: &str,
+    file_id: i64,
+    rating: Option<i32>,
+    is_favorite: Option<bool>,
+    culling_flag: Option<i32>,
+) -> Result<(), String> {
+    let conn = t_sqlite::open_conn()?;
+    let now = chrono::Utc::now().timestamp();
+    conn.execute(
+        "INSERT INTO user_file_state (session_id, file_id, rating, is_favorite, culling_flag, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+         ON CONFLICT(session_id, file_id) DO UPDATE SET
+           rating = COALESCE(excluded.rating, user_file_state.rating),
+           is_favorite = COALESCE(excluded.is_favorite, user_file_state.is_favorite),
+           culling_flag = COALESCE(excluded.culling_flag, user_file_state.culling_flag),
+           updated_at = excluded.updated_at",
+        rusqlite::params![
+            session,
+            file_id,
+            rating,
+            is_favorite.map(|b| b as i64),
+            culling_flag,
+            now
+        ],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 trait Pipe: Sized {
     fn pipe<R>(self, f: impl FnOnce(Self) -> R) -> R {
         f(self)
@@ -441,6 +538,9 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
     if name == "prewarm_thumbs" {
         return handle_prewarm(stream, req, &args, library_id).await;
     }
+    if name == "set_file_user_state" {
+        return handle_set_file_user_state(stream, req, &args, library_id, session).await;
+    }
 
     let result: Result<Value, String> = match name {
         "get_app_config" => with_library(library_id, || async { t_cmds::get_app_config().map(|v| serde_json::to_value(v).unwrap()) }).await,
@@ -459,17 +559,32 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
             let folder_id: i64 = arg(&args, "folderId")?;
             let folder_path: String = arg(&args, "folderPath")?;
             let from_db_only: Option<bool> = opt_arg(&args, "fromDbOnly")?;
-            let (files, w, h) = t_cmds::get_folder_files(file_type, sort_type, sort_order, folder_id, &folder_path, from_db_only);
+            let (mut files, w, h) = t_cmds::get_folder_files(file_type, sort_type, sort_order, folder_id, &folder_path, from_db_only);
+            apply_session_state(session, &mut files)?;
             Ok(json!({ "files": files, "width": w, "height": h }))
         }).await,
         "get_query_files" => with_library(library_id, || async {
             let params: t_sqlite::QueryParams = arg(&args, "params")?;
             let offset: i64 = arg(&args, "offset")?;
             let limit: i64 = arg(&args, "limit")?;
-            t_cmds::get_query_files(params, offset, limit).await.map(|v| serde_json::to_value(v).unwrap())
+            let mut files = t_cmds::get_query_files(params, offset, limit).await?;
+            apply_session_state(session, &mut files)?;
+            Ok(serde_json::to_value(files).unwrap())
         }).await,
-        "get_file_info" => with_library(library_id, || async { let id: i64 = arg(&args, "fileId")?; t_cmds::get_file_info(id).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_files_by_ids" => with_library(library_id, || async { let ids: Vec<i64> = arg(&args, "fileIds")?; t_cmds::get_files_by_ids(ids).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_file_info" => with_library(library_id, || async {
+            let id: i64 = arg(&args, "fileId")?;
+            let mut f = t_cmds::get_file_info(id)?;
+            if let Some(f) = f.as_mut() {
+                apply_session_state(session, std::slice::from_mut(f))?;
+            }
+            Ok(serde_json::to_value(f).unwrap())
+        }).await,
+        "get_files_by_ids" => with_library(library_id, || async {
+            let ids: Vec<i64> = arg(&args, "fileIds")?;
+            let mut files = t_cmds::get_files_by_ids(ids).await?;
+            apply_session_state(session, &mut files)?;
+            Ok(serde_json::to_value(files).unwrap())
+        }).await,
         "get_supported_format_extensions" => with_library(library_id, || async { Ok(serde_json::to_value(t_cmds::get_supported_format_extensions()).unwrap()) }).await,
         "list_collections" => with_library(library_id, || async { t_cmds::list_collections().map(|v| serde_json::to_value(v).unwrap()) }).await,
         "get_all_tags" => with_library(library_id, || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_all_tags(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
@@ -479,6 +594,39 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
 
     match result {
         Ok(v) => json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await,
+        Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    }
+}
+
+/// Session-scoped write: set_file_user_state {fileId, rating?, isFavorite?, cullingFlag?}.
+/// Writes only the session's override row and notifies all sessions via SSE.
+async fn handle_set_file_user_state(
+    stream: &mut TcpStream,
+    req: &Request,
+    args: &Value,
+    library_id: Option<String>,
+    session: &str,
+) -> io::Result<()> {
+    let file_id: i64 = match arg(args, "fileId") {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    let rating: Option<i32> = opt_arg(args, "rating").unwrap_or(None);
+    let is_favorite: Option<bool> = opt_arg(args, "isFavorite").unwrap_or(None);
+    let culling_flag: Option<i32> = opt_arg(args, "cullingFlag").unwrap_or(None);
+    let lib = library_id.clone();
+    let result = with_library(library_id, || async move {
+        set_session_file_state(session, file_id, rating, is_favorite, culling_flag)
+    })
+    .await;
+    match result {
+        Ok(()) => {
+            emit_server_event(
+                "file_updated",
+                json!({ "library_id": lib, "file_ids": [file_id], "session_id": session }),
+            );
+            json_response(stream, "200 OK", &json!({ "result": { "ok": true } }), accepts_gzip(req)).await
+        }
         Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
     }
 }
