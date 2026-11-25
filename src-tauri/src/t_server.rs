@@ -647,6 +647,7 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
         "get_collection_query_file_ids" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; t_cmds::get_collection_query_file_ids(collection_id, params).map(|v| serde_json::to_value(v).unwrap()) }).await,
         "get_all_tags" => with_library(library_id, Some(session), || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_all_tags(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
         "get_taken_dates" => with_library(library_id, Some(session), || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_taken_dates(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_sync_state" => with_library(library_id, Some(session), || async { sync_state_json() }).await,
         _ => Err(format!("command '{}' is not available in server mode", name)),
     };
 
@@ -808,12 +809,84 @@ async fn handle_prewarm(
     .await
 }
 
+/// Lightweight per-library sync fingerprint for delta sync / reconnect resync.
+/// Must be called with the library + session globals already set (db_lock held).
+fn sync_state_json() -> Result<Value, String> {
+    let conn = t_sqlite::open_conn()?;
+    let session = t_config::current_session_id().unwrap_or_default();
+    let (files_count, files_scan_max, files_rowid_max): (i64, i64, i64) = conn
+        .query_row(
+            "SELECT COUNT(*), COALESCE(MAX(last_scan_time), 0), COALESCE(MAX(rowid), 0) FROM afiles",
+            [],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| e.to_string())?;
+    let state_version: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(updated_at), 0) FROM user_file_state WHERE session_id = ?1",
+            rusqlite::params![session],
+            |r| r.get(0),
+        )
+        .map_err(|e| e.to_string())?;
+    let collections_sql = format!(
+        "SELECT COALESCE(MAX(updated_at), 0) FROM acollections WHERE 1 = 1{}",
+        t_sqlite::ACollection::session_read_scope("session_id")
+    );
+    let collections_version: i64 = conn
+        .query_row(&collections_sql, [], |r| r.get(0))
+        .map_err(|e| e.to_string())?;
+    let mut stmt = conn
+        .prepare("SELECT id, COALESCE(indexed, 0), COALESCE(total, 0), COALESCE(last_scan_time, 0) FROM albums ORDER BY id")
+        .map_err(|e| e.to_string())?;
+    let albums = stmt
+        .query_map([], |r| {
+            Ok(json!({
+                "id": r.get::<_, i64>(0)?,
+                "indexed": r.get::<_, i64>(1)?,
+                "total": r.get::<_, i64>(2)?,
+                "lastScanTime": r.get::<_, i64>(3)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<Value>, _>>()
+        .map_err(|e| e.to_string())?;
+    let server_time = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    Ok(json!({
+        "library_id": t_config::current_library_id().unwrap_or_default(),
+        "session_id": session,
+        "files_version": format!("{}:{}:{}", files_count, files_scan_max, files_rowid_max),
+        "state_version": state_version,
+        "collections_version": collections_version,
+        "albums": albums,
+        "server_time": server_time,
+    }))
+}
+
 async fn handle_events(stream: &mut TcpStream, req: &Request) -> io::Result<()> {
     if !req.authorized() {
         return reject(stream, "401 Unauthorized").await;
     }
     let head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\nAccess-Control-Allow-Origin: *\r\n\r\nretry: 3000\n\n";
     stream.write_all(head.as_bytes()).await?;
+    // Send a hello with the current sync state on every (re)connect so clients
+    // can resync after a drop without polling.
+    let library_q = req.query_param("library_id");
+    let sid_q = req.query_param("sid").unwrap_or_else(|| "default".to_string());
+    let hello = {
+        let _guard = db_lock().lock().await;
+        let lib = match &library_q {
+            Some(id) if !id.is_empty() => id.clone(),
+            _ => t_config::current_library_id().unwrap_or_default(),
+        };
+        let _ = t_config::set_current_library_id(&lib);
+        let _ = t_config::set_current_session_id(Some(&sid_q));
+        sync_state_json().unwrap_or_else(|e| json!({ "error": e }))
+    };
+    let hello_msg = format!("event: server_hello\ndata: {}\n\n", hello);
+    stream.write_all(hello_msg.as_bytes()).await?;
     let mut rx = events().subscribe();
     loop {
         tokio::select! {

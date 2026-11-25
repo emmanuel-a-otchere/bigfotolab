@@ -1720,7 +1720,7 @@ impl ACollection {
     /// Read scope (server sessions): shared rows (NULL session_id) plus the current
     /// session's own rows. Desktop (no session) sees shared rows only.
     /// `col` is the qualified column expression, e.g. "c.session_id".
-    fn session_read_scope(col: &str) -> String {
+    pub(crate) fn session_read_scope(col: &str) -> String {
         match crate::t_config::current_session_id() {
             Some(sid) => format!(" AND ({c} IS NULL OR {c} = '{s}')", c = col, s = Self::esc(&sid)),
             None => String::new(),

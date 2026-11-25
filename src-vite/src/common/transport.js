@@ -11,6 +11,50 @@ let serverToken = '';
 let sessionId = null;
 let eventSource = null;
 const sseListeners = new Map();
+// Delta sync / reconnect resync: provider returns the server sync state
+// (set from main.js via setSyncStateProvider), lastSyncState is the last seen one.
+let syncStateProvider = null;
+let lastSyncState = null;
+
+export function setSyncStateProvider(fn) {
+  syncStateProvider = fn;
+}
+
+export function getLastSyncState() {
+  return lastSyncState;
+}
+
+function emitLocal(event, payload) {
+  const cbs = sseListeners.get(event);
+  if (!cbs) return;
+  for (const cb of cbs) {
+    try {
+      cb(payload);
+    } catch { /* listener errors stay isolated */ }
+  }
+}
+
+// Fetch the server sync state and broadcast it; on change, also re-broadcast
+// files-changed / collections-changed so existing listeners refresh.
+async function resyncAfterConnect() {
+  if (!syncStateProvider) return;
+  let state;
+  try {
+    state = await syncStateProvider();
+  } catch {
+    return;
+  }
+  if (!state) return;
+  const prev = lastSyncState;
+  lastSyncState = state;
+  emitLocal('sync_state', state);
+  if (prev && prev.files_version !== state.files_version) {
+    emitLocal('files-changed', { filesVersion: state.files_version });
+  }
+  if (prev && prev.collections_version !== state.collections_version) {
+    emitLocal('collections-changed', { sessionId: state.session_id });
+  }
+}
 
 export function getSessionId() {
   return sessionId;
@@ -44,6 +88,10 @@ export function configureTransport({ mode: m = 'tauri', url = '', token = '' } =
     ensureSession().then((sid) => {
       const q = `token=${encodeURIComponent(serverToken)}${sid ? `&sid=${encodeURIComponent(sid)}` : ''}`;
       eventSource = new EventSource(`${serverUrl}/api/v1/events?${q}`);
+      // Every (re)connect resyncs the delta-sync state (EventSource auto-reconnects).
+      eventSource.onopen = () => {
+        void resyncAfterConnect();
+      };
       for (const [event, cbs] of sseListeners) {
         for (const cb of cbs) attachSse(event, cb);
       }

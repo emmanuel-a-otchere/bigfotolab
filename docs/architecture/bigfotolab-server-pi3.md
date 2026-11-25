@@ -246,3 +246,26 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
   guards, scoped name uniqueness, desktop behavior unchanged) and
   `src-vite/tests/sessionCollections.test.mjs` (`pnpm run test:sessioncollections`,
   4/4) guarding client/server command-name parity and the SSE event wiring.
+
+## Phase 3 slice 7 — delta sync + reconnect resync (this PR)
+
+- Server: new `sync_state_json()` fingerprint per library+session (run under the DB
+  lock): `files_version` = `count:max(last_scan_time):max(rowid)` of `afiles`,
+  `state_version` = max `updated_at` of the session's `user_file_state` rows,
+  `collections_version` = max `updated_at` of session-visible `acollections`,
+  plus per-album `{id, indexed, total, lastScanTime}` and `server_time`.
+- `POST /api/v1/cmd/get_sync_state {id?}` whitelisted command returns it.
+- SSE: `/api/v1/events` now sends `event: server_hello` with the sync state on every
+  (re)connect (15 s `: ping` heartbeat and `retry: 3000` were already there).
+- Row-level deltas were already flowing (`file_updated`, `thumbnail_ready`,
+  `collections-changed`, `index_progress`/`index_finished`).
+- Client `transport.js`: `setSyncStateProvider(fn)` (wired in `main.js` to
+  `get_sync_state` for the current library); on every EventSource `open`
+  (first connect and every auto-reconnect) it fetches the state, broadcasts a local
+  `sync_state` event, and re-broadcasts `files-changed` / `collections-changed`
+  when the fingerprints changed. `Content.vue` listens to `sync_state` and refreshes
+  the grid when `files_version` moved. `api.js` gains `getSyncState` /
+  `listenSyncState` / `listenServerHello`.
+- Tests: `src-vite/tests/deltaSync.test.mjs` (`pnpm run test:deltasync`, 4/4) —
+  server/api wiring source checks + behavioral test of transport resync on
+  (re)connect incl. change re-broadcast and the no-provider no-op.

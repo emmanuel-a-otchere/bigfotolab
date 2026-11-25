@@ -5658,6 +5658,8 @@ let unlistenTriggerNextAlbum: (() => void) | undefined;
 let unlistenRefreshContent: (() => void) | undefined;
 let unlistenFilesDeleted: (() => void) | undefined;
 let unlistenAlbumUpdated: (() => void) | undefined;
+let unlistenSyncState: (() => void) | undefined;
+let lastSyncFilesVersion = '';
 const showIndexRecoveryMsgbox = ref(false);
 const recoverySkipFilePath = ref('');  // local: file path from crash trace
 const indexRecoveryTitle = computed(() => localeMsg.value.search.index.recovery.title);
@@ -6680,6 +6682,16 @@ onMounted( async() => {
     await updateSelectedImage(selectedItemIndex.value);
   });
 
+  // Delta sync (remote mode): on SSE reconnect the transport re-fetches the
+  // server sync state; when the files fingerprint changed, refresh the grid.
+  unlistenSyncState = await listen('sync_state', async (event: any) => {
+    const state = event?.payload ?? event;
+    const version = String(state?.files_version || '');
+    if (!version || version === lastSyncFilesVersion) return;
+    lastSyncFilesVersion = version;
+    scheduleContentRefresh(() => refreshContentFromSelectionChange());
+  });
+
   unlistenAlbumUpdated = await listen('album-updated', (event: any) => {
     const { albumId, name, filtersChanged } = event.payload || {};
     if (filtersChanged) {
@@ -6753,6 +6765,7 @@ onBeforeUnmount(() => {
   if (unlistenRefreshContent) unlistenRefreshContent();
   if (unlistenFilesDeleted) unlistenFilesDeleted();
   if (unlistenAlbumUpdated) unlistenAlbumUpdated();
+  if (unlistenSyncState) unlistenSyncState();
   if (unlistenFaceIndexProgress) unlistenFaceIndexProgress();
   if (unlistenImportFilesToFolder) unlistenImportFilesToFolder();
   if (unlistenPasteClipboard) unlistenPasteClipboard();

@@ -2158,6 +2158,21 @@ export async function listenIndexFinished(callback) {
   return await listen('index_finished', callback);
 }
 
+// delta sync: server sync-state fingerprint (files/state/collections versions + albums)
+export function getSyncState(id) {
+  return invoke('get_sync_state', id ? { id } : {});
+}
+
+// local event fired on every SSE (re)connect with the latest sync state
+export async function listenSyncState(callback) {
+  return await listen('sync_state', callback);
+}
+
+// pushed by the server on every SSE (re)connect
+export async function listenServerHello(callback) {
+  return await listen('server_hello', callback);
+}
+
 // index faces for all images in library
 export async function indexFaces(clusterEpsilon) {
   try {
