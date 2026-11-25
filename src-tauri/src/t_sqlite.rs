@@ -10449,6 +10449,22 @@ fn setup_conn(conn: &Connection) -> Result<(), String> {
         .map_err(|e| format!("Failed to set SQLite synchronous mode: {}", e))?;
     conn.execute("PRAGMA foreign_keys = ON", [])
         .map_err(|e| format!("Failed to enable foreign keys: {}", e))?;
+    // Per-session organization state (server mode): session overrides merged
+    // over afiles at read time; NULL columns mean "no override".
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS user_file_state (
+             session_id TEXT NOT NULL,
+             file_id INTEGER NOT NULL,
+             rating INTEGER,
+             is_favorite INTEGER,
+             culling_flag INTEGER,
+             updated_at INTEGER NOT NULL,
+             PRIMARY KEY (session_id, file_id)
+         )",
+        [],
+    )
+    .map_err(|e| format!("Failed to create user_file_state table: {}", e))?;
+        .map_err(|e| format!("Failed to enable foreign keys: {}", e))?;
     Ok(())
 }
 

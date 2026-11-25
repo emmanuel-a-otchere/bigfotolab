@@ -150,3 +150,15 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
 - Client (`transport.js`) obtains and persists the session id (localStorage) and
   attaches it to API calls (`X-Session-Id`), SSE (`?sid=`), and media URLs.
 - Next slice: per-session state tables merged over the shared index.
+
+## Phase 3 slice 2 — per-session state isolation (shipped)
+
+- Library DBs get a `user_file_state(session_id, file_id, rating, is_favorite,
+  culling_flag, updated_at)` table (NULL = no override). Base `afiles` stays shared.
+- Read commands (`get_file_info`, `get_files_by_ids`, `get_query_files`,
+  `get_folder_files`) merge the request's session overrides over the base rows
+  (session wins), all under the existing per-request library lock.
+- New `POST /api/v1/cmd/set_file_user_state {fileId, rating?, isFavorite?,
+  cullingFlag?}` upserts only the session's row (NULL arg keeps previous) and
+  broadcasts `file_updated` over SSE. Client setters (`setFileRating` /
+  `setFileFavorite` / `setFileCullingFlag`) route to it in remote mode.

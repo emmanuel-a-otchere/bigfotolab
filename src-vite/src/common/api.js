@@ -1,6 +1,6 @@
 import { setAlbumAccessibility } from '@/common/availability';
 import { Channel } from '@tauri-apps/api/core';
-import { invoke, listen } from '@/common/transport';
+import { invoke, listen, isRemote } from '@/common/transport';
 import { locale } from '@tauri-apps/plugin-os';
 import { config, libConfig } from '@/common/config';
 import { separator, localeComp, formatTimestamp } from '@/common/utils';
@@ -1591,6 +1591,10 @@ export async function setFolderSearchExcluded(albumId, folderPath, isExcluded) {
 // set file favorite
 export async function setFileFavorite(fileId, isFavorite) {
   if (!Number.isInteger(fileId) || fileId <= 0) return null;
+  if (isRemote()) {
+    await invoke('set_file_user_state', { fileId, isFavorite });
+    return 1;
+  }
   try {
     const result = await invoke('set_file_favorite', { fileId, isFavorite });
     if (typeof result === 'number' && result > 0) {
@@ -1605,6 +1609,10 @@ export async function setFileFavorite(fileId, isFavorite) {
 // set file rating
 export async function setFileRating(fileId, rating) {
   if (!Number.isInteger(fileId) || fileId <= 0) return null;
+  if (isRemote()) {
+    await invoke('set_file_user_state', { fileId, rating });
+    return 1;
+  }
   try {
     const result = await invoke('set_file_rating', { fileId, rating });
     if (typeof result === 'number' && result > 0) {
@@ -1620,6 +1628,10 @@ export async function setFileRating(fileId, rating) {
 export async function setFileCullingFlag(fileId, cullingFlag) {
   if (!Number.isInteger(fileId) || fileId <= 0) {
     return null;
+  }
+  if (isRemote()) {
+    await invoke('set_file_user_state', { fileId, cullingFlag });
+    return 1;
   }
   try {
     const result = await invoke('set_file_culling_flag', { fileId, cullingFlag });
