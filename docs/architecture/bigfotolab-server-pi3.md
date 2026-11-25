@@ -76,13 +76,53 @@ API payloads only. All scan/sidecar/thumbnail work happens where the bytes are.
 - [ ] Pre-warm on scan; compression; UX grid per above. Bandwidth budget doc.
 - [ ] Acceptance: 100k library scrolls instantly; wire bytes/page within budget.
 
-### Phase 3 (milestone 3) — multi-user + delta sync + offline cache
-- [ ] Per-user bearer tokens; library ACLs; optional TLS via reverse proxy;
-      LAN-only/VPN.
-- [ ] Per-user state rows (ratings, favorites, culling, collections, smart
-      albums) over shared read-only index; WAL + single writer.
-- [ ] WS delta sync + heartbeat/reconnect; client IndexedDB/SW offline cache;
-      server-side sidecar watcher (XMP writeback stays server-side, `metadata/`).
+### Phase 3 (milestone 3) — sessions, isolated per-user state, opened-media cache, offline-edit sync
+
+Clarified requirements (agreed): **no authentication** — sessions are simple
+local-user identities on a trusted LAN. Caching must never bulk-pull backend
+media; only media the user actually opened at their endpoint. Offline edits
+must sync back to the backend.
+
+**Sessions (no auth).**
+- [ ] `POST /api/v1/session` → opaque session id (uuid), no credentials; client
+      stores it (localStorage/persisted config) and sends `X-Session-Id` (or
+      `?sid=` for `<img>`/`<video>`/EventSource). Server keeps a `sessions` table
+      (id, label, created, last_seen).
+- [ ] Session state isolation: per-session override tables
+      (`user_file_state(session_id, file_id, rating, favorite, culling, …)`,
+      `user_collections`, `user_smart_albums`) merged over the shared base
+      `afiles` at read time (session wins); writes go only to session rows.
+      All queries are session-scoped; base index stays shared read-only.
+      The global DB lock + per-request `library_id` from Phase 1 stays.
+- [ ] The server-wide bearer token from Phase 1 remains as a LAN access gate;
+      sessions are layered on top, not an auth wall.
+
+**User-end cache (opened media only — never bulk).**
+- [ ] Client caches: browsed metadata rows + displayed thumbnails (HTTP cache /
+      IndexedDB), and originals only when the user opens them (Range-fetched
+      segments, or full file on explicit download). Size-capped LRU eviction
+      (e.g. 2–4 GB desktop, less on mobile). No library-wide prefetch.
+- [ ] SSE delta sync (IDs + hashes) + heartbeat/reconnect with resync;
+      server-side sidecar watcher so index freshness never depends on clients.
+
+**Offline edits → sync back (outbox).**
+- [ ] Client keeps an IndexedDB outbox of actions, each with a client UUID:
+      state changes (rate/flag/tag), **sidecar edit** (XMP fields), **replace
+      media** (edited original, with expected source hash for optimistic
+      concurrency), **save-as-new** (derivative registered as a new file).
+- [ ] On reconnect, client batches the outbox to
+      `POST /api/v1/cmd/apply_user_actions`; server dedups via an
+      `applied_actions(session_id, action_uuid)` table, then applies:
+      state → session rows; XMP → existing server-side writeback
+      (`metadata/xmp.rs`, sidecar next to the original); media → write into the
+      library path (replace-in-place or new file + index), then emit
+      `file_updated` / `thumbnail_ready` over SSE so other sessions refresh.
+- [ ] Conflict policy: last-writer-wins per field with timestamps; media
+      replace rejected if the source hash changed since the client opened it.
+
+**Also in Phase 3:** the deferred server-side scanning (`index_album` with the
+AppHandle-emitter refactored to a server event sink) and per-user visible
+counts.
 
 ### Phase 4 (milestone 4) — mobile staging
 - [ ] PWA (manifest + service worker) served at `/`; Capacitor shell later.

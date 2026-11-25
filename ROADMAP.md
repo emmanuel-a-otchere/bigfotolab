@@ -40,10 +40,14 @@ to both project spaces consistently.
   `/media/thumb/{lib}/{id}?size=…` pyramid, `/media/original/{id}` with Range +
   ETag + immutable caching, pre-warm on scan, Brotli API compression, WS
   `thumbnail_ready`; UX issue: virtualized grid mirroring the folder tree.
-- **Milestone 3 — Phase 3: multi-user + delta sync + offline cache.**
-  Token auth, per-user state over a shared read-only index, WS row-level deltas,
-  heartbeat/reconnect, client IndexedDB/service-worker cache, server-side sidecar
-  watcher.
+- **Milestone 3 — Phase 3: sessions + isolated per-user state + opened-media cache + offline-edit sync.**
+  No auth: opaque session ids (`POST /api/v1/session`) layer local-user identity
+  on top of the LAN token gate; per-session state tables merged over the shared
+  read-only index. Client caches only browsed metadata, displayed thumbs, and
+  originals the user actually opened (size-capped LRU — never bulk media).
+  Offline outbox syncs back: state changes, XMP sidecar edits, replace media
+  (hash-checked), or save-as-new derivative, deduped by action UUID, with SSE
+  invalidation to other sessions.
 - **Milestone 4 — Phase 4: mobile staging.**
   PWA served from the server, adaptive video (low-bitrate proxy / HLS, Range for
   originals), optional off-Pi AI node.
