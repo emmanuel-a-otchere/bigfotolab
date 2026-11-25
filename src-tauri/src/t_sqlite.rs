@@ -1713,6 +1713,46 @@ impl ACollection {
             .unwrap_or(0)
     }
 
+    fn esc(s: &str) -> String {
+        s.replace('\'', "''")
+    }
+
+    /// Read scope (server sessions): shared rows (NULL session_id) plus the current
+    /// session's own rows. Desktop (no session) sees shared rows only.
+    /// `col` is the qualified column expression, e.g. "c.session_id".
+    fn session_read_scope(col: &str) -> String {
+        match crate::t_config::current_session_id() {
+            Some(sid) => format!(" AND ({c} IS NULL OR {c} = '{s}')", c = col, s = Self::esc(&sid)),
+            None => String::new(),
+        }
+    }
+
+    /// Write scope: a session may only modify its own rows; desktop (no session)
+    /// may only modify shared rows. Prevents cross-session clobbering.
+    fn session_write_scope(col: &str) -> String {
+        match crate::t_config::current_session_id() {
+            Some(sid) => format!(" AND {c} = '{s}'", c = col, s = Self::esc(&sid)),
+            None => format!(" AND {c} IS NULL", c = col),
+        }
+    }
+
+    /// Ownership check for mutations: the collection must belong to the caller's scope.
+    fn ensure_owned(conn: &Connection, id: i64) -> Result<(), String> {
+        let sql = format!(
+            "SELECT id FROM acollections WHERE id = ?1{}",
+            Self::session_write_scope("session_id")
+        );
+        let exists: Option<i64> = conn
+            .query_row(&sql, params![id], |row| row.get(0))
+            .optional()
+            .map_err(|e| e.to_string())?;
+        if exists.is_some() {
+            Ok(())
+        } else {
+            Err("Collection not found".to_string())
+        }
+    }
+
     fn from_row(row: &rusqlite::Row) -> Result<Self, rusqlite::Error> {
         Ok(Self {
             id: row.get(0)?,
@@ -1725,12 +1765,12 @@ impl ACollection {
     }
 
     fn ensure_exists(conn: &Connection, id: i64) -> Result<(), String> {
+        let sql = format!(
+            "SELECT id FROM acollections WHERE id = ?1{}",
+            Self::session_read_scope("session_id")
+        );
         let exists: Option<i64> = conn
-            .query_row(
-                "SELECT id FROM acollections WHERE id = ?1",
-                params![id],
-                |row| row.get(0),
-            )
+            .query_row(&sql, params![id], |row| row.get(0))
             .optional()
             .map_err(|e| e.to_string())?;
 
@@ -1742,12 +1782,12 @@ impl ACollection {
     }
 
     fn ensure_name_available(conn: &Connection, name: &str, exclude_id: Option<i64>) -> Result<(), String> {
+        let sql = format!(
+            "SELECT id FROM acollections WHERE name = ?1 COLLATE NOCASE AND (?2 IS NULL OR id != ?2){}",
+            Self::session_read_scope("session_id")
+        );
         let existing: Option<i64> = conn
-            .query_row(
-                "SELECT id FROM acollections WHERE name = ?1 COLLATE NOCASE AND (?2 IS NULL OR id != ?2)",
-                params![name, exclude_id],
-                |row| row.get(0),
-            )
+            .query_row(&sql, params![name, exclude_id], |row| row.get(0))
             .optional()
             .map_err(|e| e.to_string())?;
         if existing.is_some() {
@@ -1760,11 +1800,15 @@ impl ACollection {
     /// Collection counts are populated lazily after explicit sidebar activation.
     pub fn list() -> Result<Vec<Self>, String> {
         let conn = open_conn()?;
-        let query = "SELECT id, name, sort_order, 0 AS count, created_at, updated_at
+        let query = format!(
+            "SELECT id, name, sort_order, 0 AS count, created_at, updated_at
              FROM acollections
-             ORDER BY sort_order ASC, id ASC";
+             WHERE 1 = 1{}
+             ORDER BY sort_order ASC, id ASC",
+            Self::session_read_scope("session_id")
+        );
         let mut stmt = conn
-            .prepare(query)
+            .prepare(&query)
             .map_err(|e| e.to_string())?;
 
         let rows = stmt
@@ -1783,13 +1827,15 @@ impl ACollection {
         let query = format!(
             "SELECT cf.collection_id, COUNT(DISTINCT a.id)
              FROM acollections_files cf
+             JOIN acollections c ON c.id = cf.collection_id
              JOIN afiles a ON a.id = cf.file_id
              JOIN afolders b ON b.id = a.folder_id
-             WHERE {}{} AND {}
+             WHERE {}{} AND {}{}
              GROUP BY cf.collection_id",
             AFile::live_photo_companion_exclusion_condition(),
             AFile::album_filter_sql("a"),
             AFile::search_exclusion_condition("b"),
+            Self::session_read_scope("c.session_id"),
         );
         let mut stmt = conn.prepare(&query).map_err(|e| e.to_string())?;
         let rows = stmt.query_map([], |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)))
@@ -1813,9 +1859,10 @@ impl ACollection {
             )
             .map_err(|e| e.to_string())?;
         let now = Self::now_ts();
+        let session_id = crate::t_config::current_session_id();
         conn.execute(
-            "INSERT INTO acollections (name, sort_order, created_at, updated_at) VALUES (?1, ?2, ?3, ?4)",
-            params![trimmed, sort_order, now, now],
+            "INSERT INTO acollections (name, sort_order, created_at, updated_at, session_id) VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![trimmed, sort_order, now, now, session_id],
         )
         .map_err(|e| e.to_string())?;
 
@@ -1825,7 +1872,7 @@ impl ACollection {
 
     pub fn get(id: i64) -> Result<Self, String> {
         let conn = open_conn()?;
-        conn.query_row(
+        let query = format!(
             "SELECT c.id, c.name, c.sort_order, COUNT(a.id) AS count, c.created_at, c.updated_at
             FROM acollections c
             LEFT JOIN acollections_files cf ON cf.collection_id = c.id
@@ -1833,12 +1880,12 @@ impl ACollection {
                 AND a.id NOT IN (
                     SELECT live_photo_video_id FROM afiles WHERE live_photo_video_id IS NOT NULL
                 )
-            WHERE c.id = ?1
+            WHERE c.id = ?1{}
             GROUP BY c.id",
-            params![id],
-            Self::from_row,
-        )
-        .map_err(|e| e.to_string())
+            Self::session_read_scope("c.session_id")
+        );
+        conn.query_row(&query, params![id], Self::from_row)
+            .map_err(|e| e.to_string())
     }
 
     pub fn rename(id: i64, name: &str) -> Result<usize, String> {
@@ -1849,11 +1896,12 @@ impl ACollection {
 
         let conn = open_conn()?;
         Self::ensure_name_available(&conn, trimmed, Some(id))?;
+        let sql = format!(
+            "UPDATE acollections SET name = ?1, updated_at = ?2 WHERE id = ?3{}",
+            Self::session_write_scope("session_id")
+        );
         let changed = conn
-            .execute(
-                "UPDATE acollections SET name = ?1, updated_at = ?2 WHERE id = ?3",
-                params![trimmed, Self::now_ts(), id],
-            )
+            .execute(&sql, params![trimmed, Self::now_ts(), id])
             .map_err(|e| e.to_string())?;
         if changed == 0 {
             Err("Collection not found".to_string())
@@ -1864,8 +1912,12 @@ impl ACollection {
 
     pub fn delete(id: i64) -> Result<usize, String> {
         let conn = open_conn()?;
+        let sql = format!(
+            "DELETE FROM acollections WHERE id = ?1{}",
+            Self::session_write_scope("session_id")
+        );
         let changed = conn
-            .execute("DELETE FROM acollections WHERE id = ?1", params![id])
+            .execute(&sql, params![id])
             .map_err(|e| e.to_string())?;
         if changed == 0 {
             Err("Collection not found".to_string())
@@ -1879,12 +1931,13 @@ impl ACollection {
         let tx = conn.transaction().map_err(|e| e.to_string())?;
         let now = Self::now_ts();
         let mut changed = 0;
+        let update_sql = format!(
+            "UPDATE acollections SET sort_order = ?1, updated_at = ?2 WHERE id = ?3{}",
+            Self::session_write_scope("session_id")
+        );
         for item in items {
             changed += tx
-                .execute(
-                    "UPDATE acollections SET sort_order = ?1, updated_at = ?2 WHERE id = ?3",
-                    params![item.sort_order, now, item.id],
-                )
+                .execute(&update_sql, params![item.sort_order, now, item.id])
                 .map_err(|e| e.to_string())?;
         }
         tx.commit().map_err(|e| e.to_string())?;
@@ -1903,7 +1956,7 @@ impl ACollection {
         }
 
         let mut conn = open_conn()?;
-        Self::ensure_exists(&conn, collection_id)?;
+        Self::ensure_owned(&conn, collection_id)?;
 
         // Find which file ids already exist in this collection
         let placeholders = unique_file_ids
@@ -1964,11 +2017,12 @@ impl ACollection {
                 added_file_ids.push(file_id);
             }
         }
-        tx.execute(
-            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2",
-            params![now, collection_id],
-        )
-        .map_err(|e| e.to_string())?;
+        let touch_sql = format!(
+            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2{}",
+            Self::session_write_scope("session_id")
+        );
+        tx.execute(&touch_sql, params![now, collection_id])
+            .map_err(|e| e.to_string())?;
         tx.commit().map_err(|e| e.to_string())?;
         Ok((added_file_ids, skipped_file_ids))
     }
@@ -1980,7 +2034,7 @@ impl ACollection {
         }
 
         let mut conn = open_conn()?;
-        Self::ensure_exists(&conn, collection_id)?;
+        Self::ensure_owned(&conn, collection_id)?;
         let tx = conn.transaction().map_err(|e| e.to_string())?;
         let now = Self::now_ts();
         let mut changed = 0;
@@ -1992,29 +2046,31 @@ impl ACollection {
                 )
                 .map_err(|e| e.to_string())?;
         }
-        tx.execute(
-            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2",
-            params![now, collection_id],
-        )
-        .map_err(|e| e.to_string())?;
+        let touch_sql = format!(
+            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2{}",
+            Self::session_write_scope("session_id")
+        );
+        tx.execute(&touch_sql, params![now, collection_id])
+            .map_err(|e| e.to_string())?;
         tx.commit().map_err(|e| e.to_string())?;
         Ok(changed)
     }
 
     pub fn clear(collection_id: i64) -> Result<usize, String> {
         let conn = open_conn()?;
-        Self::ensure_exists(&conn, collection_id)?;
+        Self::ensure_owned(&conn, collection_id)?;
         let changed = conn
             .execute(
                 "DELETE FROM acollections_files WHERE collection_id = ?1",
                 params![collection_id],
             )
             .map_err(|e| e.to_string())?;
-        conn.execute(
-            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2",
-            params![Self::now_ts(), collection_id],
-        )
-        .map_err(|e| e.to_string())?;
+        let touch_sql = format!(
+            "UPDATE acollections SET updated_at = ?1 WHERE id = ?2{}",
+            Self::session_write_scope("session_id")
+        );
+        conn.execute(&touch_sql, params![Self::now_ts(), collection_id])
+            .map_err(|e| e.to_string())?;
         Ok(changed)
     }
 
@@ -2040,14 +2096,16 @@ impl ACollection {
 
     pub fn for_file(file_id: i64) -> Result<Vec<AFileCollection>, String> {
         let conn = open_conn()?;
+        let query = format!(
+            "SELECT c.id, c.name
+            FROM acollections_files cf
+            JOIN acollections c ON c.id = cf.collection_id
+            WHERE cf.file_id = ?1{}
+            ORDER BY c.sort_order ASC, c.id ASC",
+            Self::session_read_scope("c.session_id")
+        );
         let mut stmt = conn
-            .prepare(
-                "SELECT c.id, c.name
-                FROM acollections_files cf
-                JOIN acollections c ON c.id = cf.collection_id
-                WHERE cf.file_id = ?1
-                ORDER BY c.sort_order ASC, c.id ASC",
-            )
+            .prepare(&query)
             .map_err(|e| e.to_string())?;
         let rows = stmt
             .query_map(params![file_id], |row| {
@@ -2083,12 +2141,15 @@ impl ACollection {
 
         let counts = {
             let mut stmt = tx
-                .prepare(
+                .prepare(&format!(
                     "SELECT cf.collection_id, COUNT(*)
                      FROM acollections_files cf
+                     JOIN acollections c ON c.id = cf.collection_id
                      INNER JOIN selected_file_ids selected ON selected.id = cf.file_id
+                     WHERE 1 = 1{}
                      GROUP BY cf.collection_id",
-                )
+                    Self::session_read_scope("c.session_id")
+                ))
                 .map_err(|e| e.to_string())?;
             let rows = stmt
                 .query_map([], |row| {
@@ -10464,6 +10525,36 @@ fn setup_conn(conn: &Connection) -> Result<(), String> {
         [],
     )
     .map_err(|e| format!("Failed to create user_file_state table: {}", e))?;
+    // Per-session collections (server mode): NULL session_id = shared (desktop) row,
+    // otherwise the row belongs to that session. collection_id stays globally unique,
+    // so all acollections_files joins keep working unchanged.
+    let acollections_exists: Option<String> = conn
+        .query_row(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'acollections'",
+            [],
+            |row| row.get(0),
+        )
+        .optional()
+        .map_err(|e| format!("Failed to inspect schema: {}", e))?;
+    if acollections_exists.is_some() {
+        let has_session_col: Option<String> = conn
+            .prepare("PRAGMA table_info(acollections)")
+            .and_then(|mut stmt| {
+                let rows = stmt
+                    .query_map([], |row| row.get::<_, String>(1))?;
+                for name in rows {
+                    if name.map(|n| n == "session_id").unwrap_or(false) {
+                        return Ok(Some("session_id".to_string()));
+                    }
+                }
+                Ok(None)
+            })
+            .map_err(|e| format!("Failed to inspect acollections columns: {}", e))?;
+        if has_session_col.is_none() {
+            conn.execute("ALTER TABLE acollections ADD COLUMN session_id TEXT", [])
+                .map_err(|e| format!("Failed to add acollections.session_id: {}", e))?;
+        }
+    }
     Ok(())
 }
 
@@ -10871,7 +10962,8 @@ fn create_db_internal() -> Result<(), String> {
             name TEXT NOT NULL,
             sort_order INTEGER NOT NULL DEFAULT 0,
             created_at INTEGER NOT NULL,
-            updated_at INTEGER NOT NULL
+            updated_at INTEGER NOT NULL,
+            session_id TEXT
         )",
         [],
     )
@@ -12201,5 +12293,79 @@ mod multi_tag_filter_tests {
             let actual = stmt.query_map(rusqlite::params_from_iter(values.iter()), |row| row.get::<_,i64>(0)).unwrap().collect::<Result<Vec<_>,_>>().unwrap();
             assert_eq!(actual, expected);
         }
+    }
+}
+
+#[cfg(test)]
+mod session_collection_tests {
+    use super::*;
+
+    #[test]
+    fn session_collections_are_isolated_per_session() {
+        let path = std::env::temp_dir().join(format!("bfl-session-collections-{}.db", uuid::Uuid::new_v4()));
+        let _ = std::fs::remove_file(&path);
+        TEST_DB_PATH.with(|p| p.replace(Some(path.to_str().unwrap().to_string())));
+        let conn = open_conn().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE acollections (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, sort_order INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, session_id TEXT);
+             CREATE TABLE afiles (id INTEGER PRIMARY KEY, folder_id INTEGER);
+             CREATE TABLE acollections_files (collection_id INTEGER NOT NULL, file_id INTEGER NOT NULL, added_at INTEGER NOT NULL, PRIMARY KEY (collection_id, file_id));
+             INSERT INTO afiles VALUES (1, 1), (2, 1);",
+        )
+        .unwrap();
+
+        // Desktop (no session) creates a shared collection.
+        crate::t_config::set_current_session_id(None).unwrap();
+        let shared = ACollection::create("Shared").unwrap();
+        assert!(shared.id > 0);
+
+        // Session A sees shared + its own, and can manage its own.
+        crate::t_config::set_current_session_id(Some("sess-a")).unwrap();
+        let a = ACollection::create("A picks").unwrap();
+        let listed_a = ACollection::list().unwrap();
+        assert!(listed_a.iter().any(|c| c.id == shared.id), "session sees shared collections");
+        assert!(listed_a.iter().any(|c| c.id == a.id), "session sees its own collections");
+        assert!(ACollection::rename(a.id, "A renamed").is_ok());
+        let (added, _skipped) = ACollection::add_files(a.id, vec![1, 2, 2]).unwrap();
+        assert_eq!(added, vec![1, 2]);
+        assert_eq!(ACollection::file_ids(a.id).unwrap().len(), 2);
+        assert_eq!(ACollection::remove_files(a.id, vec![1]).unwrap(), 1);
+        assert_eq!(ACollection::clear(a.id).unwrap(), 1);
+        assert!(ACollection::delete(a.id).is_ok());
+
+        // Session B sees shared only - never A's private collection.
+        crate::t_config::set_current_session_id(Some("sess-b")).unwrap();
+        let b = ACollection::create("B picks").unwrap();
+        let listed_b = ACollection::list().unwrap();
+        assert!(listed_b.iter().any(|c| c.id == shared.id));
+        assert!(listed_b.iter().any(|c| c.id == b.id), "B sees its own");
+        assert!(!listed_b.iter().any(|c| c.name == "A picks"), "B must not see A's collection");
+
+        // Neither session may touch shared or each other's collections.
+        assert!(ACollection::rename(shared.id, "hijack").is_err());
+        assert!(ACollection::delete(shared.id).is_err());
+        assert!(ACollection::add_files(shared.id, vec![1]).is_err());
+        crate::t_config::set_current_session_id(Some("sess-a")).unwrap();
+        assert!(ACollection::rename(b.id, "hijack").is_err());
+        assert!(ACollection::delete(b.id).is_err());
+        assert!(ACollection::add_files(b.id, vec![1]).is_err());
+
+        // Name uniqueness is scoped to what the session can see: two sessions may
+        // each privately use the same name, but not a name visible as shared.
+        assert!(ACollection::create("Dup").is_ok());
+        crate::t_config::set_current_session_id(Some("sess-b")).unwrap();
+        assert!(ACollection::create("Dup").is_ok(), "private names may repeat across sessions");
+        assert!(ACollection::create("Shared").is_err(), "cannot shadow a visible shared name");
+
+        // Desktop (no session) still sees only shared rows and can manage them.
+        crate::t_config::set_current_session_id(None).unwrap();
+        let listed = ACollection::list().unwrap();
+        assert_eq!(listed.len(), 1);
+        assert_eq!(listed[0].id, shared.id);
+        assert!(ACollection::rename(shared.id, "Shared v2").is_ok());
+
+        crate::t_config::set_current_session_id(None).unwrap();
+        TEST_DB_PATH.with(|p| p.replace(None));
+        let _ = std::fs::remove_file(&path);
     }
 }

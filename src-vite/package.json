@@ -19,7 +19,8 @@
     "test:tags": "node --test tests/tagTree.test.mjs",
     "test:searchable": "node --test tests/searchableOptions.test.mjs tests/searchableSelectState.test.mjs",
     "test:location": "node --test tests/locationBreadcrumb.test.mjs",
-    "test:mediacache": "node --test tests/mediaCache.test.mjs"
+    "test:mediacache": "node --test tests/mediaCache.test.mjs",
+    "test:sessioncollections": "node --test tests/sessionCollections.test.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",

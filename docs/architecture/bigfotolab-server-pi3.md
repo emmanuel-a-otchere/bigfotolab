@@ -223,3 +223,26 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
 - Offline-committed edits (replace media / sidecar updates / save-as-new) sync
   back through the outbox (slice 3, PR #19) — the cache only affects reads.
 
+## Phase 3 slice 6 — per-session collections (this PR)
+
+- `acollections` gains a nullable `session_id` column (migration in `setup_conn` for
+  existing DBs, included in the fresh schema). NULL = shared (desktop) row; a session
+  id = private to that session. `collection_id` stays globally unique, so every
+  `acollections_files` join and every collection query path keeps working unchanged.
+- `t_config` gains a process-wide `CURRENT_SESSION_ID` (set per request under the
+  server DB lock, exactly like the current-library switch; desktop never sets it).
+- `ACollection` applies a read scope (`session_id IS NULL OR = current`) to
+  list/get/counts/for_file/selection_counts/name-uniqueness, and a write scope
+  (session → own rows only; desktop → shared rows only) to create/rename/delete/
+  reorder/add_files/remove_files/clear. Sessions therefore cannot see or modify each
+  other's collections, and remote clients cannot modify shared (desktop-created)
+  collections. Private names may repeat across sessions; a session cannot shadow a
+  name visible as shared.
+- `t_server.rs` threads the request session through `with_library` and whitelists all
+  17 collection commands (reads + writes); after a successful collection write it
+  broadcasts `collections-changed` over SSE, which `CollectionTray.vue` already
+  listens for — the client needed no changes (`api.js` already routes via `invoke`).
+- Tests: Rust `session_collection_tests` in `t_sqlite.rs` (isolation, ownership
+  guards, scoped name uniqueness, desktop behavior unchanged) and
+  `src-vite/tests/sessionCollections.test.mjs` (`pnpm run test:sessioncollections`,
+  4/4) guarding client/server command-name parity and the SSE event wiring.

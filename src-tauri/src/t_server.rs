@@ -499,7 +499,7 @@ trait Pipe: Sized {
 }
 impl<T> Pipe for T {}
 
-async fn with_library<T, F, Fut>(library_id: Option<String>, f: F) -> Result<T, String>
+async fn with_library<T, F, Fut>(library_id: Option<String>, session: Option<&str>, f: F) -> Result<T, String>
 where
     F: FnOnce() -> Fut,
     Fut: std::future::Future<Output = Result<T, String>>,
@@ -510,6 +510,7 @@ where
         _ => t_config::current_library_id()?,
     };
     t_config::set_current_library_id(&id)?;
+    let _ = t_config::set_current_session_id(session);
     f().await
 }
 
@@ -555,7 +556,6 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
     if !req.authorized() {
         return reject(stream, "401 Unauthorized").await;
     }
-    let _ = session; // session-scoped state lands in the next slice
     let body: Value = match serde_json::from_slice(&req.body) {
         Ok(v) => v,
         Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": format!("invalid JSON body: {}", e) }), accepts_gzip(req)).await,
@@ -564,7 +564,7 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
     let library_id = body.get("library_id").and_then(|v| v.as_str()).map(|s| s.to_string());
 
     if name == "prewarm_thumbs" {
-        return handle_prewarm(stream, req, &args, library_id).await;
+        return handle_prewarm(stream, req, &args, library_id, session).await;
     }
     if name == "set_file_user_state" {
         return handle_set_file_user_state(stream, req, &args, library_id, session).await;
@@ -580,20 +580,21 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
         return handle_cancel_indexing(stream, req, &args).await;
     }
     if name == "add_album" {
-        return handle_add_album(stream, req, &args, library_id).await;
+        return handle_add_album(stream, req, &args, library_id, session).await;
     }
 
+    let lib_for_event = library_id.clone();
     let result: Result<Value, String> = match name {
-        "get_app_config" => with_library(library_id, || async { t_cmds::get_app_config().map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_library_info" => with_library(library_id, || async { let id: String = arg(&args, "id")?; t_cmds::get_library_info(id).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_library_state" => with_library(library_id, || async { let id: String = arg(&args, "id")?; t_cmds::get_library_state(&id).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_current_library_state" => with_library(library_id, || async { t_cmds::get_current_library_state().map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_all_albums" => with_library(library_id, || async { let r: bool = arg(&args, "refreshAccessibility").unwrap_or(false); t_cmds::get_all_albums(r).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_all_album_folders" => with_library(library_id, || async { let inc: Option<bool> = opt_arg(&args, "includeExcluded")?; t_cmds::get_all_album_folders(inc).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_album" => with_library(library_id, || async { let id: i64 = arg(&args, "albumId")?; t_cmds::get_album(id).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_album_visible_counts" => with_library(library_id, || async { t_cmds::get_album_visible_counts().map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_library_visible_counts" => with_library(library_id, || async { let id: Option<String> = opt_arg(&args, "id")?; t_cmds::get_library_visible_counts(id).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_folder_files" => with_library(library_id, || async {
+        "get_app_config" => with_library(library_id, Some(session), || async { t_cmds::get_app_config().map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_library_info" => with_library(library_id, Some(session), || async { let id: String = arg(&args, "id")?; t_cmds::get_library_info(id).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_library_state" => with_library(library_id, Some(session), || async { let id: String = arg(&args, "id")?; t_cmds::get_library_state(&id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_current_library_state" => with_library(library_id, Some(session), || async { t_cmds::get_current_library_state().map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_all_albums" => with_library(library_id, Some(session), || async { let r: bool = arg(&args, "refreshAccessibility").unwrap_or(false); t_cmds::get_all_albums(r).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_all_album_folders" => with_library(library_id, Some(session), || async { let inc: Option<bool> = opt_arg(&args, "includeExcluded")?; t_cmds::get_all_album_folders(inc).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_album" => with_library(library_id, Some(session), || async { let id: i64 = arg(&args, "albumId")?; t_cmds::get_album(id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_album_visible_counts" => with_library(library_id, Some(session), || async { t_cmds::get_album_visible_counts().map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_library_visible_counts" => with_library(library_id, Some(session), || async { let id: Option<String> = opt_arg(&args, "id")?; t_cmds::get_library_visible_counts(id).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_folder_files" => with_library(library_id, Some(session), || async {
             let file_type: i64 = arg(&args, "fileType")?;
             let sort_type: i64 = arg(&args, "sortType")?;
             let sort_order: i64 = arg(&args, "sortOrder")?;
@@ -604,7 +605,7 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
             apply_session_state(session, &mut files)?;
             Ok(json!({ "files": files, "width": w, "height": h }))
         }).await,
-        "get_query_files" => with_library(library_id, || async {
+        "get_query_files" => with_library(library_id, Some(session), || async {
             let params: t_sqlite::QueryParams = arg(&args, "params")?;
             let offset: i64 = arg(&args, "offset")?;
             let limit: i64 = arg(&args, "limit")?;
@@ -612,7 +613,7 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
             apply_session_state(session, &mut files)?;
             Ok(serde_json::to_value(files).unwrap())
         }).await,
-        "get_file_info" => with_library(library_id, || async {
+        "get_file_info" => with_library(library_id, Some(session), || async {
             let id: i64 = arg(&args, "fileId")?;
             let mut f = t_cmds::get_file_info(id)?;
             if let Some(f) = f.as_mut() {
@@ -620,21 +621,50 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
             }
             Ok(serde_json::to_value(f).unwrap())
         }).await,
-        "get_files_by_ids" => with_library(library_id, || async {
+        "get_files_by_ids" => with_library(library_id, Some(session), || async {
             let ids: Vec<i64> = arg(&args, "fileIds")?;
             let mut files = t_cmds::get_files_by_ids(ids).await?;
             apply_session_state(session, &mut files)?;
             Ok(serde_json::to_value(files).unwrap())
         }).await,
-        "get_supported_format_extensions" => with_library(library_id, || async { Ok(serde_json::to_value(t_cmds::get_supported_format_extensions()).unwrap()) }).await,
-        "list_collections" => with_library(library_id, || async { t_cmds::list_collections().map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_all_tags" => with_library(library_id, || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_all_tags(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
-        "get_taken_dates" => with_library(library_id, || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_taken_dates(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_supported_format_extensions" => with_library(library_id, Some(session), || async { Ok(serde_json::to_value(t_cmds::get_supported_format_extensions()).unwrap()) }).await,
+        "list_collections" => with_library(library_id, Some(session), || async { t_cmds::list_collections().map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_counts" => with_library(library_id, Some(session), || async { t_cmds::get_collection_counts().map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "create_collection" => with_library(library_id, Some(session), || async { let name: String = arg(&args, "name")?; t_cmds::create_collection(&name).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "rename_collection" => with_library(library_id, Some(session), || async { let id: i64 = arg(&args, "id")?; let name: String = arg(&args, "name")?; t_cmds::rename_collection(id, &name).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "delete_collection" => with_library(library_id, Some(session), || async { let id: i64 = arg(&args, "id")?; t_cmds::delete_collection(id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "reorder_collections" => with_library(library_id, Some(session), || async { let items: Vec<t_sqlite::ACollectionOrder> = arg(&args, "items")?; t_cmds::reorder_collections(items).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "add_files_to_collection" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let file_ids: Vec<i64> = arg(&args, "fileIds")?; t_cmds::add_files_to_collection(collection_id, file_ids).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "remove_files_from_collection" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let file_ids: Vec<i64> = arg(&args, "fileIds")?; t_cmds::remove_files_from_collection(collection_id, file_ids).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_selection_counts" => with_library(library_id, Some(session), || async { let file_ids: Vec<i64> = arg(&args, "fileIds")?; t_cmds::get_collection_selection_counts(file_ids).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "clear_collection" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; t_cmds::clear_collection(collection_id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_file_ids" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; t_cmds::get_collection_file_ids(collection_id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_file_collections" => with_library(library_id, Some(session), || async { let file_id: i64 = arg(&args, "fileId")?; t_cmds::get_file_collections(file_id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_count_and_sum" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; t_cmds::get_collection_count_and_sum(collection_id, params).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_files" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; let offset: i64 = arg(&args, "offset")?; let limit: i64 = arg(&args, "limit")?; t_cmds::get_collection_files(collection_id, params, offset, limit).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_grouped_query_rows" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; let offset: i64 = arg(&args, "offset")?; let limit: i64 = arg(&args, "limit")?; t_cmds::get_collection_grouped_query_rows(collection_id, params, offset, limit).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_group_file_ids" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; let group_id: String = arg(&args, "groupId")?; t_cmds::get_collection_group_file_ids(collection_id, params, group_id).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_collection_query_file_ids" => with_library(library_id, Some(session), || async { let collection_id: i64 = arg(&args, "collectionId")?; let params: t_sqlite::QueryParams = arg(&args, "params")?; t_cmds::get_collection_query_file_ids(collection_id, params).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_all_tags" => with_library(library_id, Some(session), || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_all_tags(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
+        "get_taken_dates" => with_library(library_id, Some(session), || async { let sort: i64 = arg(&args, "sort").unwrap_or(0); t_cmds::get_taken_dates(sort).map(|v| serde_json::to_value(v).unwrap()) }).await,
         _ => Err(format!("command '{}' is not available in server mode", name)),
     };
 
+    let collection_write = matches!(
+        name,
+        "create_collection" | "rename_collection" | "delete_collection" | "reorder_collections"
+            | "add_files_to_collection" | "remove_files_from_collection" | "clear_collection"
+    );
     match result {
-        Ok(v) => json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await,
+        Ok(v) => {
+            if collection_write {
+                emit_server_event(
+                    "collections-changed",
+                    json!({ "library_id": lib_for_event, "session_id": session }),
+                );
+            }
+            json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await
+        }
         Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
     }
 }
@@ -656,7 +686,7 @@ async fn handle_set_file_user_state(
     let is_favorite: Option<bool> = opt_arg(args, "isFavorite").unwrap_or(None);
     let culling_flag: Option<i32> = opt_arg(args, "cullingFlag").unwrap_or(None);
     let lib = library_id.clone();
-    let result = with_library(library_id, || async move {
+    let result = with_library(library_id, Some(session), || async move {
         set_session_file_state(session, file_id, rating, is_favorite, culling_flag)
     })
     .await;
@@ -680,6 +710,7 @@ async fn handle_prewarm(
     req: &Request,
     args: &Value,
     library_id: Option<String>,
+    session: &str,
 ) -> io::Result<()> {
     let album_id: Option<i64> = match opt_arg(args, "albumId") {
         Ok(v) => v,
@@ -692,7 +723,7 @@ async fn handle_prewarm(
         .into_iter()
         .map(|s| s.clamp(64, 2048))
         .collect();
-    let count: Result<i64, String> = with_library(library_id.clone(), || async move {
+    let count: Result<i64, String> = with_library(library_id.clone(), Some(session), || async move {
         let conn = t_sqlite::open_conn()?;
         let mut stmt = conn
             .prepare("SELECT COUNT(*) FROM afiles WHERE file_type IN (1,2,3) AND (?1 IS NULL OR album_id = ?1)")
@@ -827,7 +858,7 @@ async fn handle_thumb(stream: &mut TcpStream, req: &Request, rest: &str) -> io::
         .clamp(64, 2048);
     let options = t_protocol::raw_display_options(Some(req.query()));
 
-    let result = with_library(Some(library_id.clone()), || async move {
+    let result = with_library(Some(library_id.clone()), None, || async move {
         let file = t_sqlite::AFile::get_file_info(file_id)?
             .ok_or_else(|| "file not found".to_string())?;
         let path = file.file_path.clone().unwrap_or_default();
@@ -1032,6 +1063,7 @@ async fn handle_index_album(
     let emit = server_emitter();
     tokio::spawn(async move {
         let _guard = db_lock().lock().await;
+        let _ = t_config::set_current_session_id(None);
         if let Err(e) = t_config::set_current_library_id(&lib) {
             emit_server_event("index_finished", json!({ "album_id": album_id, "error": e }));
             return;
@@ -1075,6 +1107,7 @@ async fn handle_add_album(
     req: &Request,
     args: &Value,
     library_id: Option<String>,
+    session: &str,
 ) -> io::Result<()> {
     let parsed = (|| -> Result<(String, String, String, i64, i64, Vec<String>), String> {
         let folder_path: String = arg(args, "folderPath")?;
@@ -1089,7 +1122,7 @@ async fn handle_add_album(
         Ok(v) => v,
         Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
     };
-    let result = with_library(library_id, || async move {
+    let result = with_library(library_id, Some(session), || async move {
         let album = t_sqlite::Album::add_album_to_db(&folder_path)?;
         let id = album.id.ok_or("new album has no id".to_string())?;
         if let Err(error) = t_sqlite::Album::edit(id, &name, &description, file_types, small_image_filter, &excluded_folders) {
@@ -1257,7 +1290,7 @@ async fn handle_apply_actions(
             continue;
         }
         let action = action.clone();
-        let r = with_library(library_id.clone(), || async move { apply_one_action(session, &action).await }).await;
+        let r = with_library(library_id.clone(), Some(session), || async move { apply_one_action(session, &action).await }).await;
         match r {
             Ok(()) => results.push(json!({ "uuid": uuid, "ok": true })),
             Err(e) => results.push(json!({ "uuid": uuid, "ok": false, "error": e })),
