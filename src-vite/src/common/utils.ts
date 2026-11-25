@@ -1,6 +1,6 @@
 import { open as openDialog } from '@tauri-apps/plugin-dialog';
 import { invoke } from '@tauri-apps/api/core';
-import { isRemote, getServerUrl, getServerToken } from '@/common/transport';
+import { isRemote, getServerUrl, getServerToken, getSessionId } from '@/common/transport';
 import { useUIStore } from '@/stores/uiStore';
 import { config } from '@/common/config';
 import { appendRawDisplayParams, rawDisplayKey } from './rawDisplay';
@@ -612,7 +612,10 @@ export function getThumbUrl(
   const base = `${scheme}/${_thumbLibraryId}/${fileId}`;
   const params = new URLSearchParams();
   appendRawDisplayParams(params);
-  if (isRemote()) params.set('token', getServerToken());
+  if (isRemote()) {
+    params.set('token', getServerToken());
+    if (getSessionId()) params.set('sid', getSessionId()!);
+  }
   if (thumbnailSize > 0) params.set('size', String(thumbnailSize));
   if (fileVersion > 0) params.set('v', String(fileVersion));
   if (bustCache) params.set('t', String(Date.now()));
@@ -634,6 +637,7 @@ export function getPreviewUrl(
   const params = new URLSearchParams();
   if (isRemote()) {
     params.set('token', getServerToken());
+    if (getSessionId()) params.set('sid', getSessionId()!);
     params.set('size', '2048');
   }
   if (forEditing) {
@@ -818,6 +822,7 @@ export function getAssetSrc(filePath: string, fileVersion = 0): string {
     const localVersion = useUIStore().getFileVersion(filePath);
     if (localVersion > 0) params.set('u', String(localVersion));
     params.set('token', getServerToken());
+    if (getSessionId()) params.set('sid', getSessionId()!);
     return `${getServerUrl()}/media/original/${encodeURIComponent(filePath)}?${params.toString()}`;
   }
   if (!originalMediaBaseUrl) return '';

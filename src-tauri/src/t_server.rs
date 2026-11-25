@@ -23,6 +23,7 @@ static STATE: OnceLock<ServerState> = OnceLock::new();
 struct ServerState {
     token: String,
     dist_dir: PathBuf,
+    config_dir: PathBuf,
 }
 
 fn db_lock() -> &'static Mutex<()> {
@@ -53,7 +54,8 @@ pub async fn run(config_dir: PathBuf, port: u16, dist_dir: PathBuf) -> io::Resul
     let _ = t_config::load_app_config();
     t_sqlite::create_db().map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
-    let _ = STATE.set(ServerState { token, dist_dir });
+    ensure_server_db(&config_dir)?;
+    let _ = STATE.set(ServerState { token, dist_dir, config_dir });
 
     let listener = TcpListener::bind(("0.0.0.0", port)).await?;
     eprintln!(
@@ -67,6 +69,69 @@ pub async fn run(config_dir: PathBuf, port: u16, dist_dir: PathBuf) -> io::Resul
             let _ = handle_conn(stream).await;
         });
     }
+}
+
+/// Server-level SQLite (sessions, applied offline actions) in the config dir.
+fn server_db_path() -> PathBuf {
+    state().config_dir.join("server.db")
+}
+
+fn ensure_server_db(config_dir: &Path) -> io::Result<()> {
+    let conn = rusqlite::Connection::open(config_dir.join("server.db"))
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+    conn.execute_batch(
+        "CREATE TABLE IF NOT EXISTS sessions (
+             id TEXT PRIMARY KEY,
+             label TEXT NOT NULL DEFAULT '',
+             created INTEGER NOT NULL,
+             last_seen INTEGER NOT NULL
+         );
+         CREATE TABLE IF NOT EXISTS applied_actions (
+             session_id TEXT NOT NULL,
+             action_uuid TEXT NOT NULL,
+             applied_at INTEGER NOT NULL,
+             PRIMARY KEY (session_id, action_uuid)
+         );",
+    )
+    .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+    Ok(())
+}
+
+/// Create a new session (no auth — trusted LAN) and return its id.
+fn create_session(label: &str) -> io::Result<String> {
+    let conn = rusqlite::Connection::open(server_db_path())
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+    let id = uuid::Uuid::new_v4().simple().to_string();
+    let now = chrono::Utc::now().timestamp();
+    conn.execute(
+        "INSERT INTO sessions (id, label, created, last_seen) VALUES (?1, ?2, ?3, ?3)",
+        rusqlite::params![id, label, now],
+    )
+    .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+    Ok(id)
+}
+
+/// Resolve the session for a request: X-Session-Id header or ?sid=, falling back
+/// to a lazily-created "default" session so Phase 1 clients keep working.
+fn resolve_session(req: &Request) -> String {
+    let sid = req
+        .header("x-session-id")
+        .map(|s| s.to_string())
+        .or_else(|| req.query_param("sid"))
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| "default".to_string());
+    if let Ok(conn) = rusqlite::Connection::open(server_db_path()) {
+        let now = chrono::Utc::now().timestamp();
+        let _ = conn.execute(
+            "INSERT OR IGNORE INTO sessions (id, label, created, last_seen) VALUES (?1, '', ?2, ?2)",
+            rusqlite::params![sid, now],
+        );
+        let _ = conn.execute(
+            "UPDATE sessions SET last_seen = ?2 WHERE id = ?1",
+            rusqlite::params![sid, now],
+        );
+    }
+    sid
 }
 
 fn load_or_create_token(config_dir: &Path) -> io::Result<String> {
@@ -238,8 +303,12 @@ async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
         return Ok(());
     };
     let path = req.path().to_string();
+    let session = resolve_session(&req);
+    if path == "/api/v1/session" {
+        return handle_session(&mut stream, &req, &session).await;
+    }
     if let Some(name) = path.strip_prefix("/api/v1/cmd/") {
-        return handle_cmd(&mut stream, &req, name).await;
+        return handle_cmd(&mut stream, &req, name, &session).await;
     }
     match path.as_str() {
         "/api/v1/ping" => {
@@ -319,13 +388,49 @@ where
     f().await
 }
 
-async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str) -> io::Result<()> {
+/// Session management (no auth by design — trusted LAN): POST creates a new
+/// session, GET returns the current one.
+async fn handle_session(stream: &mut TcpStream, req: &Request, current: &str) -> io::Result<()> {
+    if !req.authorized() {
+        return reject(stream, "401 Unauthorized").await;
+    }
+    if req.method == "POST" {
+        let body: Value = serde_json::from_slice(&req.body).unwrap_or_else(|_| json!({}));
+        let label = body.get("label").and_then(|v| v.as_str()).unwrap_or("").to_string();
+        return match create_session(&label) {
+            Ok(id) => json_response(stream, "200 OK", &json!({ "session_id": id, "label": label }), accepts_gzip(req)).await,
+            Err(e) => json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await,
+        };
+    }
+    let info = rusqlite::Connection::open(server_db_path())
+        .ok()
+        .and_then(|conn| {
+            conn.query_row(
+                "SELECT id, label, created, last_seen FROM sessions WHERE id = ?1",
+                rusqlite::params![current],
+                |r| {
+                    Ok(json!({
+                        "session_id": r.get::<_, String>(0)?,
+                        "label": r.get::<_, String>(1)?,
+                        "created": r.get::<_, i64>(2)?,
+                        "last_seen": r.get::<_, i64>(3)?,
+                    }))
+                },
+            )
+            .ok()
+        })
+        .unwrap_or_else(|| json!({ "session_id": current }));
+    json_response(stream, "200 OK", &info, accepts_gzip(req)).await
+}
+
+async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: &str) -> io::Result<()> {
     if req.method != "POST" {
         return reject(stream, "405 Method Not Allowed").await;
     }
     if !req.authorized() {
         return reject(stream, "401 Unauthorized").await;
     }
+    let _ = session; // session-scoped state lands in the next slice
     let body: Value = match serde_json::from_slice(&req.body) {
         Ok(v) => v,
         Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": format!("invalid JSON body: {}", e) }), accepts_gzip(req)).await,
