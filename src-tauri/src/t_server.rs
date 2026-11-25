@@ -995,22 +995,22 @@ async fn sha256_file(path: &Path) -> io::Result<String> {
 /// Body is streamed to a temp file then renamed (never held in RAM).
 /// mode=replace verifies expected_sha256 against the current file (optimistic
 /// concurrency); mode=new picks a unique name if the target exists.
-async fn handle_upload(mut stream: TcpStream, mut req: Request, content_length: usize) -> io::Result<()> {
+async fn handle_upload(stream: &mut TcpStream, mut req: Request, content_length: usize) -> io::Result<()> {
     if !req.authorized() {
-        return reject(&mut stream, "401 Unauthorized").await;
+        return reject(stream, "401 Unauthorized").await;
     }
     if req.method != "POST" {
-        return reject(&mut stream, "405 Method Not Allowed").await;
+        return reject(stream, "405 Method Not Allowed").await;
     }
     let Some(dest_q) = req.query_param("path") else {
-        return json_response(&mut stream, "400 Bad Request", &json!({ "error": "missing path" }), false).await;
+        return json_response(stream, "400 Bad Request", &json!({ "error": "missing path" }), false).await;
     };
     let Ok(decoded) = percent_encoding::percent_decode_str(&dest_q).decode_utf8() else {
-        return reject(&mut stream, "400 Bad Request").await;
+        return reject(stream, "400 Bad Request").await;
     };
     let mut dest = PathBuf::from(decoded.as_ref());
     if !dest.is_absolute() || dest.parent().map(|p| !p.is_dir()).unwrap_or(true) {
-        return json_response(&mut stream, "400 Bad Request", &json!({ "error": "invalid destination path" }), false).await;
+        return json_response(stream, "400 Bad Request", &json!({ "error": "invalid destination path" }), false).await;
     }
     let mode = req.query_param("mode").unwrap_or_else(|| "new".to_string());
     let expected = req.query_param("expected_sha256");
@@ -1020,7 +1020,7 @@ async fn handle_upload(mut stream: TcpStream, mut req: Request, content_length: 
     {
         let mut out = match tokio::fs::File::create(&tmp).await {
             Ok(f) => f,
-            Err(e) => return json_response(&mut stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await,
+            Err(e) => return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await,
         };
         if !req.body.is_empty() {
             out.write_all(&req.body).await?;
@@ -1045,18 +1045,18 @@ async fn handle_upload(mut stream: TcpStream, mut req: Request, content_length: 
                     Ok(h) if h == *exp => {}
                     Ok(h) => {
                         let _ = tokio::fs::remove_file(&tmp).await;
-                        return json_response(&mut stream, "409 Conflict", &json!({ "error": "source hash mismatch", "current_sha256": h }), false).await;
+                        return json_response(stream, "409 Conflict", &json!({ "error": "source hash mismatch", "current_sha256": h }), false).await;
                     }
                     Err(e) => {
                         let _ = tokio::fs::remove_file(&tmp).await;
-                        return json_response(&mut stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+                        return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
                     }
                 }
             }
         }
         if let Err(e) = tokio::fs::rename(&tmp, &dest).await {
             let _ = tokio::fs::remove_file(&tmp).await;
-            return json_response(&mut stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+            return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
         }
     } else {
         let mut final_path = dest.clone();
@@ -1070,7 +1070,7 @@ async fn handle_upload(mut stream: TcpStream, mut req: Request, content_length: 
         }
         if let Err(e) = tokio::fs::rename(&tmp, &final_path).await {
             let _ = tokio::fs::remove_file(&tmp).await;
-            return json_response(&mut stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+            return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
         }
         dest = final_path;
     }
@@ -1080,7 +1080,7 @@ async fn handle_upload(mut stream: TcpStream, mut req: Request, content_length: 
         json!({ "library_id": library_id, "path": dest.to_string_lossy(), "mode": mode, "session_id": resolve_session(&req) }),
     );
     json_response(
-        &mut stream,
+        stream,
         "200 OK",
         &json!({ "result": { "ok": true, "path": dest.to_string_lossy() } }),
         false,
