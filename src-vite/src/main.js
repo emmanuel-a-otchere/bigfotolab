@@ -8,8 +8,9 @@ import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { message } from '@tauri-apps/plugin-dialog'
 import { initializeOriginalMedia } from '@/common/utils'
-import { configureTransport } from '@/common/transport'
+import { configureTransport, setSyncStateProvider, invoke as transportInvoke } from '@/common/transport'
 import { configureMediaCache, getMediaCache } from '@/common/mediaCache'
+import { libConfig } from '@/common/config'
 import { initOutboxRemote } from '@/common/outbox'
 import { getSystemRegionLocale } from '@/common/api'
 import 'cally'
@@ -31,6 +32,8 @@ app.use(pinia) // Use Pinia
 const config = useConfigStore() // Use the config store
 // Remote mode: talk to a headless bigfotolab-server over HTTP+SSE instead of Tauri IPC
 if (config.settings.remoteServer?.enabled) {
+  // Delta sync: on every SSE (re)connect, fetch the server sync-state fingerprint.
+  setSyncStateProvider(() => transportInvoke('get_sync_state', { id: libConfig._libraryId || '' }))
   configureTransport({
     mode: 'remote',
     url: config.settings.remoteServer.url,
