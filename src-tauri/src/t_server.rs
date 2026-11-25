@@ -414,10 +414,11 @@ fn session_state_map(
 
 /// Merge the session's overrides into file records (session wins over base afiles).
 fn apply_session_state(session: &str, files: &mut [t_sqlite::AFile]) -> Result<(), String> {
-    let ids: Vec<i64> = files.iter().map(|f| f.id).collect();
+    let ids: Vec<i64> = files.iter().filter_map(|f| f.id).collect();
     let map = session_state_map(session, &ids)?;
     for f in files.iter_mut() {
-        if let Some((rating, fav, culling)) = map.get(&f.id) {
+        let Some(fid) = f.id else { continue };
+        if let Some((rating, fav, culling)) = map.get(&fid) {
             if let Some(r) = rating {
                 f.rating = Some(*r);
             }
