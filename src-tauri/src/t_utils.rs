@@ -13,6 +13,14 @@ use once_cell::sync::Lazy;
 use pinyin::ToPinyin;
 use rstar::{AABB, PointDistance, RTree, RTreeObject};
 use serde::Serialize;
+
+/// Shared event emitter: desktop wraps tauri::AppHandle::emit, server wraps SSE broadcast.
+pub type SharedEmitter = std::sync::Arc<dyn Fn(&str, serde_json::Value) + Send + Sync>;
+
+pub(crate) fn emit_json(emit: &SharedEmitter, name: &str, payload: impl Serialize) -> Result<(), String> {
+    (emit)(name, serde_json::to_value(payload).unwrap_or_default());
+    Ok(())
+}
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs;
 use std::io::Read;
@@ -4165,7 +4173,7 @@ impl ProgressSnapshot {
 
 struct ProgressTracker {
     album_id: i64,
-    app_handle: tauri::AppHandle,
+    emit: SharedEmitter,
     flush_interval: Duration,
     last_emit_at: Option<Instant>,
     last_phase: String,
@@ -4174,7 +4182,7 @@ struct ProgressTracker {
 
 impl ProgressTracker {
     fn new(
-        app_handle: &tauri::AppHandle,
+        emit: SharedEmitter,
         album_id: i64,
         total: u64,
         search_total: u64,
@@ -4198,7 +4206,7 @@ impl ProgressTracker {
         };
         Self {
             album_id,
-            app_handle: app_handle.clone(),
+            emit,
             flush_interval: Duration::from_millis(150),
             last_emit_at: None,
             last_phase: snapshot.phase().to_string(),
@@ -4233,7 +4241,7 @@ impl ProgressTracker {
 
     fn emit_now(&mut self) {
         let payload = self.snapshot.to_payload(self.album_id);
-        let _ = self.app_handle.emit("index_progress", payload);
+        let _ = emit_json(&self.emit, "index_progress", payload);
         self.last_emit_at = Some(Instant::now());
         self.last_phase = self.snapshot.phase().to_string();
     }
@@ -4377,7 +4385,8 @@ fn index_single_file(
 }
 
 async fn process_thumbnail_task(
-    app_handle: tauri::AppHandle,
+    emit: SharedEmitter,
+    app_handle: Option<tauri::AppHandle>,
     task: ThumbnailTask,
     budget: ProcessingBudget,
     tracker: Arc<Mutex<ProgressTracker>>,
@@ -4420,7 +4429,8 @@ async fn process_thumbnail_task(
         return Ok(false);
     }
 
-    let _ = app_handle.emit(
+    let _ = emit_json(
+        &emit,
         "thumbnail_ready",
         ThumbnailReadyPayload {
             library_id: task.library_id.clone(),
@@ -4449,7 +4459,9 @@ async fn process_thumbnail_task(
         .await
         .map_err(|e| format!("Failed to acquire embedding permit: {}", e))?;
 
-    let app_handle_for_embedding = app_handle.clone();
+    let Some(app_handle_for_embedding) = app_handle.clone() else {
+        return Ok(true); // server mode: AI embedding disabled
+    };
     let file_id = task.file_id;
     let file_path = task.file_path.clone();
     let embedding_ok = tauri::async_runtime::spawn_blocking(move || {
@@ -4484,7 +4496,8 @@ async fn process_thumbnail_task(
 }
 
 pub async fn index_album_worker(
-    app_handle: &tauri::AppHandle,
+    emit: SharedEmitter,
+    app_handle: Option<tauri::AppHandle>,
     cancellation_token: Arc<Mutex<HashMap<i64, bool>>>,
     scan_library_id: String,
     album_id: i64,
@@ -4507,8 +4520,8 @@ pub async fn index_album_worker(
     let previous_indexed = album.indexed.unwrap_or(0).max(0) as u64;
     let previous_total = album.total.unwrap_or(0).max(0) as u64;
     if !directory_accessible(&album.path) {
-        app_handle
-            .emit(
+        emit_json(
+            &emit,
                 "index_finished",
                 FinishedPayload {
                     library_id: scan_library_id.clone(),
@@ -4536,7 +4549,7 @@ pub async fn index_album_worker(
     let counts = count_folder_files_cancellable(&album.path, album.file_types, &album.excluded_folders, album.small_image_filter,
         || cancellation_token.lock().map(|flags| flags.get(&album_id) == Some(&true)).unwrap_or(true));
     let Some((_folders, image_count, _image_size, video_count, _video_size, scan_total, scan_total_size)) = counts else {
-        app_handle.emit("index_finished", FinishedPayload {
+        emit_json(&emit, "index_finished", FinishedPayload {
             library_id: scan_library_id.clone(),
             metadata_failed: metadata_failures.count(),
             album_id,
@@ -4571,7 +4584,7 @@ pub async fn index_album_worker(
 
     // 3. Emit start progress
     let tracker = Arc::new(Mutex::new(ProgressTracker::new(
-        app_handle,
+        emit.clone(),
         album_id,
         total_files,
         search_total,
@@ -4720,6 +4733,7 @@ pub async fn index_album_worker(
                     }
                     if let Some(task) = outcome.task {
                         thumbnail_join_set.spawn(process_thumbnail_task(
+                            emit.clone(),
                             app_handle.clone(),
                             task,
                             processing_budget.clone(),
@@ -4895,10 +4909,10 @@ pub async fn index_album_worker(
     );
 
     // 6. Emit finished
-    app_handle
-        .emit(
-            "index_finished",
-            FinishedPayload {
+    let _ = emit_json(
+        &emit,
+        "index_finished",
+        FinishedPayload {
                 library_id: scan_library_id,
                 metadata_failed: metadata_failures.count(),
                 album_id,
@@ -4927,8 +4941,7 @@ pub async fn index_album_worker(
                 scan_total: final_snapshot.scan_total,
                 scan_total_size: final_snapshot.scan_total_size,
             },
-        )
-        .map_err(|e| e.to_string())?;
+    );
 
     Ok(())
 }

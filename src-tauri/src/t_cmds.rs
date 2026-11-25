@@ -704,9 +704,15 @@ pub fn index_album(
     state.0.lock().unwrap().insert(album_id, false);
     let cancellation_token = state.0.clone();
 
+    let emit_handle = app_handle.clone();
+    let emit: t_utils::SharedEmitter = std::sync::Arc::new(move |name: &str, v: serde_json::Value| {
+        let _ = emit_handle.emit(name, v);
+    });
+
     tauri::async_runtime::spawn(async move {
         if let Err(e) = t_utils::index_album_worker(
-            &app_handle,
+            emit,
+            Some(app_handle),
             cancellation_token,
             library_id,
             album_id,
