@@ -10464,7 +10464,6 @@ fn setup_conn(conn: &Connection) -> Result<(), String> {
         [],
     )
     .map_err(|e| format!("Failed to create user_file_state table: {}", e))?;
-        .map_err(|e| format!("Failed to enable foreign keys: {}", e))?;
     Ok(())
 }
 
