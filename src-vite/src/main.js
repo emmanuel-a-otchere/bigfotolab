@@ -10,6 +10,7 @@ import { message } from '@tauri-apps/plugin-dialog'
 import { initializeOriginalMedia } from '@/common/utils'
 import { configureTransport } from '@/common/transport'
 import { configureMediaCache, getMediaCache } from '@/common/mediaCache'
+import { initOutboxRemote } from '@/common/outbox'
 import { getSystemRegionLocale } from '@/common/api'
 import 'cally'
 import router from '@/common/router'
@@ -39,6 +40,8 @@ if (config.settings.remoteServer?.enabled) {
   configureMediaCache({ budgetBytes: (Number(config.settings.remoteServer.cacheMb) || 2048) * 1024 * 1024 })
   void getMediaCache().init()
 }
+  initOutboxRemote()
+
 const currentWindowLabel = getCurrentWebviewWindow().label
 const isMainWindow = currentWindowLabel === 'main'
 const isSettingsWindow = currentWindowLabel === 'settings'

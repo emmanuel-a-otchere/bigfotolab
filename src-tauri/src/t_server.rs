@@ -8,6 +8,7 @@ use std::sync::OnceLock;
 
 use flate2::{write::GzEncoder, Compression};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use serde_json::{json, Value};
 use std::io::Write as IoWrite;
 use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};
@@ -172,6 +173,7 @@ struct Request {
     target: String,
     headers: Vec<(String, String)>,
     body: Vec<u8>,
+    content_length: usize,
 }
 
 impl Request {
@@ -207,9 +209,9 @@ impl Request {
     }
 }
 
-async fn read_request(stream: &mut TcpStream) -> io::Result<Option<Request>> {
+async fn read_head(stream: &mut TcpStream) -> io::Result<Option<(Request, usize)>> {
     let mut buf = Vec::with_capacity(4096);
-    let mut chunk = [0u8; 4096];
+    let mut chunk = [0u8; 8192];
     let head_end = loop {
         if let Some(pos) = find_subsequence(&buf, b"\r\n\r\n") {
             break pos;
@@ -234,18 +236,7 @@ async fn read_request(stream: &mut TcpStream) -> io::Result<Option<Request>> {
                 .flatten()
         })
         .unwrap_or(0);
-    if content_length > 16 * 1024 * 1024 {
-        return Ok(None);
-    }
-    let mut body = buf.split_off(head_end + 4);
-    while body.len() < content_length {
-        let n = stream.read(&mut chunk).await?;
-        if n == 0 {
-            break;
-        }
-        body.extend_from_slice(&chunk[..n]);
-    }
-    body.truncate(content_length);
+    let body = buf.split_off(head_end + 4);
     let mut lines = head.lines();
     let mut parts = lines.next().unwrap_or_default().split_whitespace();
     let method = parts.next().unwrap_or_default().to_string();
@@ -253,7 +244,16 @@ async fn read_request(stream: &mut TcpStream) -> io::Result<Option<Request>> {
     let headers = lines
         .filter_map(|l| l.split_once(':').map(|(k, v)| (k.trim().to_string(), v.trim().to_string())))
         .collect();
-    Ok(Some(Request { method, target, headers, body }))
+    Ok(Some((
+        Request {
+            method,
+            target,
+            headers,
+            body,
+            content_length,
+        },
+        content_length,
+    )))
 }
 
 fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
@@ -311,10 +311,26 @@ async fn json_response(stream: &mut TcpStream, status: &str, value: &Value, gzip
 }
 
 async fn handle_conn(mut stream: TcpStream) -> io::Result<()> {
-    let Some(req) = read_request(&mut stream).await? else {
+    let Some((head_req, content_length)) = read_head(&mut stream).await? else {
         return Ok(());
     };
-    let path = req.path().to_string();
+    let path = head_req.path().to_string();
+    if path == "/api/v1/media/upload" {
+        return handle_upload(&mut stream, head_req, content_length).await;
+    }
+    let mut req = head_req;
+    if content_length > 16 * 1024 * 1024 {
+        return reject(&mut stream, "413 Payload Too Large").await;
+    }
+    let mut chunk = [0u8; 8192];
+    while req.body.len() < content_length {
+        let n = stream.read(&mut chunk).await?;
+        if n == 0 {
+            break;
+        }
+        req.body.extend_from_slice(&chunk[..n]);
+    }
+    req.body.truncate(content_length);
     let session = resolve_session(&req);
     if path == "/api/v1/session" {
         return handle_session(&mut stream, &req, &session).await;
@@ -552,6 +568,9 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
     }
     if name == "set_file_user_state" {
         return handle_set_file_user_state(stream, req, &args, library_id, session).await;
+    }
+    if name == "apply_user_actions" {
+        return handle_apply_actions(stream, req, &args, library_id, session).await;
     }
 
     if name == "index_album" {
@@ -978,6 +997,7 @@ async fn handle_static(stream: &mut TcpStream, req: &Request, path: &str) -> io:
 #[allow(dead_code)]
 fn _assert_serialize<T: Serialize>() {}
 
+
 /// Server-side album scan (desktop `index_album` without a tauri AppHandle).
 /// Responds immediately; progress flows over SSE (index_progress /
 /// thumbnail_ready / index_finished). The scan holds the global DB lock for
@@ -1083,5 +1103,197 @@ async fn handle_add_album(
     match result {
         Ok(v) => json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await,
         Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    }
+}
+
+/// Stream a file through SHA-256 (hex).
+async fn sha256_file(path: &Path) -> io::Result<String> {
+    let mut file = tokio::fs::File::open(path).await?;
+    let mut hasher = Sha256::new();
+    let mut chunk = vec![0u8; 1024 * 1024];
+    loop {
+        let n = file.read(&mut chunk).await?;
+        if n == 0 {
+            break;
+        }
+        hasher.update(&chunk[..n]);
+    }
+    Ok(format!("{:x}", hasher.finalize()))
+}
+
+/// Media sync-back upload: POST /api/v1/media/upload?path=<abs dest>&mode=replace|new
+/// &expected_sha256=<hex>&library_id=<id>&token=... with the raw file as body.
+/// Body is streamed to a temp file then renamed (never held in RAM).
+/// mode=replace verifies expected_sha256 against the current file (optimistic
+/// concurrency); mode=new picks a unique name if the target exists.
+async fn handle_upload(stream: &mut TcpStream, mut req: Request, content_length: usize) -> io::Result<()> {
+    if !req.authorized() {
+        return reject(stream, "401 Unauthorized").await;
+    }
+    if req.method != "POST" {
+        return reject(stream, "405 Method Not Allowed").await;
+    }
+    let Some(dest_q) = req.query_param("path") else {
+        return json_response(stream, "400 Bad Request", &json!({ "error": "missing path" }), false).await;
+    };
+    let Ok(decoded) = percent_encoding::percent_decode_str(&dest_q).decode_utf8() else {
+        return reject(stream, "400 Bad Request").await;
+    };
+    let mut dest = PathBuf::from(decoded.as_ref());
+    if !dest.is_absolute() || dest.parent().map(|p| !p.is_dir()).unwrap_or(true) {
+        return json_response(stream, "400 Bad Request", &json!({ "error": "invalid destination path" }), false).await;
+    }
+    let mode = req.query_param("mode").unwrap_or_else(|| "new".to_string());
+    let expected = req.query_param("expected_sha256");
+    let library_id = req.query_param("library_id");
+
+    let tmp = dest.with_file_name(format!("{}.bflpart", dest.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()));
+    {
+        let mut out = match tokio::fs::File::create(&tmp).await {
+            Ok(f) => f,
+            Err(e) => return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await,
+        };
+        if !req.body.is_empty() {
+            out.write_all(&req.body).await?;
+        }
+        let mut left = content_length.saturating_sub(req.body.len());
+        let mut chunk = vec![0u8; 1024 * 1024];
+        while left > 0 {
+            let n = stream.read(&mut chunk).await?;
+            if n == 0 {
+                break;
+            }
+            out.write_all(&chunk[..n]).await?;
+            left -= n;
+        }
+        out.flush().await?;
+    }
+
+    if mode == "replace" {
+        if let Some(exp) = &expected {
+            if dest.exists() {
+                match sha256_file(&dest).await {
+                    Ok(h) if h == *exp => {}
+                    Ok(h) => {
+                        let _ = tokio::fs::remove_file(&tmp).await;
+                        return json_response(stream, "409 Conflict", &json!({ "error": "source hash mismatch", "current_sha256": h }), false).await;
+                    }
+                    Err(e) => {
+                        let _ = tokio::fs::remove_file(&tmp).await;
+                        return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+                    }
+                }
+            }
+        }
+        if let Err(e) = tokio::fs::rename(&tmp, &dest).await {
+            let _ = tokio::fs::remove_file(&tmp).await;
+            return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+        }
+    } else {
+        let mut final_path = dest.clone();
+        let mut i = 1;
+        while final_path.exists() {
+            let stem = dest.file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
+            let ext = dest.extension().map(|e| e.to_string_lossy().into_owned()).unwrap_or_default();
+            let name = if ext.is_empty() { format!("{} ({})", stem, i) } else { format!("{} ({}).{}", stem, i, ext) };
+            final_path = dest.with_file_name(name);
+            i += 1;
+        }
+        if let Err(e) = tokio::fs::rename(&tmp, &final_path).await {
+            let _ = tokio::fs::remove_file(&tmp).await;
+            return json_response(stream, "500 Internal Server Error", &json!({ "error": e.to_string() }), false).await;
+        }
+        dest = final_path;
+    }
+
+    emit_server_event(
+        "file_updated",
+        json!({ "library_id": library_id, "path": dest.to_string_lossy(), "mode": mode, "session_id": resolve_session(&req) }),
+    );
+    json_response(
+        stream,
+        "200 OK",
+        &json!({ "result": { "ok": true, "path": dest.to_string_lossy() } }),
+        false,
+    )
+    .await
+}
+
+/// Offline outbox sync: POST /api/v1/cmd/apply_user_actions
+/// { actions: [{ uuid, type: "state"|"sidecar", fileId, ... }] }
+/// Each action is deduped via applied_actions(session_id, action_uuid).
+async fn handle_apply_actions(
+    stream: &mut TcpStream,
+    req: &Request,
+    args: &Value,
+    library_id: Option<String>,
+    session: &str,
+) -> io::Result<()> {
+    let actions: Vec<Value> = match arg(args, "actions") {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    let mut results = Vec::with_capacity(actions.len());
+    for action in &actions {
+        let uuid = action.get("uuid").and_then(|v| v.as_str()).unwrap_or("").to_string();
+        if uuid.is_empty() {
+            results.push(json!({ "ok": false, "error": "missing uuid" }));
+            continue;
+        }
+        let now = chrono::Utc::now().timestamp();
+        let dup = rusqlite::Connection::open(server_db_path())
+            .ok()
+            .and_then(|conn| {
+                conn.execute(
+                    "INSERT OR IGNORE INTO applied_actions (session_id, action_uuid, applied_at) VALUES (?1, ?2, ?3)",
+                    rusqlite::params![session, uuid, now],
+                )
+                .ok()
+                .map(|n| n == 0)
+            })
+            .unwrap_or(false);
+        if dup {
+            results.push(json!({ "uuid": uuid, "ok": true, "duplicate": true }));
+            continue;
+        }
+        let action = action.clone();
+        let r = with_library(library_id.clone(), || async move { apply_one_action(session, &action).await }).await;
+        match r {
+            Ok(()) => results.push(json!({ "uuid": uuid, "ok": true })),
+            Err(e) => results.push(json!({ "uuid": uuid, "ok": false, "error": e })),
+        }
+    }
+    json_response(stream, "200 OK", &json!({ "result": { "results": results } }), accepts_gzip(req)).await
+}
+
+async fn apply_one_action(session: &str, action: &Value) -> Result<(), String> {
+    let file_id: i64 = action
+        .get("fileId")
+        .and_then(|v| v.as_i64())
+        .ok_or_else(|| "missing fileId".to_string())?;
+    match action.get("type").and_then(|v| v.as_str()).unwrap_or("") {
+        "state" => {
+            let rating = action.get("rating").and_then(|v| v.as_i64()).map(|v| v as i32);
+            let fav = action.get("isFavorite").and_then(|v| v.as_bool());
+            let culling = action.get("cullingFlag").and_then(|v| v.as_i64()).map(|v| v as i32);
+            set_session_file_state(session, file_id, rating, fav, culling)?;
+            emit_server_event("file_updated", json!({ "file_ids": [file_id], "session_id": session }));
+            Ok(())
+        }
+        "sidecar" => {
+            let comment = action.get("comment").and_then(|v| v.as_str());
+            t_sqlite::AFile::batch_update_metadata(&[file_id], None, None, None, None, comment)?;
+            let conn = t_sqlite::open_conn()?;
+            let res = crate::metadata::xmp::save_batch(&conn, &[file_id]);
+            if let Some(f) = res.failures.first() {
+                return Err(f.error.clone());
+            }
+            emit_server_event("file_updated", json!({ "file_ids": [file_id], "sidecar": true }));
+            Ok(())
+        }
+        other => Err(format!(
+            "action type '{}' is not applied here (media actions use POST /api/v1/media/upload)",
+            other
+        )),
     }
 }
