@@ -227,6 +227,8 @@ import { useToast } from '@/common/toast';
 import { createDragPreview, isWindowDragEdge, startNativeFileDrag } from '@/common/nativeDrag';
 
 import { checkFileAccessibility, isCloudOnlyFile } from '@/common/api';
+import { isRemote } from '@/common/transport';
+import { getMediaCache } from '@/common/mediaCache';
 import { setFileAccessibility } from '@/common/availability';
 import { IconCloud, IconError, IconBrightness, IconEmbedded, IconRender } from '@/common/icons';
 import ImageNavigator from '@/components/ImageNavigator.vue';
@@ -814,7 +816,7 @@ function loadImageResource(filePath?: string) {
     return loadPromise;
   }
 
-  const loadPromise = new Promise<{ src: string; naturalWidth: number; naturalHeight: number }>((resolve, reject) => {
+  const loadPromise = new Promise<{ src: string; naturalWidth: number; naturalHeight: number }>(async (resolve, reject) => {
     let src = '';
 
     const img = new Image();
@@ -859,21 +861,32 @@ function loadImageResource(filePath?: string) {
       return;
     }
 
+    const finishLoad = (resolved: string) => {
+      if (!resolved) {
+        preloadCache.delete(filePath);
+        reject(new Error('Failed to resolve asset source'));
+        return;
+      }
+      src = resolved;
+      img.src = src;
+    };
+
     try {
-      src = getAssetSrc(filePath, props.fileVersion);
+      const fallbackSrc = getAssetSrc(filePath, props.fileVersion);
+      if (isRemote()) {
+        // Remote mode: load through the opened-media cache so the original is
+        // fetched once over the LAN and stored locally (LRU, byte-budgeted).
+        const cache = getMediaCache();
+        const cached = await cache.cacheFromUrl(cache.keyFor(filePath, props.fileVersion), fallbackSrc).catch(() => null);
+        finishLoad(cached || fallbackSrc);
+      } else {
+        finishLoad(fallbackSrc);
+      }
     } catch (error) {
       preloadCache.delete(filePath);
       reject(error);
       return;
     }
-
-    if (!src) {
-      preloadCache.delete(filePath);
-      reject(new Error('Failed to resolve asset source'));
-      return;
-    }
-
-    img.src = src;
   });
 
   preloadCache.set(filePath, loadPromise);

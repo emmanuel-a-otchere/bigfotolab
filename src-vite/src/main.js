@@ -9,6 +9,7 @@ import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { message } from '@tauri-apps/plugin-dialog'
 import { initializeOriginalMedia } from '@/common/utils'
 import { configureTransport } from '@/common/transport'
+import { configureMediaCache, getMediaCache } from '@/common/mediaCache'
 import { getSystemRegionLocale } from '@/common/api'
 import 'cally'
 import router from '@/common/router'
@@ -34,6 +35,9 @@ if (config.settings.remoteServer?.enabled) {
     url: config.settings.remoteServer.url,
     token: config.settings.remoteServer.token,
   })
+  // Opened-media LRU cache budget (only media opened at this endpoint is stored).
+  configureMediaCache({ budgetBytes: (Number(config.settings.remoteServer.cacheMb) || 2048) * 1024 * 1024 })
+  void getMediaCache().init()
 }
 const currentWindowLabel = getCurrentWebviewWindow().label
 const isMainWindow = currentWindowLabel === 'main'

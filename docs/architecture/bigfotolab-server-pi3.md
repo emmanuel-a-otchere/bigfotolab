@@ -187,3 +187,23 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
     failure.
 - Frontend needs no changes: remote-mode `invoke()` already posts to `/api/v1/cmd/...`
   and `listen()` already subscribes to SSE, so scanning from any LAN client now works.
+
+## Phase 3 slice 5 — client opened-media LRU cache (this PR)
+
+- New `src-vite/src/common/mediaCache.js`: an IndexedDB-backed LRU cache
+  (`bigfotolab-media-cache` / `originals`, index on `lastOpened`) that stores
+  **only originals the user actually opened at this endpoint**, keyed by
+  `filePath#modified_at` (a replaced file is a new key). Byte budget from
+  `settings.remoteServer.cacheMb` (default 2048 MB), LRU eviction on insert,
+  object-URL serving for repeat opens and offline re-opens. It never bulk-pulls
+  library media — `srcFor` on an unopened file is a pure pass-through.
+- Wiring (remote mode only): `Image.vue` and `Video.vue` load the original
+  through `cacheFromUrl` (single LAN fetch, then served from IDB);
+  `MediaViewer.vue` does the same for 360° originals (`panoSrc` swaps to the
+  blob URL once warm). `main.js` configures the budget + `init()`.
+- Tests: `src-vite/tests/mediaCache.test.mjs` (`pnpm run test:mediacache`, 7/7) —
+  covers opened-only fetching (no bulk), LRU eviction order, version keying,
+  retry after failed fetch, listener notification, and object-URL rebuild from
+  IDB after reload.
+- Offline-committed edits (replace media / sidecar updates / save-as-new) sync
+  back through the outbox (slice 3, PR #19) — the cache only affects reads.
