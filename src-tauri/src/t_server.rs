@@ -55,7 +55,7 @@ pub async fn run(config_dir: PathBuf, port: u16, dist_dir: PathBuf) -> io::Resul
     t_sqlite::create_db().map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
     ensure_server_db(&config_dir)?;
-    let _ = STATE.set(ServerState { token, dist_dir, config_dir });
+    let _ = STATE.set(ServerState { token, dist_dir, config_dir: config_dir.clone() });
 
     let listener = TcpListener::bind(("0.0.0.0", port)).await?;
     eprintln!(
