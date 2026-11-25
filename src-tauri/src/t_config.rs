@@ -50,6 +50,22 @@ pub fn set_current_library_id(id: &str) -> Result<(), String> {
     Ok(())
 }
 
+static CURRENT_SESSION_ID: RwLock<Option<String>> = RwLock::new(None);
+
+/// Server mode: the no-auth session id of the request being served (None on desktop).
+pub fn current_session_id() -> Option<String> {
+    CURRENT_SESSION_ID.read().ok()?.clone()
+}
+
+/// Server mode: set the process-wide session for a single request (None clears it).
+/// Callers must hold the server DB lock so requests stay serialized.
+pub fn set_current_session_id(id: Option<&str>) -> Result<(), String> {
+    *CURRENT_SESSION_ID
+        .write()
+        .map_err(|e| e.to_string())? = id.map(|s| s.to_string());
+    Ok(())
+}
+
 fn config_io_lock() -> &'static Mutex<()> {
     CONFIG_IO_LOCK.get_or_init(|| Mutex::new(()))
 }
