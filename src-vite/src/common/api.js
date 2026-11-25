@@ -1,6 +1,7 @@
 import { setAlbumAccessibility } from '@/common/availability';
 import { Channel } from '@tauri-apps/api/core';
 import { invoke, listen, isRemote } from '@/common/transport';
+import { getOutbox } from '@/common/outbox';
 import { locale } from '@tauri-apps/plugin-os';
 import { config, libConfig } from '@/common/config';
 import { separator, localeComp, formatTimestamp } from '@/common/utils';
@@ -1592,7 +1593,12 @@ export async function setFolderSearchExcluded(albumId, folderPath, isExcluded) {
 export async function setFileFavorite(fileId, isFavorite) {
   if (!Number.isInteger(fileId) || fileId <= 0) return null;
   if (isRemote()) {
-    await invoke('set_file_user_state', { fileId, isFavorite });
+    try {
+      await invoke('set_file_user_state', { fileId, isFavorite });
+    } catch (e) {
+      // offline: queue for sync-back via the outbox
+      await getOutbox().enqueue({ type: 'state', fileId, isFavorite });
+    }
     return 1;
   }
   try {
@@ -1610,7 +1616,12 @@ export async function setFileFavorite(fileId, isFavorite) {
 export async function setFileRating(fileId, rating) {
   if (!Number.isInteger(fileId) || fileId <= 0) return null;
   if (isRemote()) {
-    await invoke('set_file_user_state', { fileId, rating });
+    try {
+      await invoke('set_file_user_state', { fileId, rating });
+    } catch (e) {
+      // offline: queue for sync-back via the outbox
+      await getOutbox().enqueue({ type: 'state', fileId, rating });
+    }
     return 1;
   }
   try {
@@ -1630,7 +1641,12 @@ export async function setFileCullingFlag(fileId, cullingFlag) {
     return null;
   }
   if (isRemote()) {
-    await invoke('set_file_user_state', { fileId, cullingFlag });
+    try {
+      await invoke('set_file_user_state', { fileId, cullingFlag });
+    } catch (e) {
+      // offline: queue for sync-back via the outbox
+      await getOutbox().enqueue({ type: 'state', fileId, cullingFlag });
+    }
     return 1;
   }
   try {
