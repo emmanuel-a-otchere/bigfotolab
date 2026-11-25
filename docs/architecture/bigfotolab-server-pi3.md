@@ -139,3 +139,14 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
 - Known deferral: server-side *scanning* (`index_album`) needs the AppHandle-based
   emitter in `t_utils::index_album_worker`; that refactor lands with Phase 3.
   Until then, index libraries with the desktop build against the same config dir.
+
+## Phase 3 slice 1 — sessions (shipped)
+
+- Server keeps a server-level `server.db` in the config dir with `sessions` and
+  `applied_actions` tables. `POST /api/v1/session` (LAN token only, no user auth)
+  creates an opaque session id; `GET /api/v1/session` returns the current one.
+- Every request resolves a session from `X-Session-Id` / `?sid=`, defaulting to a
+  lazily-created `default` session so Phase 1/2 clients keep working unchanged.
+- Client (`transport.js`) obtains and persists the session id (localStorage) and
+  attaches it to API calls (`X-Session-Id`), SSE (`?sid=`), and media URLs.
+- Next slice: per-session state tables merged over the shared index.
