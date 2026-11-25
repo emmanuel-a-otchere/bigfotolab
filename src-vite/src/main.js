@@ -9,6 +9,7 @@ import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { message } from '@tauri-apps/plugin-dialog'
 import { initializeOriginalMedia } from '@/common/utils'
 import { configureTransport } from '@/common/transport'
+import { initOutboxRemote } from '@/common/outbox'
 import { getSystemRegionLocale } from '@/common/api'
 import 'cally'
 import router from '@/common/router'
@@ -35,6 +36,8 @@ if (config.settings.remoteServer?.enabled) {
     token: config.settings.remoteServer.token,
   })
 }
+  initOutboxRemote()
+
 const currentWindowLabel = getCurrentWebviewWindow().label
 const isMainWindow = currentWindowLabel === 'main'
 const isSettingsWindow = currentWindowLabel === 'settings'

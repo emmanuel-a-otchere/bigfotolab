@@ -162,3 +162,19 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
   cullingFlag?}` upserts only the session's row (NULL arg keeps previous) and
   broadcasts `file_updated` over SSE. Client setters (`setFileRating` /
   `setFileFavorite` / `setFileCullingFlag`) route to it in remote mode.
+
+## Phase 3 slice 3 — offline outbox + sync-back (shipped)
+
+- `POST /api/v1/cmd/apply_user_actions {actions:[{uuid,type,...}]}` — deduped via
+  `applied_actions(session_id, action_uuid)` in server.db. Types:
+  `state` → session override row + SSE `file_updated`;
+  `sidecar` → afiles update + XMP sidecar writeback (`xmp::save_batch`) + SSE.
+- `POST /api/v1/media/upload?path=&mode=replace|new&expected_sha256=&library_id=`
+  — raw body streamed to a `.bflpart` temp file then renamed (never in RAM);
+  replace verifies the expected source hash (409 on mismatch); new picks a
+  unique name. Emits `file_updated`.
+- Client `common/outbox.js`: small actions queued in localStorage, flushed as
+  one batch; media actions keep the Blob in IndexedDB and upload via the upload
+  endpoint; flush on `online` and at startup. api.js setters enqueue on network
+  failure. Tests: `src-vite/tests/outbox.test.mjs` (`pnpm run test:outbox`).
+- Client cache policy: only opened media is cached (HTTP cache/IDB, LRU-capped).
