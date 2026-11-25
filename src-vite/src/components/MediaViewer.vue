@@ -483,6 +483,8 @@ import { isWin, isMac, isLinux, getSlideShowInterval, getAssetSrc } from '@/comm
 import { getShortcutLabel, ShortcutActionId, ShortcutPlatform, VIEW_BACKGROUND_SHORTCUTS } from '@/common/shortcuts';
 import { isOriginalUnavailable, setFileAccessibility } from '@/common/availability';
 import { getMotionPhotoVideoPath, checkFileAccessibility } from '@/common/api';
+import { isRemote } from '@/common/transport';
+import { getMediaCache } from '@/common/mediaCache';
 
 import Image from '@/components/Image.vue';
 import PanoViewer from '@/components/PanoViewer.vue';
@@ -643,7 +645,25 @@ const props = defineProps({
 const isLivePhotoPlaying = ref(false);
 const isLivePhoto = computed(() => props.file?.media_subtype === 'live_photo' && !!props.file?.live_photo_video_path);
 const isPano = computed(() => props.file?.media_subtype === 'pano_360');
-const panoSrc = computed(() => (props.file?.file_path ? getAssetSrc(props.file.file_path, Number(props.file.modified_at || 0)) : ''));
+// 360 originals are large: in remote mode load them through the opened-media
+// LRU cache (blob URL) instead of re-downloading over the LAN on every open.
+const panoSrc = ref('');
+watch(() => [props.file?.file_path, props.file?.modified_at], async ([path, modified]) => {
+  if (!path) {
+    panoSrc.value = '';
+    return;
+  }
+  const version = Number(modified || 0);
+  const fallback = getAssetSrc(path, version);
+  if (!isRemote()) {
+    panoSrc.value = fallback;
+    return;
+  }
+  const cache = getMediaCache();
+  panoSrc.value = cache.srcFor(path, version, fallback);
+  const cached = await cache.cacheFromUrl(cache.keyFor(path, version), fallback).catch(() => null);
+  if (cached && props.file?.file_path === path) panoSrc.value = cached;
+}, { immediate: true });
 const isMotionPhoto = computed(() => props.file?.media_subtype === 'motion_photo');
 // Both Apple Live Photos and Android Motion Photos play a short video layered
 // over the still image, so they share the same UI/playback path.

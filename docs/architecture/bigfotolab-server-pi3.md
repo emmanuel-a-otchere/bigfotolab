@@ -136,9 +136,10 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
   permits, emitting `prewarm_progress` / `prewarm_finished` over SSE.
 - Thumb pyramid tiers via `GET /media/thumb/{lib}/{id}?size=64..2048` with ETag +
   `Cache-Control: public, max-age=3600`; originals stay `no-cache` + Range + ETag.
-- Known deferral: server-side *scanning* (`index_album`) needs the AppHandle-based
-  emitter in `t_utils::index_album_worker`; that refactor lands with Phase 3.
-  Until then, index libraries with the desktop build against the same config dir.
+- Server-side *scanning* (`index_album`) landed in Phase 3 slice 4: the emitter in
+  `t_utils::index_album_worker` was generalized to a `SharedEmitter`, so the headless
+  server runs scans itself (see below). The desktop build still works against the
+  same config dir.
 
 ## Phase 3 slice 1 — sessions (shipped)
 
@@ -178,3 +179,47 @@ signing pubkey (`src-tauri/tauri.conf.json`), `julyx10/lap-binaries` assets.
   endpoint; flush on `online` and at startup. api.js setters enqueue on network
   failure. Tests: `src-vite/tests/outbox.test.mjs` (`pnpm run test:outbox`).
 - Client cache policy: only opened media is cached (HTTP cache/IDB, LRU-capped).
+## Phase 3 slice 4 — server-side scanning + album management (this PR)
+
+- `t_utils` emitter refactor: new `SharedEmitter = Arc<dyn Fn(&str, Value) + Send + Sync>`
+  + `emit_json()` helper. `index_album_worker` and `process_thumbnail_task` now take
+  `emit: SharedEmitter` and `app_handle: Option<tauri::AppHandle>`; when the handle is
+  `None` (server mode) AI embedding is skipped but indexing/thumbnails run unchanged.
+  Desktop `t_cmds::index_album` wraps `AppHandle::emit` in a `SharedEmitter`.
+- `t_server.rs` gains three command routes (all under the bearer token, per-request
+  `library_id`, global DB lock):
+  - `POST /api/v1/cmd/index_album {albumId, thumbnailSize, rawDisplayOptions?,
+    skipFilePath?, groupRawJpegPairs?}` — resets the per-album cancellation flag, spawns
+    a task that holds `db_lock()` for the whole scan (the process-wide current-library
+    switch must not race other requests) and runs `index_album_worker` with an SSE-backed
+    emitter. Responds `{started: true}` immediately; `index_progress` /
+    `thumbnail_ready` / `index_finished` flow over `/api/v1/events` exactly like desktop.
+  - `POST /api/v1/cmd/cancel_indexing {albumId}` — sets the cancellation flag.
+  - `POST /api/v1/cmd/add_album {folderPath, name, description?, fileTypes,
+    smallImageFilter?, excludedFolders?}` — `Album::add_album_to_db` + `Album::edit`
+    directly (skips the desktop-only tauri directory-scope authorization; the server is
+    already token-gated and co-located with the storage), with rollback delete on edit
+    failure.
+- Frontend needs no changes: remote-mode `invoke()` already posts to `/api/v1/cmd/...`
+  and `listen()` already subscribes to SSE, so scanning from any LAN client now works.
+
+## Phase 3 slice 5 — client opened-media LRU cache (this PR)
+
+- New `src-vite/src/common/mediaCache.js`: an IndexedDB-backed LRU cache
+  (`bigfotolab-media-cache` / `originals`, index on `lastOpened`) that stores
+  **only originals the user actually opened at this endpoint**, keyed by
+  `filePath#modified_at` (a replaced file is a new key). Byte budget from
+  `settings.remoteServer.cacheMb` (default 2048 MB), LRU eviction on insert,
+  object-URL serving for repeat opens and offline re-opens. It never bulk-pulls
+  library media — `srcFor` on an unopened file is a pure pass-through.
+- Wiring (remote mode only): `Image.vue` and `Video.vue` load the original
+  through `cacheFromUrl` (single LAN fetch, then served from IDB);
+  `MediaViewer.vue` does the same for 360° originals (`panoSrc` swaps to the
+  blob URL once warm). `main.js` configures the budget + `init()`.
+- Tests: `src-vite/tests/mediaCache.test.mjs` (`pnpm run test:mediacache`, 7/7) —
+  covers opened-only fetching (no bulk), LRU eviction order, version keying,
+  retry after failed fetch, listener notification, and object-URL rebuild from
+  IDB after reload.
+- Offline-committed edits (replace media / sidecar updates / save-as-new) sync
+  back through the outbox (slice 3, PR #19) — the cache only affects reads.
+

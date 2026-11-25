@@ -89,6 +89,8 @@ import videojs from 'video.js/core';
 import 'video.js/dist/video-js.min.css';
 import { getThumbUrl, getAssetSrc, isLinux, isMac, isWin } from '@/common/utils';
 import { isCloudOnlyFile, openFileWithApp } from '@/common/api';
+import { isRemote } from '@/common/transport';
+import { getMediaCache } from '@/common/mediaCache';
 import zhCN from 'video.js/dist/lang/zh-CN.json';
 import {
   prepareVideo,
@@ -696,10 +698,17 @@ const loadVideo = async (filePath: string) => {
   const loadDirect = async (type: string | null) => {
     resetCompatibilityProcessing();
     if (currentLoadId !== currentLoadingId) return;
-    const playbackSrc = getAssetSrc(filePath);
-    if (!playbackSrc) {
+    const fallbackSrc = getAssetSrc(filePath);
+    if (!fallbackSrc) {
       void loadPrepared('compatible');
       return;
+    }
+    let playbackSrc = fallbackSrc;
+    if (isRemote()) {
+      // Remote mode: route through the opened-media cache (single LAN fetch,
+      // stored locally under the LRU byte budget).
+      const cache = getMediaCache();
+      playbackSrc = (await cache.cacheFromUrl(cache.keyFor(filePath, 0), fallbackSrc).catch(() => null)) || fallbackSrc;
     }
     player.reset();
     const source = type

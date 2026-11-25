@@ -21,6 +21,18 @@ static DB_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 static EVENTS: OnceLock<broadcast::Sender<(String, String)>> = OnceLock::new();
 static STATE: OnceLock<ServerState> = OnceLock::new();
 
+/// Per-album scan cancellation flags (std Mutex, mirrors desktop IndexCancellation).
+static INDEX_CANCEL: OnceLock<std::sync::Arc<std::sync::Mutex<std::collections::HashMap<i64, bool>>>> = OnceLock::new();
+
+fn index_cancel() -> &'static std::sync::Arc<std::sync::Mutex<std::collections::HashMap<i64, bool>>> {
+    INDEX_CANCEL.get_or_init(|| std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new())))
+}
+
+/// SSE-backed emitter handed to the desktop indexing worker in server mode.
+fn server_emitter() -> crate::t_utils::SharedEmitter {
+    std::sync::Arc::new(|name: &str, v: serde_json::Value| emit_server_event(name, v))
+}
+
 struct ServerState {
     token: String,
     dist_dir: PathBuf,
@@ -561,6 +573,16 @@ async fn handle_cmd(stream: &mut TcpStream, req: &Request, name: &str, session: 
         return handle_apply_actions(stream, req, &args, library_id, session).await;
     }
 
+    if name == "index_album" {
+        return handle_index_album(stream, req, &args, library_id).await;
+    }
+    if name == "cancel_indexing" {
+        return handle_cancel_indexing(stream, req, &args).await;
+    }
+    if name == "add_album" {
+        return handle_add_album(stream, req, &args, library_id).await;
+    }
+
     let result: Result<Value, String> = match name {
         "get_app_config" => with_library(library_id, || async { t_cmds::get_app_config().map(|v| serde_json::to_value(v).unwrap()) }).await,
         "get_library_info" => with_library(library_id, || async { let id: String = arg(&args, "id")?; t_cmds::get_library_info(id).await.map(|v| serde_json::to_value(v).unwrap()) }).await,
@@ -974,6 +996,115 @@ async fn handle_static(stream: &mut TcpStream, req: &Request, path: &str) -> io:
 
 #[allow(dead_code)]
 fn _assert_serialize<T: Serialize>() {}
+
+
+/// Server-side album scan (desktop `index_album` without a tauri AppHandle).
+/// Responds immediately; progress flows over SSE (index_progress /
+/// thumbnail_ready / index_finished). The scan holds the global DB lock for
+/// its whole duration so the process-wide current-library switch cannot race
+/// other requests.
+async fn handle_index_album(
+    stream: &mut TcpStream,
+    req: &Request,
+    args: &Value,
+    library_id: Option<String>,
+) -> io::Result<()> {
+    let parsed = (|| -> Result<(String, i64, u32, crate::t_raw_display::RawDisplayOptions, Option<String>, bool), String> {
+        let album_id: i64 = arg(args, "albumId")?;
+        let thumbnail_size: u32 = arg(args, "thumbnailSize")?;
+        let raw_display_options: crate::t_raw_display::RawDisplayOptions = arg(args, "rawDisplayOptions")?;
+        let skip_file_path: Option<String> = opt_arg(args, "skipFilePath")?;
+        let group_raw_jpeg_pairs: bool = arg(args, "groupRawJpegPairs").unwrap_or(true);
+        let lib = match &library_id {
+            Some(id) if !id.is_empty() => id.clone(),
+            _ => t_config::current_library_id()?,
+        };
+        Ok((lib, album_id, thumbnail_size, raw_display_options, skip_file_path, group_raw_jpeg_pairs))
+    })();
+    let (lib, album_id, thumbnail_size, raw_display_options, skip_file_path, group_raw_jpeg_pairs) = match parsed {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    if let Ok(mut flags) = index_cancel().lock() {
+        flags.insert(album_id, false);
+    }
+    let cancel = index_cancel().clone();
+    let emit = server_emitter();
+    tokio::spawn(async move {
+        let _guard = db_lock().lock().await;
+        if let Err(e) = t_config::set_current_library_id(&lib) {
+            emit_server_event("index_finished", json!({ "album_id": album_id, "error": e }));
+            return;
+        }
+        if let Err(e) = crate::t_utils::index_album_worker(
+            emit,
+            None,
+            cancel,
+            lib,
+            album_id,
+            thumbnail_size,
+            raw_display_options,
+            skip_file_path,
+            group_raw_jpeg_pairs,
+        )
+        .await
+        {
+            eprintln!("[server] index_album {} failed: {}", album_id, e);
+        }
+    });
+    json_response(stream, "200 OK", &json!({ "result": { "started": true, "album_id": album_id } }), accepts_gzip(req)).await
+}
+
+/// Cancel a running server-side scan (desktop `cancel_indexing` equivalent).
+async fn handle_cancel_indexing(stream: &mut TcpStream, req: &Request, args: &Value) -> io::Result<()> {
+    let album_id: i64 = match arg(args, "albumId") {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    if let Ok(mut flags) = index_cancel().lock() {
+        flags.insert(album_id, true);
+    }
+    json_response(stream, "200 OK", &json!({ "result": { "ok": true } }), accepts_gzip(req)).await
+}
+
+/// Add an album on the server (desktop `add_album` minus the tauri directory-scope
+/// authorization - the server is already gated by the bearer token and runs
+/// co-located with the storage).
+async fn handle_add_album(
+    stream: &mut TcpStream,
+    req: &Request,
+    args: &Value,
+    library_id: Option<String>,
+) -> io::Result<()> {
+    let parsed = (|| -> Result<(String, String, String, i64, i64, Vec<String>), String> {
+        let folder_path: String = arg(args, "folderPath")?;
+        let name: String = arg(args, "name")?;
+        let description: String = arg(args, "description").unwrap_or_default();
+        let file_types: i64 = arg(args, "fileTypes")?;
+        let small_image_filter: i64 = arg(args, "smallImageFilter").unwrap_or(160);
+        let excluded_folders: Vec<String> = arg(args, "excludedFolders").unwrap_or_default();
+        Ok((folder_path, name, description, file_types, small_image_filter, excluded_folders))
+    })();
+    let (folder_path, name, description, file_types, small_image_filter, excluded_folders) = match parsed {
+        Ok(v) => v,
+        Err(e) => return json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    };
+    let result = with_library(library_id, || async move {
+        let album = t_sqlite::Album::add_album_to_db(&folder_path)?;
+        let id = album.id.ok_or("new album has no id".to_string())?;
+        if let Err(error) = t_sqlite::Album::edit(id, &name, &description, file_types, small_image_filter, &excluded_folders) {
+            let _ = t_sqlite::Album::delete_from_db(id);
+            return Err(error);
+        }
+        let album = t_sqlite::Album::get_album_by_id(id)?;
+        Ok(serde_json::to_value(album).unwrap())
+    })
+    .await;
+    match result {
+        Ok(v) => json_response(stream, "200 OK", &json!({ "result": v }), accepts_gzip(req)).await,
+        Err(e) => json_response(stream, "400 Bad Request", &json!({ "error": e }), false).await,
+    }
+}
 
 /// Stream a file through SHA-256 (hex).
 async fn sha256_file(path: &Path) -> io::Result<String> {
